@@ -42,6 +42,37 @@ const SHAPE_DEFS = {
 const NUM_WORDS = ["", "unu", "doi", "trei", "patru", "cinci", "șase", "șapte", "opt", "nouă", "zece"];
 export const numWord = (n) => NUM_WORDS[n];
 
+/* ---------- Mascota: robotul ROBO (vizor-egalizator animat pe vorbire) ---------- */
+function robotSVG(accent, talking) {
+  // barele vizorului: egalizator când vorbește, linie joasă când tace
+  const heights = talking ? [16, 30, 20, 34, 16, 26, 12] : [7, 7, 7, 7, 7, 7, 7];
+  const bars = heights.map((h, i) =>
+    `<rect x="${52 + i * 14}" y="${96 - h / 2}" width="9" height="${h}" rx="4" fill="${accent}"/>`).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="200" height="260">
+  <ellipse cx="100" cy="246" rx="52" ry="9" fill="#000" opacity=".4"/>
+  <!-- antenă -->
+  <line x1="100" y1="34" x2="100" y2="14" stroke="#475569" stroke-width="5"/>
+  <circle cx="100" cy="12" r="${talking ? 9 : 7}" fill="${accent}" opacity=".95"/>
+  <!-- cap -->
+  <rect x="30" y="36" width="140" height="112" rx="26" fill="#1e293b" stroke="#475569" stroke-width="3"/>
+  <rect x="44" y="70" width="112" height="52" rx="14" fill="#0b1120" stroke="#334155" stroke-width="2"/>
+  ${bars}
+  <!-- urechi -->
+  <rect x="18" y="76" width="12" height="34" rx="6" fill="#334155"/>
+  <rect x="170" y="76" width="12" height="34" rx="6" fill="#334155"/>
+  <!-- gât + corp -->
+  <rect x="86" y="148" width="28" height="14" fill="#334155"/>
+  <rect x="42" y="162" width="116" height="74" rx="20" fill="#1e293b" stroke="#475569" stroke-width="3"/>
+  <circle cx="100" cy="199" r="17" fill="${accent}" opacity=".9"/>
+  <circle cx="100" cy="199" r="8" fill="#0b1120" opacity=".55"/>
+  <!-- brațe -->
+  <path d="M 42 176 Q 20 188 22 214" fill="none" stroke="#475569" stroke-width="9" stroke-linecap="round"/>
+  <path d="M 158 176 Q 180 188 178 214" fill="none" stroke="#475569" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="22" cy="219" r="8" fill="#334155"/>
+  <circle cx="178" cy="219" r="8" fill="#334155"/>
+</svg>`;
+}
+
 /*
  * Rețeaua de forme pentru a×b: b rânduri a câte a forme — crește cu un rând
  * la fiecare operație a capitolului (modelul „array” al înmulțirii).
@@ -62,7 +93,7 @@ function arrayHTML(ch, verse, panelW, panelH) {
 }
 
 /* ---------- Șablonul general al cadrului (1280×720) ---------- */
-function shell(ch, headerRight, mainHTML, bubbleHTML) {
+function shell(ch, headerRight, mainHTML, bubbleHTML, talking = false) {
   const ac = ch.theme.accent;
   return `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -92,7 +123,20 @@ function shell(ch, headerRight, mainHTML, bubbleHTML) {
     <span class="chip">× ${ch.n}</span>
     <span class="right">${headerRight}</span>
   </div>
-  <div class="main">${mainHTML}</div>
+  <div class="main">
+    <div style="flex:1;display:flex;gap:26px">${mainHTML}</div>
+    <div style="width:206px;display:flex;flex-direction:column;gap:10px">
+      <div style="flex:1;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.22);
+        border-radius:16px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden">
+        <svg viewBox="0 0 200 260" style="width:100%;filter:drop-shadow(0 0 10px ${ac}44)">${robotSVG(ac, talking).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "")}</svg>
+      </div>
+      <div style="background:rgba(148,163,184,.10);border:1px solid rgba(148,163,184,.22);border-radius:12px;
+        text-align:center;padding:8px 6px">
+        <div style="font-weight:bold;font-size:19px;color:${ac};letter-spacing:2px">ROBO</div>
+        <div style="font-size:13px;color:#94a3b8;margin-top:2px">co-pilotul tău</div>
+      </div>
+    </div>
+  </div>
   <div class="bubble">${bubbleHTML}</div>
 </body></html>`;
 }
@@ -121,11 +165,11 @@ function listHTML(ch, cur, showResult) {
       <span style="width:82px;text-align:left">${res}</span>
     </div>`;
   }).join("");
-  return `<div style="width:452px;display:flex;flex-direction:column;gap:7px;justify-content:center">${rows}</div>`;
+  return `<div style="width:430px;display:flex;flex-direction:column;gap:7px;justify-content:center">${rows}</div>`;
 }
 
 /* ---------- Scenele ---------- */
-export function introHTML(ch) {
+export function introHTML(ch, talking) {
   const shapes = Array.from({ length: ch.n }, () =>
     `<svg viewBox="0 0 40 40" style="width:52px;height:52px;filter:drop-shadow(0 0 7px ${ch.theme.accent})"><use href="#ob"/></svg>`).join("");
   const main = `
@@ -136,14 +180,14 @@ export function introHTML(ch) {
       <div style="display:flex;gap:12px">${shapes}</div>
     </div>`;
   const bubble = `<span style="font-size:30px;font-weight:bold;color:#e2e8f0">${ch.trick}</span>`;
-  return shell(ch, "10 înmulțiri", main, bubble);
+  return shell(ch, "10 înmulțiri", main, bubble, talking);
 }
 
-export function verseHTML(ch, vIdx, showResult) {
+export function verseHTML(ch, vIdx, showResult, talking) {
   const v = ch.verses[vIdx];
   const ac = ch.theme.accent;
   const eq = `<div style="height:124px;display:flex;align-items:center;justify-content:center;gap:18px;
-      color:#f1f5f9;font-size:72px;font-weight:bold">
+      color:#f1f5f9;font-size:58px;font-weight:bold">
     <span>${v.a}</span><span style="color:${ac}">×</span><span>${v.b}</span><span style="opacity:.7">=</span>
     ${showResult
       ? `<span style="background:${ac};color:#0b1120;border-radius:16px;padding:0 26px;
@@ -151,25 +195,25 @@ export function verseHTML(ch, vIdx, showResult) {
       : `<span style="opacity:.4">?</span>`}
   </div>`;
   const right = `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
-    ${eq}<div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, v, 470, 368)}</div>
+    ${eq}<div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, v, 440, 372)}</div>
   </div>`;
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const bubble = `
     <span style="font-size:31px;font-weight:bold;color:#e2e8f0">${cap(numWord(v.a))} ori ${numWord(v.b)} fac</span>
     <span style="font-size:34px;font-weight:bold;color:${showResult ? ac : "#475569"}">${showResult ? v.rWord + "!" : "…"}</span>`;
-  return shell(ch, `${vIdx + 1} / 10`, listHTML(ch, vIdx, showResult) + right, bubble);
+  return shell(ch, `${vIdx + 1} / 10`, listHTML(ch, vIdx, showResult) + right, bubble, talking);
 }
 
 /* Scena finală: lista completă rămâne pe ecran, ca să poată fi repetată. */
-export function outroHTML(ch) {
+export function outroHTML(ch, talking) {
   const full = ch.verses[ch.verses.length - 1];
   const right = `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
     <div style="height:124px;display:flex;align-items:center;justify-content:center;
       color:#f1f5f9;font-size:38px;font-weight:bold;white-space:nowrap">
       Toată tabla <span style="color:${ch.theme.accent};margin-left:12px">× ${ch.n}</span>
     </div>
-    <div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, full, 470, 368)}</div>
+    <div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, full, 440, 372)}</div>
   </div>`;
   const bubble = `<span style="font-size:30px;font-weight:bold;color:#e2e8f0">${ch.outro[ch.outro.length - 1]}</span>`;
-  return shell(ch, "Recapitulare", listHTML(ch, -1, true) + right, bubble);
+  return shell(ch, "Recapitulare", listHTML(ch, -1, true) + right, bubble, talking);
 }

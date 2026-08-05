@@ -61,24 +61,41 @@ function chapterScenes(ch) {
   // — intro —
   scenes.push({
     id: "intro",
-    states: { intro: introHTML(ch) },
+    states: { intro_a: introHTML(ch, false), intro_b: introHTML(ch, true) },
     phrases: ch.intro,
     pick: () => "intro",
   });
 
   // — cele 10 înmulțiri: vocea narează operația și rezultatul în două fraze
-  // TTS („Doi ori patru” + „fac opt!”), iar rezultatul de pe ecran apare
-  // EXACT la granița dintre ele — graniță cunoscută la eșantion din
-  // tts_batch, deci fără estimări de sincronizare. Rezultatul nu se rostește
-  // niciodată singur (Piper înghite cuvintele scurte izolate) — „fac” îl
-  // însoțește mereu.
+  // TTS, iar rezultatul de pe ecran apare pe DEBUTUL numărului rostit:
+  //   * număr „lung” (≥3 silabe sau compus) → poate fi rostit singur, deci
+  //     tăiem chiar înaintea lui („Șapte ori șase fac” + „patruzeci și doi!”)
+  //     — granița e cunoscută la eșantion din tts_batch;
+  //   * număr scurt (Piper îl „înghite” rostit izolat) → rămâne lipit de
+  //     „fac” („Doi ori patru” + „fac opt!”), iar dezvăluirea sare peste
+  //     durata lui „fac” (~0,3s, cuvânt identic în toate versurile).
+  // +0,05s compensează întârzierea de codare AAC a segmentelor.
   ch.verses.forEach((v, i) => {
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+    const syllables = (v.rWord.match(/[aeiouăâî]/gi) || []).length;
+    const standalone = v.rWord.includes(" ") || syllables >= 3;
+    const offset = standalone ? 0.05 : 0.35;
     scenes.push({
       id: `v${String(i + 1).padStart(2, "0")}`,
-      states: { q: verseHTML(ch, i, false), res: verseHTML(ch, i, true) },
-      phrases: [`${cap(numWord(v.a))} ori ${numWord(v.b)}`, `fac ${v.rWord}!`],
-      pick: (t, ph) => (ph[1] && t >= ph[1].start ? "res" : "q"),
+      states: {
+        q_a: verseHTML(ch, i, false, false),
+        q_b: verseHTML(ch, i, false, true),
+        res_a: verseHTML(ch, i, true, false),
+        res_b: verseHTML(ch, i, true, true),
+      },
+      phrases: standalone
+        ? [`${cap(numWord(v.a))} ori ${numWord(v.b)} fac`, `${v.rWord}!`]
+        : [`${cap(numWord(v.a))} ori ${numWord(v.b)}`, `fac ${v.rWord}!`],
+      pick: (t, ph) => {
+        if (!ph[1]) return "q";
+        const at = Math.min(ph[1].start + offset, (ph[1].speechEnd ?? ph[1].end) - 0.15);
+        return t >= at ? "res" : "q";
+      },
     });
   });
 
@@ -86,7 +103,7 @@ function chapterScenes(ch) {
   // ca să poată fi citită și repetată cu voce tare —
   scenes.push({
     id: "outro",
-    states: { outro: outroHTML(ch) },
+    states: { outro_a: outroHTML(ch, false), outro_b: outroHTML(ch, true) },
     phrases: ch.outro,
     pick: () => "outro",
     tail: 10,
@@ -148,7 +165,11 @@ for (const s of scenes) {
   mkdirSync(dir, { recursive: true });
   for (let f = 0; f < nFrames; f++) {
     const time = f / FPS;
-    const png = s.pngs[s.scene.pick(time, t.phrases, t.duration)];
+    const stateKey = s.scene.pick(time, t.phrases, t.duration);
+    // vizorul robotului pulsează doar cât se vorbește efectiv (~3Hz)
+    const speaking = t.phrases.some((p) => time >= p.start && time < (p.speechEnd ?? p.end));
+    const talk = speaking && f % 4 < 2 ? "b" : "a";
+    const png = s.pngs[`${stateKey}_${talk}`] || s.pngs[`${stateKey}_a`];
     const dst = join(dir, `f${String(f).padStart(4, "0")}.png`);
     try { linkSync(png, dst); } catch (_) { copyFileSync(png, dst); }
   }
