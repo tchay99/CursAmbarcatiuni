@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curs Conducător de Ambarcațiune cu Motor</title>
+  <meta name="description" content="Mini-LMS pentru pregătirea examenului de conducător de ambarcațiune cu motor pentru agrement — 14 lecții video narate în română, verificări de cunoștințe și simulare de examen." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛵</text></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" id="brandHome" class="brand">
+      <span class="brand__logo">⚓</span>
+      <span class="brand__text">Curs Ambarcațiuni cu Motor</span>
+    </a>
+    <div class="topbar__progress">
+      <div class="gprogress"><div class="gprogress__bar" id="globalProgressBar"></div></div>
+      <span id="globalProgressText" class="gprogress__text">0% finalizat</span>
+    </div>
+    <button id="resetBtn" class="btn btn--ghost btn--sm" title="Resetează progresul">Resetează</button>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar" aria-label="Cuprins curs"></aside>
+    <main id="main" class="main" aria-live="polite"></main>
+  </div>
+
+  <footer class="sitefoot">
+    <p>Instrument de studiu neoficial pentru pregătirea examenului. Conținutul este orientativ —
+       consultă întotdeauna manualul oficial și legislația în vigoare.</p>
+  </footer>
+
+  <script src="assets/js/content.js"></script>
+  <script src="assets/js/player.js"></script>
+  <script src="assets/js/quiz.js"></script>
+  <script src="assets/js/exam.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Video files (optional, large binaries) — keep them out of git by default.
+videos/*.mp4
+videos/*.webm
+videos/*.mov
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
