@@ -48,22 +48,24 @@ afectate cu `--only`.
 
 ## Bonus: Cântecelul tablei înmulțirii (`videos/tabla/`)
 
-Un set separat de 10 videoclipuri educative pentru copii, pentru memorarea
-tablei înmulțirii, câte un capitol pentru înmulțirea cu 1 … cu 10 (pagina de
-vizionare: `tabla/index.html`):
+Un set separat de 10 videoclipuri pentru memorarea tablei înmulțirii, câte un
+capitol pentru înmulțirea cu 1 … cu 10 (pagina de vizionare:
+`tabla/index.html`), în stil pentru pre-adolescenți: temă întunecată cu
+accente neon, tipografie mare, fără mascotă:
 
 - vocea narează simplu fiecare operație și rezultatul ei („Doi ori patru fac
   opt!”) — conținutul în `tools/tabla-content.mjs`;
 - pe ecran, lista înmulțirilor capitolului se completează rând cu rând, iar
   operațiile deja narate rămân la vedere (`tools/tabla-visuals.mjs`);
-- alături, o rețea de obiecte tematice per capitol (steluțe, rățuște, flori,
-  mere, albinuțe…) crește cu un rând la fiecare operație, iar rezultatul se
-  dezvăluie exact când vocea îl rostește;
-- truc de memorare per capitol în intro;
-- muzică de fundal veselă, sintetizată programatic (`tools/tabla_music.py`).
+- alături, o rețea de forme neon (fulger, hexagon, romb… — câte o formă și o
+  culoare per capitol) crește cu un rând la fiecare operație;
+- rezultatul apare EXACT când vocea începe „fac X!” — fraza e sintetizată în
+  două bucăți, iar granița dintre ele e cunoscută la eșantion (fără estimări);
+- la final, lista completă rămâne pe ecran ~10s, de repetat cu voce tare;
+- beat lo-fi discret de fundal, sintetizat programatic (`tools/tabla_music.py`).
 
 Notă TTS: cuvintele scurte rostite izolat („opt!”) sunt trunchiate de vocea
-Piper — de aceea totul este formulat în propoziții sau perechi de numere.
+Piper — de aceea rezultatul e mereu însoțit („fac opt!”).
 
 Regenerare (aceleași cerințe ca mai sus):
 

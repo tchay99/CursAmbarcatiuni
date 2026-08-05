@@ -1,9 +1,9 @@
 /*
- * tabla-content.mjs — Conținutul „Cântecelului tablei înmulțirii”.
+ * tabla-content.mjs — Conținutul videoclipurilor „Tabla înmulțirii”.
  *
  * 10 capitole (înmulțirea cu 1 … cu 10), fiecare cu:
- *   - theme:  obiectul vizual al capitolului + culorile scenei;
- *   - intro:  salutul + trucul de memorare al capitolului;
+ *   - theme:  forma neon și culoarea de accent ale capitolului;
+ *   - intro:  titlul + trucul de memorare al capitolului;
  *   - verses: cele 10 înmulțiri — vocea narează operația și rezultatul
  *             („Doi ori patru fac opt!”), iar lista de pe ecran se
  *             completează rând cu rând;
@@ -15,11 +15,11 @@
 export const CHAPTERS = [
   {
     n: 1,
-    theme: { object: "star", objectName: "steluțe", bg1: "#312e81", bg2: "#6d28d9", accent: "#fbbf24", card: "#fef3c7" },
+    theme: { shape: "bolt", accent: "#22d3ee" },
     intro: [
-      "Salut! Sunt Steluțul Socotel și cântăm tabla înmulțirii!",
-      "Azi: înmulțirea cu unu — cea mai ușoară dintre toate.",
-      "Orice număr ori unu rămâne exact el. Hai să cântăm!",
+      "Tabla înmulțirii cu unu.",
+      "Orice număr ori unu rămâne la fel.",
+      "Să începem!",
     ],
     trick: "Orice număr × 1 rămâne la fel!",
     verses: [
@@ -38,10 +38,11 @@ export const CHAPTERS = [
   },
   {
     n: 2,
-    theme: { object: "duck", objectName: "rățuște", bg1: "#0c4a6e", bg2: "#0284c7", accent: "#facc15", card: "#e0f2fe" },
+    theme: { shape: "hex", accent: "#a78bfa" },
     intro: [
-      "Înmulțirea cu doi înseamnă dublul: fiecare rățușcă vine cu perechea ei!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu doi.",
+      "Ori doi înseamnă dublul.",
+      "Să începem!",
     ],
     trick: "× 2 = dublul: numărul + perechea lui!",
     verses: [
@@ -60,10 +61,11 @@ export const CHAPTERS = [
   },
   {
     n: 3,
-    theme: { object: "flower", objectName: "flori", bg1: "#14532d", bg2: "#16a34a", accent: "#f472b6", card: "#fce7f3" },
+    theme: { shape: "diamond", accent: "#f472b6" },
     intro: [
-      "La înmulțirea cu trei, adăugăm mereu încă trei flori în buchet!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu trei.",
+      "De fiecare dată adăugăm încă trei.",
+      "Să începem!",
     ],
     trick: "× 3 = încă un grup de 3, de fiecare dată!",
     verses: [
@@ -82,10 +84,11 @@ export const CHAPTERS = [
   },
   {
     n: 4,
-    theme: { object: "apple", objectName: "mere", bg1: "#7f1d1d", bg2: "#dc2626", accent: "#4ade80", card: "#dcfce7" },
+    theme: { shape: "tri", accent: "#34d399" },
     intro: [
-      "Patru e dublul lui doi: la înmulțirea cu patru, dublezi de două ori!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu patru.",
+      "Ori patru înseamnă dublezi, apoi mai dublezi o dată.",
+      "Să începem!",
     ],
     trick: "× 4 = dublezi, apoi mai dublezi o dată!",
     verses: [
@@ -104,10 +107,11 @@ export const CHAPTERS = [
   },
   {
     n: 5,
-    theme: { object: "bee", objectName: "albinuțe", bg1: "#713f12", bg2: "#d97706", accent: "#fde047", card: "#fef9c3" },
+    theme: { shape: "star", accent: "#fbbf24" },
     intro: [
-      "Secretul înmulțirii cu cinci: rezultatul se termină mereu în cinci sau în zero!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu cinci.",
+      "Rezultatul se termină mereu în cinci sau în zero.",
+      "Să începem!",
     ],
     trick: "× 5 se termină mereu în 5 sau 0!",
     verses: [
@@ -126,10 +130,11 @@ export const CHAPTERS = [
   },
   {
     n: 6,
-    theme: { object: "ladybug", objectName: "buburuze", bg1: "#3f6212", bg2: "#65a30d", accent: "#f87171", card: "#fee2e2" },
+    theme: { shape: "circle", accent: "#fb7185" },
     intro: [
-      "Șase e dublul lui trei: dacă știi tabla cu trei, o dublezi și gata!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu șase.",
+      "Șase e dublul lui trei.",
+      "Să începem!",
     ],
     trick: "× 6 = tabla cu 3, dublată!",
     verses: [
@@ -148,10 +153,11 @@ export const CHAPTERS = [
   },
   {
     n: 7,
-    theme: { object: "balloon", objectName: "baloane", bg1: "#581c87", bg2: "#9333ea", accent: "#fb923c", card: "#ffedd5" },
+    theme: { shape: "penta", accent: "#60a5fa" },
     intro: [
-      "Șapte — ca zilele săptămânii! Tabla cu șapte cere puțin curaj, dar cu baloane zboară ușor!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu șapte.",
+      "Șapte, ca zilele săptămânii.",
+      "Să începem!",
     ],
     trick: "7 — ca zilele săptămânii!",
     verses: [
@@ -170,10 +176,11 @@ export const CHAPTERS = [
   },
   {
     n: 8,
-    theme: { object: "fish", objectName: "peștișori", bg1: "#164e63", bg2: "#0891b2", accent: "#fb923c", card: "#cffafe" },
+    theme: { shape: "square", accent: "#2dd4bf" },
     intro: [
-      "Opt e dublul lui patru — iar caracatița are opt brațe, numai bune la socotit!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu opt.",
+      "Opt e dublul lui patru.",
+      "Să începem!",
     ],
     trick: "× 8 = dublul lui × 4!",
     verses: [
@@ -192,11 +199,11 @@ export const CHAPTERS = [
   },
   {
     n: 9,
-    theme: { object: "butterfly", objectName: "fluturași", bg1: "#4c1d95", bg2: "#7c3aed", accent: "#5eead4", card: "#ccfbf1" },
+    theme: { shape: "spark", accent: "#c084fc" },
     intro: [
-      "Truc magic la tabla cu nouă: adună cifrele rezultatului — fac mereu nouă!",
-      "Optsprezece: unu plus opt — nouă!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu nouă.",
+      "Cifrele rezultatului adunate dau mereu nouă.",
+      "Să începem!",
     ],
     trick: "La × 9, cifrele rezultatului adunate dau 9!",
     verses: [
@@ -215,10 +222,11 @@ export const CHAPTERS = [
   },
   {
     n: 10,
-    theme: { object: "candy", objectName: "bomboane", bg1: "#831843", bg2: "#db2777", accent: "#a5f3fc", card: "#fce7f3" },
+    theme: { shape: "ring", accent: "#f97316" },
     intro: [
-      "Cea mai dulce tablă: la înmulțirea cu zece, pui un zero la coadă și gata!",
-      "Hai să cântăm!",
+      "Tabla înmulțirii cu zece.",
+      "Adaugi un zero la coadă și gata.",
+      "Să începem!",
     ],
     trick: "× 10 = pui un 0 la coadă!",
     verses: [

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * generate-tabla.mjs — „Cântecelul tablei înmulțirii” (10 videoclipuri MP4).
+ * generate-tabla.mjs — „Tabla înmulțirii” (10 videoclipuri MP4, stil pre-teen).
  *
  * Pentru fiecare capitol N (înmulțirea cu 1 … cu 10) produce
  * videos/tabla/tabla-NN.mp4 cu structura:
@@ -61,45 +61,32 @@ function chapterScenes(ch) {
   // — intro —
   scenes.push({
     id: "intro",
-    states: { intro_a: introHTML(ch, false), intro_b: introHTML(ch, true) },
+    states: { intro: introHTML(ch) },
     phrases: ch.intro,
     pick: () => "intro",
   });
 
-  // — cele 10 înmulțiri: vocea narează doar operația și rezultatul, într-o
-  // singură propoziție (cuvintele scurte rostite izolat sunt „înghițite” de
-  // Piper). Momentul în care vocea ajunge la rezultat NU poate fi estimat
-  // fiabil din poziția cuvântului în text (Piper lungește mult ultimul
-  // cuvânt), așa că sintetizăm separat prefixul („Doi ori patru fac”) ca
-  // sondă de timp și măsurăm durata lui reală de vorbire — scene.revealAt
-  // e completat în pasul de asamblare, din timings-ul sondei.
+  // — cele 10 înmulțiri: vocea narează operația și rezultatul în două fraze
+  // TTS („Doi ori patru” + „fac opt!”), iar rezultatul de pe ecran apare
+  // EXACT la granița dintre ele — graniță cunoscută la eșantion din
+  // tts_batch, deci fără estimări de sincronizare. Rezultatul nu se rostește
+  // niciodată singur (Piper înghite cuvintele scurte izolate) — „fac” îl
+  // însoțește mereu.
   ch.verses.forEach((v, i) => {
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-    const prefix = `${cap(numWord(v.a))} ori ${numWord(v.b)} fac`;
-    const sc = {
+    scenes.push({
       id: `v${String(i + 1).padStart(2, "0")}`,
-      states: {
-        q_a: verseHTML(ch, i, false, false),
-        q_b: verseHTML(ch, i, false, true),
-        res_a: verseHTML(ch, i, true, false),
-        res_b: verseHTML(ch, i, true, true),
-      },
-      phrases: [`${prefix} ${v.rWord}!`],
-      probe: prefix,
-    };
-    sc.pick = (t, ph) => {
-      const f = ph[0];
-      const fallback = f.start + 0.6 * ((f.speechEnd ?? f.end) - f.start);
-      return t >= (sc.revealAt ?? fallback) ? "res" : "q";
-    };
-    scenes.push(sc);
+      states: { q: verseHTML(ch, i, false), res: verseHTML(ch, i, true) },
+      phrases: [`${cap(numWord(v.a))} ori ${numWord(v.b)}`, `fac ${v.rWord}!`],
+      pick: (t, ph) => (ph[1] && t >= ph[1].start ? "res" : "q"),
+    });
   });
 
   // — finalul: lista completă rămâne pe ecran, cu o pauză lungă,
   // ca să poată fi citită și repetată cu voce tare —
   scenes.push({
     id: "outro",
-    states: { outro_a: outroHTML(ch, false), outro_b: outroHTML(ch, true) },
+    states: { outro: outroHTML(ch) },
     phrases: ch.outro,
     pick: () => "outro",
     tail: 10,
@@ -144,12 +131,6 @@ await browser.close();
 /* ---------- 2. Vocea (TTS pe fraze, cu timpi exacți) ---------- */
 console.log("→ Generez vocea (Piper ro_RO-mihai-medium)...");
 const manifest = scenes.map((s) => ({ phrases: s.scene.phrases, out: s.wav, timings: s.timings }));
-// sondele de timp: prefixul fiecărei înmulțiri, sintetizat separat doar ca
-// să-i măsurăm durata reală de vorbire (audio-ul sondei nu intră în video)
-for (const s of scenes.filter((x) => x.scene.probe)) {
-  s.probeTimings = join(BUILD, "audio", s.base + "-probe.json");
-  manifest.push({ phrases: [s.scene.probe], out: join(BUILD, "audio", s.base + "-probe.wav"), timings: s.probeTimings });
-}
 const manifestPath = join(BUILD, "tts_manifest.json");
 writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });
@@ -162,30 +143,12 @@ for (const s of scenes) {
   const segDur = t.duration + tail;
   const nFrames = Math.ceil(segDur * FPS) + 1;
 
-  // momentul dezvăluirii rezultatului = durata de vorbire măsurată a
-  // prefixului (sonda), cu o mică avans (lungirea de final a sondei +
-  // cuantizarea pe cadre) — astfel rezultatul apare chiar pe cuvânt
-  if (s.probeTimings) {
-    const probe = JSON.parse(readFileSync(s.probeTimings, "utf8")).phrases[0];
-    const f0 = t.phrases[0];
-    const speechDur = probe.speechEnd - probe.start;
-    s.scene.revealAt = Math.min(
-      Math.max(f0.start + 0.35, f0.start + speechDur - 0.12),
-      (f0.speechEnd ?? f0.end) - 0.15,
-    );
-  }
-
   const dir = join(BUILD, "frames", s.base);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
   for (let f = 0; f < nFrames; f++) {
     const time = f / FPS;
-    const stateKey = s.scene.pick(time, t.phrases, t.duration);
-    // gura se mișcă doar cât se vorbește efectiv (nu în liniștea de la
-    // finalul frazelor sau în pauzele dintre ele)
-    const speaking = t.phrases.some((p) => time >= p.start && time < (p.speechEnd ?? p.end));
-    const mouth = speaking && f % 2 === 1 ? "b" : "a";
-    const png = s.pngs[`${stateKey}_${mouth}`] || s.pngs[`${stateKey}_a`];
+    const png = s.pngs[s.scene.pick(time, t.phrases, t.duration)];
     const dst = join(dir, `f${String(f).padStart(4, "0")}.png`);
     try { linkSync(png, dst); } catch (_) { copyFileSync(png, dst); }
   }
@@ -226,7 +189,7 @@ for (const ch of chapters) {
   execFileSync("ffmpeg", [
     "-y", "-loglevel", "error",
     "-i", concatPath, "-i", musicPath,
-    "-filter_complex", "[1:a]volume=0.17[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[aout]",
+    "-filter_complex", "[1:a]volume=0.11[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[aout]",
     "-map", "0:v", "-map", "[aout]",
     "-c:v", "copy", "-c:a", "aac", "-b:a", "96k",
     "-movflags", "+faststart",

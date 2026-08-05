@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""tabla_music.py — Muzică de fundal veselă pentru cântecelul tablei înmulțirii.
+"""tabla_music.py — Beat lo-fi discret pentru videoclipurile „Tabla înmulțirii”.
 
 Utilizare: python3 tabla_music.py OUT.wav SECONDS KEY_INDEX
 
-Sintetizează (numpy, fără sample-uri) o piesă ritmată, prietenoasă cu copiii:
-  - arpegii „ciupite” (triunghi cu armonice, anvelopă de pluck) pe optimi;
-  - bas moale pe pătrimi 1 și 3;
-  - „hi-hat” discret (zgomot alb filtrat scurt) pe contratimpi.
-Progresie I–vi–IV–V; tonalitatea se rotește după KEY_INDEX (capitol), ca fiecare
-capitol să sune ușor diferit. Nivelul e gândit pentru mixare sub voce.
+Sintetizează (numpy, fără sample-uri) un beat lo-fi calm, potrivit pentru
+concentrare la 9–10 ani (nu clopoței de grădiniță): tobe moi (kick, snare din
+zgomot, hi-hat cu swing), bas rotund și acorduri susținute de „pian electric”
+ușor dezacordate, cu tremolo. Progresie i–VI–III–VII (minor); tonalitatea se
+rotește după KEY_INDEX (capitol). Nivel gândit pentru mixare sub voce.
 """
 import sys
 
@@ -16,36 +15,55 @@ import numpy as np
 import soundfile as sf
 
 SR = 22050
-BPM = 96
+BPM = 82
 BEAT = 60.0 / BPM
 
 
-def note_freq(semitone_from_a3: float) -> float:
-    return 220.0 * 2 ** (semitone_from_a3 / 12.0)
+def freq(semitone_from_a2: float) -> float:
+    return 110.0 * 2 ** (semitone_from_a2 / 12.0)
 
 
-def pluck(freq: float, dur: float, vol: float) -> np.ndarray:
-    t = np.arange(int(dur * SR)) / SR
-    env = np.exp(-t * 5.5) * np.minimum(1.0, t * 200)
-    w = (np.sin(2 * np.pi * freq * t)
-         + 0.45 * np.sin(2 * np.pi * 2 * freq * t)
-         + 0.18 * np.sin(2 * np.pi * 3 * freq * t))
-    return (vol * env * w).astype(np.float32)
+def kick(vol: float) -> np.ndarray:
+    t = np.arange(int(0.28 * SR)) / SR
+    f = 95 * np.exp(-t * 22) + 44
+    return (vol * np.exp(-t * 15) * np.sin(2 * np.pi * np.cumsum(f) / SR)).astype(np.float32)
 
 
-def bass(freq: float, dur: float, vol: float) -> np.ndarray:
-    t = np.arange(int(dur * SR)) / SR
-    env = np.exp(-t * 3.0) * np.minimum(1.0, t * 120)
-    w = np.sin(2 * np.pi * freq * t) + 0.3 * np.sin(2 * np.pi * 2 * freq * t)
-    return (vol * env * w).astype(np.float32)
-
-
-def hat(dur: float, vol: float, rng: np.random.Generator) -> np.ndarray:
-    n = int(dur * SR)
+def snare(vol: float, rng: np.random.Generator) -> np.ndarray:
+    n = int(0.22 * SR)
     t = np.arange(n) / SR
     noise = rng.standard_normal(n).astype(np.float32)
-    noise[1:] -= 0.85 * noise[:-1]  # accentuează frecvențele înalte
-    return (vol * np.exp(-t * 60) * noise).astype(np.float32)
+    noise[1:] -= 0.55 * noise[:-1]
+    body = 0.5 * np.sin(2 * np.pi * 176 * t)
+    return (vol * np.exp(-t * 26) * (noise * 0.7 + body)).astype(np.float32)
+
+
+def hat(vol: float, rng: np.random.Generator, open_: bool = False) -> np.ndarray:
+    n = int((0.16 if open_ else 0.05) * SR)
+    t = np.arange(n) / SR
+    noise = rng.standard_normal(n).astype(np.float32)
+    noise[1:] -= 0.92 * noise[:-1]
+    return (vol * np.exp(-t * (26 if open_ else 90)) * noise).astype(np.float32)
+
+
+def bass(f: float, dur: float, vol: float) -> np.ndarray:
+    t = np.arange(int(dur * SR)) / SR
+    env = np.minimum(1.0, t * 60) * np.exp(-t * 2.2)
+    w = np.sin(2 * np.pi * f * t) + 0.25 * np.sin(2 * np.pi * 2 * f * t)
+    return (vol * env * np.tanh(1.6 * w)).astype(np.float32)
+
+
+def epiano(freqs, dur: float, vol: float) -> np.ndarray:
+    """Acord susținut, voci ușor dezacordate + tremolo lent — sound lo-fi."""
+    t = np.arange(int(dur * SR)) / SR
+    env = np.minimum(1.0, t * 30) * np.exp(-t * 1.1)
+    trem = 1.0 + 0.18 * np.sin(2 * np.pi * 4.3 * t)
+    out = np.zeros_like(t, dtype=np.float32)
+    for f in freqs:
+        for det in (-1.5, 1.5):
+            fd = f * 2 ** (det / 1200)
+            out += (np.sin(2 * np.pi * fd * t) + 0.18 * np.sin(2 * np.pi * 2 * fd * t)).astype(np.float32)
+    return (vol / (2 * len(freqs)) * env * trem * out).astype(np.float32)
 
 
 def add(buf: np.ndarray, start_sec: float, chunk: np.ndarray) -> None:
@@ -58,9 +76,12 @@ def add(buf: np.ndarray, start_sec: float, chunk: np.ndarray) -> None:
 def main() -> None:
     out, seconds, key_idx = sys.argv[1], float(sys.argv[2]), int(sys.argv[3])
     rng = np.random.default_rng(1000 + key_idx)
-    root = 3 + (key_idx * 2) % 7  # C, D, E, F, G... rotit pe capitole
-    # progresie I–vi–IV–V (grade relative la fundamentală, în semitonuri)
-    chords = [(0, 4, 7), (-3, 0, 4), (5, 9, 12), (7, 11, 14)]
+    root = (key_idx * 5) % 12 - 3  # rotește tonalitatea pe capitole
+    # progresie i–VI–III–VII (în semitonuri față de fundamentală; i = minor)
+    chords = [
+        (0, 3, 7), (-4, 0, 3), (3, 7, 10), (-2, 2, 5),
+    ]
+    swing = 0.06 * BEAT
 
     buf = np.zeros(int((seconds + 2) * SR), dtype=np.float32)
     bar = 4 * BEAT
@@ -68,29 +89,30 @@ def main() -> None:
     for b in range(n_bars):
         t0 = b * bar
         ch = chords[b % 4]
-        # bas: pătrimile 1 și 3
-        add(buf, t0, bass(note_freq(root + ch[0] - 24), BEAT * 1.6, 0.30))
-        add(buf, t0 + 2 * BEAT, bass(note_freq(root + ch[2] - 24), BEAT * 1.6, 0.24))
-        # arpegiu pe optimi: 1-3-5-8 sus și înapoi
-        seq = [ch[0], ch[1], ch[2], ch[0] + 12, ch[2], ch[1], ch[0], ch[1]]
-        for k, st in enumerate(seq):
-            add(buf, t0 + k * BEAT / 2, pluck(note_freq(root + st), BEAT * 0.9, 0.16))
-        # clopoțel din două în două măsuri
-        if b % 2 == 1:
-            add(buf, t0 + 3 * BEAT, pluck(note_freq(root + ch[1] + 12), BEAT * 1.4, 0.10))
-        # hi-hat pe contratimpi
-        for k in range(4):
-            add(buf, t0 + k * BEAT + BEAT / 2, hat(0.09, 0.05, rng))
+        # tobe: kick 1 și 3 (+ sincopă rar), snare 2 și 4, hat pe optimi cu swing
+        add(buf, t0, kick(0.5))
+        add(buf, t0 + 2 * BEAT, kick(0.42))
+        if b % 4 == 3:
+            add(buf, t0 + 2.75 * BEAT, kick(0.3))
+        add(buf, t0 + 1 * BEAT, snare(0.32, rng))
+        add(buf, t0 + 3 * BEAT, snare(0.32, rng))
+        for k in range(8):
+            tt = t0 + k * BEAT / 2 + (swing if k % 2 == 1 else 0)
+            add(buf, tt, hat(0.10 if k % 2 == 0 else 0.06, rng, open_=(k == 7 and b % 2 == 1)))
+        # bas: fundamentala pe 1, cvinta scurt pe „și” de 3
+        add(buf, t0, bass(freq(root + ch[0] - 12), 1.7 * BEAT, 0.5))
+        add(buf, t0 + 2.5 * BEAT, bass(freq(root + ch[2] - 12), 0.9 * BEAT, 0.34))
+        # acord de e-piano susținut pe măsură
+        add(buf, t0 + 0.02, epiano([freq(root + s) for s in ch], 3.6 * BEAT, 0.5))
 
     buf = buf[: int(seconds * SR)]
-    # fade-in scurt și fade-out la final
-    fi = int(0.6 * SR)
+    fi = int(0.8 * SR)
     buf[:fi] *= np.linspace(0, 1, fi, dtype=np.float32)
-    fo = int(min(2.5, seconds / 3) * SR)
+    fo = int(min(3.0, seconds / 3) * SR)
     buf[-fo:] *= np.linspace(1, 0, fo, dtype=np.float32)
     peak = float(np.max(np.abs(buf))) or 1.0
     sf.write(out, (buf / peak * 0.55).astype(np.float32), SR)
-    print(f"   muzică: {out} ({seconds:.1f}s, cheia {key_idx})")
+    print(f"   muzică lo-fi: {out} ({seconds:.1f}s, cheia {key_idx})")
 
 
 if __name__ == "__main__":
