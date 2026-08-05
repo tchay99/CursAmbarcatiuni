@@ -141,6 +141,14 @@ const PRONUNCIATIONS = [
   [/\bDanforth\b/gi, "Danfort"],
   [/\bCOLREG\b/g, "colreg"],
   [/\bRIPAM\b/g, "ripam"],
+  [/\bkill switch\b/gi, "chil suici"],
+  [/\bBruce\b/g, "Brus"],
+  [/\btelltale\b/gi, "telteil"],
+  [/\bwaypointuri\b/gi, "ueipointuri"],
+  [/\bwaypoint\b/gi, "ueipoint"],
+  [/\bGPS\b/g, "ge-pe-es"],
+  [/\bStaying Alive\b/g, "steing alaiv"],
+  [/\bjet-ski\b/gi, "get schi"],
 ];
 const ttsText = (s) => PRONUNCIATIONS.reduce((t, [re, rep]) => t.replace(re, rep), s);
 

@@ -34,7 +34,7 @@ const LESSONS = [
           "Fiecare zi: o lecție scurtă + o verificare de cunoștințe",
           "La final: o simulare completă de examen",
         ],
-        narration: "Bine ai venit la cursul de pregătire pentru permisul de conducător de ambarcațiune cu motor pentru agrement. În următoarele paisprezece zile vei parcurge patru module: ambarcațiunea și motorul, manevrele și ancorarea, siguranța și primul ajutor, și în final navigația și regulile de drum. La sfârșitul fiecărei lecții vei răspunde la o verificare de cunoștințe, iar la final vei susține o simulare de examen.",
+        narration: "Bine ai venit la cursul de pregătire pentru permisul de conducător de ambarcațiune cu motor pentru agrement. Eu sunt căpitanul Mihai și te voi însoți pe tot parcursul acestor paisprezece zile. Cursul este împărțit în patru module. În primul modul vei cunoaște ambarcațiunea și motorul ei. În al doilea vei învăța manevrele și ancorarea. Al treilea modul este dedicat siguranței și primului ajutor, iar al patrulea navigației și regulilor de drum. Fiecare zi are o lecție video urmată de o verificare de cunoștințe, care include și întrebări din setul oficial de antrenament pentru examen. Dacă nu treci verificarea, revezi lecția și încerci din nou. La final te așteaptă o simulare completă de examen. Sfatul meu: parcurge o singură lecție pe zi, notează-ți termenii noi și lasă-i să se așeze. Să începem călătoria.",
       },
       {
         title: "Tipuri de ambarcațiuni de agrement",
@@ -43,7 +43,7 @@ const LESSONS = [
           "Ambarcațiuni cu vele, jet-ski, bărci pneumatice",
           "Clasificarea după lungime și zona de navigație autorizată",
         ],
-        narration: "Ambarcațiunile de agrement se împart în mai multe categorii: bărci cu motor cabinate sau deschise, ambarcațiuni semi-rigide numite RIB, bărci pneumatice, ambarcațiuni cu vele și motociclete de apă. Fiecare ambarcațiune are o categorie de proiectare care stabilește condițiile de vânt și de valuri în care poate naviga în siguranță.",
+        narration: "Să vedem cu ce fel de ambarcațiuni ne putem întâlni pe apă. Ambarcațiunea cabinată are un spațiu închis care oferă adăpost de vreme și permite ieșiri mai lungi, chiar cu înnoptare. Barca deschisă, numită și open, este cea mai răspândită pentru plimbări și pescuit de o zi, ușoară și simplu de întreținut. Ambarcațiunea semi-rigidă, cunoscută drept rib, combină o carenă rigidă cu tuburi gonflabile pe margini. Este foarte stabilă și iartă greșelile, motiv pentru care o folosesc și echipele de salvare. Velierul folosește în primul rând forța vântului, dar are de obicei și motor auxiliar. Motocicleta acvatică, jet-ski-ul, este agilă și rapidă, dar cere atenție sporită. Fiecare ambarcațiune are o categorie de proiectare, care spune în ce condiții de vânt și valuri poate naviga în siguranță. Verifică întotdeauna categoria înainte să ieși pe o apă mai agitată.",
       },
       {
         title: "Terminologia de bază — orientarea la bord",
@@ -52,7 +52,7 @@ const LESSONS = [
           "Tribord = dreapta (lumină verde); Babord = stânga (lumină roșie)",
           "Chila = axul longitudinal de jos; Copastia = marginea de sus a bordului",
         ],
-        narration: "Orientarea la bord folosește termeni specifici. Prova este partea din față, iar pupa este partea din spate a ambarcațiunii. Privind spre prova, tribordul este partea dreaptă, marcată cu lumină verde, iar babordul este partea stângă, marcată cu lumină roșie. Chila este structura de la baza ambarcațiunii, iar copastia este marginea superioară a bordului.",
+        narration: "Pe apă nu vorbim de stânga și dreapta ca pe uscat, pentru că ele s-ar schimba după cum te întorci. Folosim termeni ficși, raportați la ambarcațiune. Prova este partea din față, cea care taie apa. Pupa este partea din spate, unde stă de obicei motorul. Acum, privind spre provă, partea dreaptă se numește tribord, iar partea stângă babord. Ca să le ții minte, iată un truc: babord și stânga sunt amândouă cuvinte mai scurte decât tribord și dreapta. Noaptea, aceste borduri sunt marcate prin lumini: verde la tribord și roșu la babord. Nu este doar o convenție decorativă. Când vezi luminile altei nave, culorile îți spun imediat în ce direcție se deplasează și cine trebuie să cedeze trecerea. Vom folosi acești patru termeni pe tot parcursul cursului, iar la examen apar aproape în fiecare subiect, deci repetă-i până devin reflex.",
       },
       {
         title: "Structura corpului ambarcațiunii",
@@ -61,7 +61,7 @@ const LESSONS = [
           "Puntea, cabina, cocpitul, santina (fundul interior)",
           "Bordul liber = înălțimea de la linia de plutire la punte",
         ],
-        narration: "Corpul ambarcațiunii, numit și carenă, poate fi de tip deplasament, semi-planant sau planant, în funcție de forma sa și de viteza pe care o atinge. Deasupra se află puntea și cocpitul, iar în interior santina, adică fundul unde se adună apa. Bordul liber reprezintă înălțimea de la linia de plutire până la punte și influențează stabilitatea și siguranța pe valuri.",
+        narration: "Să privim acum corpul ambarcațiunii din lateral. Partea care stă în apă se numește carenă. Forma ei decide comportamentul: o carenă de deplasament împinge apa și merge lent dar economic, în timp ce o carenă planantă se ridică deasupra apei la viteză, cum fac majoritatea bărcilor sportive cu motor. Linia până la care ambarcațiunea se scufundă în apă se numește linia de plutire. Deasupra ei, până la marginea punții, se măsoară bordul liber, distanța pe care o vezi marcată cu roșu în imagine. Un bord liber generos ține valurile afară; dacă încarci barca prea mult, bordul liber scade și apa poate intra la primul val mai serios. Puntea acoperă corpul, cocpitul este zona deschisă unde stau oamenii, iar santina este spațiul cel mai de jos din interior, unde se adună inevitabil apa. Vom vorbi despre santină și pompa ei într-o lecție viitoare, pentru că verificarea ei face parte din rutina oricărui conducător atent.",
       },
       {
         title: "Stabilitatea și flotabilitatea",
@@ -70,7 +70,7 @@ const LESSONS = [
           "Distribuția uniformă a greutății și a pasagerilor",
           "Respectă capacitatea maximă (persoane și kg) de pe plăcuța constructorului",
         ],
-        narration: "Stabilitatea ambarcațiunii depinde de forma carenei și de poziția centrului de greutate. Cu cât greutatea este mai jos și mai bine distribuită, cu atât ambarcațiunea este mai stabilă. Nu depăși niciodată numărul maxim de persoane și greutatea maximă indicate pe plăcuța constructorului, iar pasagerii trebuie să stea așezați și echilibrat.",
+        narration: "Stabilitatea este capacitatea ambarcațiunii de a reveni în poziție dreaptă după ce un val sau o mișcare o înclină. Secretul stă în centrul de greutate. Uită-te la cele două desene: în stânga, greutatea este jos și distribuită uniform, iar barca revine singură la poziția inițială. În dreapta, greutatea este sus, oamenii stau în picioare sau bagajele sunt îngrămădite într-un singur bord, iar aceeași înclinare devine periculoasă. De aceea pasagerii stau așezați, iar greutățile se împart egal între borduri. Atenție și la apa liberă din santină: câțiva centimetri de apă care se mută dintr-un bord în altul pot amplifica orice înclinare. Fiecare ambarcațiune are o plăcuță a constructorului, pe care scrie numărul maxim de persoane și greutatea maximă admisă. Cifrele acelea nu sunt orientative, sunt o limită de siguranță calculată de proiectant. La examen se întreabă des unde găsești aceste informații: răspunsul este întotdeauna plăcuța constructorului.",
       },
     ],
     quiz: [
@@ -92,7 +92,7 @@ const LESSONS = [
           "Motor interior (inboard) — în corpul bărcii, cu arbore și elice",
           "Sisteme sterndrive (Z-drive) — combinație interior + coloană orientabilă",
         ],
-        narration: "Motoarele de ambarcațiune se împart în trei mari categorii. Motorul exterior, sau outboard, este montat pe oglinda pupei și se rotește pentru a direcționa barca. Motorul interior, sau inboard, este montat în corpul ambarcațiunii și transmite mișcarea printr-un arbore la o elice fixă. Sistemul sterndrive combină un motor interior cu o coloană de propulsie orientabilă la pupa.",
+        narration: "Astăzi intrăm în sala motoarelor. Există trei mari moduri de a monta un motor pe o ambarcațiune. Motorul exterior, numit autbord, se prinde pe oglinda pupei, adică pe peretele din spate al bărcii. Întregul motor se rotește când virezi, deci direcționezi direct jetul de împingere. Este ușor de ridicat din apă, ușor de dus la service și rămâne cea mai populară alegere pentru ambarcațiunile de agrement. Motorul interior, inbord, stă în corpul bărcii, de obicei la mijloc, și transmite mișcarea printr-un arbore către o elice fixă; direcția o dă o cârmă separată. Îl întâlnești la bărci mai mari și la șalupe clasice. Sterndraivul este soluția hibridă: motorul stă înăuntru, lângă pupă, iar în afara bordajului se află o coloană orientabilă care combină rolul elicei și al cârmei. Indiferent de așezare, principiul rămâne același: motorul rotește o elice, iar elicea împinge apa înapoi ca să mişte barca înainte.",
       },
       {
         title: "Motoare în doi timpi și în patru timpi",
@@ -101,7 +101,7 @@ const LESSONS = [
           "4 timpi: mai silențios, mai economic, ulei separat",
           "Motoare electrice — tot mai frecvente, silențioase, ecologice",
         ],
-        narration: "Motoarele termice pot fi în doi timpi sau în patru timpi. Cele în doi timpi sunt mai ușoare și mai simple, dar necesită un amestec de ulei cu benzină și sunt mai poluante. Cele în patru timpi sunt mai silențioase, mai economice și au ungere separată. Tot mai des se folosesc și motoare electrice, care sunt silențioase și nepoluante.",
+        narration: "Să comparăm acum tipurile de motoare după modul de funcționare. Motorul în doi timpi este simplu și ușor, dar are o particularitate: uleiul se amestecă cu benzina, fie manual în rezervor, fie automat. Dacă uiți de ulei, motorul se gripează; dacă pui prea mult, scoate fum și ancrasează bujiile. Fiind mai zgomotos și mai poluant, este tot mai rar la motoarele noi. Motorul în patru timpi funcționează ca cel de automobil: are baie de ulei separată, consumă mai puțin, merge mai silențios și mai curat. Este alegerea standard modernă, cu mențiunea că cere schimburi de ulei la intervalele prescrise. Motorul electric câștigă teren rapid: pornește instantaneu, nu face zgomot și nu poluează apa, fiind uneori singura variantă permisă pe lacurile protejate. Limita lui rămâne autonomia bateriei, deci planifici traseul după energia disponibilă. La examen reține diferența esențială: doi timpi înseamnă ulei amestecat cu benzină, patru timpi înseamnă ungere separată.",
       },
       {
         title: "Sistemul de propulsie și elicea",
@@ -110,7 +110,7 @@ const LESSONS = [
           "Pasul și diametrul elicei influențează viteza și tracțiunea",
           "Atenție la obiecte în apă: parâme, plase, sfori — pot bloca elicea",
         ],
-        narration: "Elicea transformă mișcarea de rotație a motorului în forță de împingere prin apă. Diametrul și pasul elicei determină echilibrul dintre viteză și forța de tracțiune. Fii mereu atent la obiectele plutitoare precum parâme, plase sau sfori, deoarece se pot înfășura pe elice și pot bloca propulsia.",
+        narration: "Elicea este piesa care transformă rotația motorului în mișcare prin apă. Palele ei sunt înclinate, iar când se rotesc împing apa spre înapoi; reacția împinge barca înainte. Două mărimi o definesc: diametrul, adică lățimea cercului descris de pale, și pasul, adică distanța teoretică parcursă la o rotație completă. O elice cu pas mare dă viteză maximă, dar accelerează leneș, ca o treaptă de viteză lungă la mașină. O elice cu pas mic trage puternic de pe loc, dar își atinge repede plafonul. De aceea elicea se alege după cum folosești barca: agrement lejer, schi nautic sau încărcături mari. Acum, un pericol foarte concret: parâmele, sforile și plasele plutitoare. Elicea le înfășoară într-o secundă și se blochează. Dacă se întâmplă, oprește complet motorul înainte să te apropii de elice, altfel risipa devine tragedie. Scoate cheia din contact, apoi curăță palele. Verifică elicea periodic și de lovituri sau îndoituri, pentru că o elice deformată vibrează și obosește întregul motor.",
       },
       {
         title: "Verificarea nivelurilor și a răcirii",
@@ -119,7 +119,7 @@ const LESSONS = [
           "Sistemul de răcire cu apă: verifică jetul de control (telltale)",
           "Supraîncălzirea = oprește motorul imediat și verifică prizele de apă",
         ],
-        narration: "Înainte de plecare verifică nivelul de ulei, cantitatea de combustibil și, dacă este cazul, lichidul de răcire. Multe motoare se răcesc cu apă din exterior; urmărește jetul de control, un fir de apă care confirmă că sistemul de răcire funcționează. Dacă motorul se supraîncălzește, oprește-l imediat și verifică prizele de apă să nu fie înfundate.",
+        narration: "Motorul produce multă căldură, iar pe apă răcirea se face cel mai adesea chiar cu apa în care navighezi. O pompă cu rotor de cauciuc aspiră apă prin prizele de sub linia de plutire, o plimbă prin cămășile motorului și o evacuează. La motoarele exterioare vei vedea evacuarea sub forma unui firicel de apă care țâșnește dintr-o parte a motorului. Acest jet de control, numit în engleză telltale, este cel mai bun prieten al tău: dacă el curge, răcirea funcționează. Fă-ți un obicei din a-l verifica la fiecare pornire, în primele secunde. Dacă jetul lipsește sau motorul dă alarmă de temperatură, oprește imediat. Cauzele frecvente sunt banale: o pungă de plastic aspirată pe priza de apă, nisip după o trecere prin apă mică sau rotorul pompei uzat. Continuarea funcționării cu răcirea căzută distruge motorul în câteva minute. Deci regula pentru examen și pentru viață: supraîncălzire înseamnă oprire imediată și verificarea prizelor de apă.",
       },
       {
         title: "Întreținerea de bază",
@@ -128,7 +128,7 @@ const LESSONS = [
           "Verifică bujiile, filtrul de combustibil, anodul de zinc",
           "Respectă intervalele de service recomandate de producător",
         ],
-        narration: "Întreținerea regulată prelungește viața motorului. După navigația în apă sărată, spală motorul cu apă dulce. Verifică periodic bujiile, filtrul de combustibil și anodul de zinc, care protejează metalele împotriva coroziunii. Respectă întotdeauna intervalele de service recomandate de producător.",
+        narration: "Un motor îngrijit pornește când ai nevoie de el, iar pe apă asta înseamnă siguranță, nu doar confort. Rutina de întreținere nu este complicată. După fiecare ieșire în apă sărată, clătește circuitul de răcire cu apă dulce, altfel sarea depune cruste și corodează. Verifică periodic bujiile: o bujie ancrasată spune ceva despre amestec sau despre uleiul folosit. Filtrul de combustibil reține apa și impuritățile din rezervor; îl schimbi la intervalele recomandate sau imediat ce observi apă în paharul lui. Un element aparte este anodul de zinc, o pastilă de metal montată pe motor special ca să se sacrifice: coroziunea galvanică atacă zincul în locul pieselor scumpe din aluminiu. Când anodul s-a consumat cam pe jumătate, îl înlocuiești. Respectă orele de service din manualul motorului, la fel cum respecți reviziile la mașină. Toate acestea par mărunte, dar statistica defecțiunilor pe apă arată că majoritatea remorcărilor pleacă de la întreținere neglijată sau combustibil murdar.",
       },
     ],
     quiz: [
@@ -150,7 +150,7 @@ const LESSONS = [
           "Alimentarea: motor oprit, fără flacără, ventilație bună",
           "Verifică scurgerile și mirosul de benzină în santină",
         ],
-        narration: "Sistemul de combustibil cuprinde rezervorul, conductele, filtrul, pompa și un robinet de închidere. La alimentare, oprește motorul, interzice orice flacără sau fumat și asigură ventilația. Vaporii de benzină sunt mai grei decât aerul și se pot acumula în santină, de aceea verifică întotdeauna scurgerile și mirosul înainte de a porni.",
+        narration: "Sistemul de combustibil merită o lecție întreagă, pentru că aici se ascunde cel mai serios risc de incendiu și explozie la bord. Traseul este simplu: rezervorul păstrează benzina, un robinet permite închiderea circuitului, filtrul reține impuritățile și apa, pompa împinge combustibilul, iar motorul îl arde. Verifică vizual furtunurile și colierele: benzina nu are voie să picure nicăieri, iar mirosul de benzină în barcă este un semnal de alarmă, nu un inconvenient. Acum partea critică: vaporii de benzină sunt mai grei decât aerul. Nu se ridică și nu se risipesc singuri; curg în jos și se adună în santină, unde o singură scânteie îi poate aprinde. De aceea alimentarea se face după un ritual strict: motorul oprit, consumatorii electrici opriți, nicio flacără și nicio țigară în preajmă, iar după alimentare aerisești bine compartimentele înainse de a porni motorul. Dacă ambarcațiunea are ventilator de cală, îl lași să meargă câteva minute. Ștergi imediat orice picătură vărsată. Sunt gesturi de treizeci de secunde care previn accidentele cele mai grave de pe apă.",
       },
       {
         title: "Sistemul electric",
@@ -159,7 +159,7 @@ const LESSONS = [
           "Verifică bornele, siguranțele și nivelul de încărcare",
           "Întrerupătorul principal (kill switch) oprește motorul în urgențe",
         ],
-        narration: "Sistemul electric este alimentat de baterie și susține pornirea motorului, luminile de navigație, pompele și instrumentele de bord. Verifică periodic bornele bateriei, siguranțele și starea de încărcare. Multe ambarcațiuni au un întrerupător de siguranță, prins cu o brățară de mâna conducătorului, care oprește imediat motorul dacă acesta cade peste bord.",
+        narration: "Instalația electrică a unei ambarcațiuni pleacă de la baterie. Ea pornește motorul și alimentează luminile de navigație, pompa de santină, stația radio și instrumentele. Îngrijirea ei este simplă: bornele curate și strânse, fixarea solidă ca să nu se plimbe la valuri și verificarea nivelului de încărcare înainte de plecare. Întrerupătorul general îți permite să tai tot curentul când lași barca nesupravegheată, iar siguranțele protejează fiecare circuit; păstrează câteva siguranțe de rezervă la bord. Piesa despre care vreau să vorbim serios este întrerupătorul de siguranță cu șnur, cunoscut ca kill switch. Este o brățară legată printr-un șnur la un buton de pe consolă. O porți la încheietură sau prinsă de vestă ori de picior. Dacă ești aruncat de la comandă, șnurul smulge capsa și motorul se oprește instantaneu. Fără el, o barcă rămasă fără conducător continuă să se rotească în cerc, cu elicea în funcțiune, spre omul căzut în apă. Poartă-l de fiecare dată, mai ales când ești singur la bord. La examen și în controale este considerat echipament esențial de siguranță.",
       },
       {
         title: "Sistemul de guvernare",
@@ -168,7 +168,7 @@ const LESSONS = [
           "Transmisie mecanică, hidraulică sau electrică",
           "Verifică jocul volanului și buna funcționare înainte de plecare",
         ],
-        narration: "Guvernarea se face fie printr-o cârmă, fie prin orientarea motorului exterior. Comanda de la volan ajunge la cârmă printr-un sistem mecanic, hidraulic sau electric. Înainte de plecare, verifică jocul volanului și asigură-te că ambarcațiunea răspunde corect la comenzi, rotind volanul dintr-o parte în alta.",
+        narration: "Guvernarea înseamnă tot ce se întâmplă între mâinile tale pe volan și direcția în care merge barca. La motoarele exterioare și la sterndraivuri, întregul motor sau coloana se rotește și orientează jetul de apă. La motoarele interioare clasice, o cârmă montată în pupa deviază curentul de apă creat de elice. Comanda de la volan ajunge acolo printr-o transmisie mecanică cu cablu, printr-un circuit hidraulic sau, la ambarcațiunile moderne, electric. Ce trebuie să faci tu practic: înainte de fiecare plecare, rotește volanul dintr-o extremă în alta și urmărește motorul sau cârma cum răspunde. Mișcarea trebuie să fie continuă, fără joc excesiv, fără puncte în care înțepenește, fără zgomote de frecare. Un joc mare la volan sau o direcție care merge greu anunță un cablu pe cale să cedeze sau aer în circuitul hidraulic. Pe apă, în manevră de acostare sau la viteză, o direcție care cedează te lasă complet fără control, deci acest test de zece secunde nu se sare niciodată.",
       },
       {
         title: "Santina și pompa de santină",
@@ -177,7 +177,7 @@ const LESSONS = [
           "Pompa de santină o evacuează — verifică funcționarea",
           "Nivel ridicat de apă = pericol de instabilitate sau scufundare",
         ],
-        narration: "Santina este spațiul de la fundul ambarcațiunii unde se adună apa infiltrată. Pompa de santină evacuează această apă; verifică întotdeauna că funcționează, manual și automat. Un nivel ridicat de apă în santină afectează stabilitatea și, în cazuri grave, poate duce la scufundare, așa că trebuie monitorizat permanent.",
+        narration: "Coborâm acum în punctul cel mai de jos al bărcii, santina. Aici se scurge tot: stropii de la valuri, apa de ploaie, condensul, micile infiltrații de la presetupa arborelui. O cantitate mică de apă este normală. Problema apare când apa se acumulează: îngreunează barca, iar prin efectul de suprafață liberă, apa care aleargă dintr-un bord în altul destabilizează ambarcațiunea exact când ai mai mare nevoie de stabilitate. Soluția este pompa de santină, care evacuează apa peste bord. Multe pompe au un plutitor care le pornește automat când nivelul crește; ambele funcții, manuală și automată, se verifică înainte de plecare, pentru că o pompă îți dovedește că funcționează doar când o testezi, nu când te bazezi pe ea. Obișnuiește-te să arunci un ochi în santină înainte de plecare și periodic în timpul ieșirii. Și o regulă de mediu importantă: dacă în santină a ajuns combustibil sau ulei, amestecul nu se pompează în apă; se colectează și se predă la mal, în instalațiile portuare.",
       },
     ],
     quiz: [
@@ -199,7 +199,7 @@ const LESSONS = [
           "Documentele de înmatriculare / certificatul ambarcațiunii",
           "Asigurarea, acolo unde este obligatorie",
         ],
-        narration: "La bord trebuie să ai întotdeauna documentele în regulă: permisul sau brevetul de conducător valabil pentru categoria și puterea ambarcațiunii, documentele de înmatriculare sau certificatul ambarcațiunii și, unde este cazul, asigurarea. Autoritățile pot solicita aceste documente la control.",
+        narration: "Înainte de a dezlega parâmele, hai să facem ordine în acte. Primul document ești chiar tu: brevetul sau certificatul de conducător, valabil pentru categoria ambarcațiunii pe care o conduci. Al doilea este ambarcațiunea: certificatul de înmatriculare sau documentul echivalent, care atestă că barca este înregistrată legal și îi confirmă caracteristicile. Al treilea este asigurarea, acolo unde legea o cere, și oricum o idee bună pentru răspunderea față de terți. Autoritatea navală poate opri ambarcațiunea pentru control oricând, exact ca poliția rutieră pe șosea, iar lipsa documentelor înseamnă sancțiuni și, în unele cazuri, întreruperea voiajului. Un sfat practic: ține documentele într-o husă impermeabilă, într-un loc fix pe care îl știi și pe întuneric. Și verifică din timp valabilitatea lor; un brevet expirat descoperit pe apă transformă o zi frumoasă într-un proces-verbal. La examen, întrebările din legislație insistă exact pe aceste obligații: cine, ce document și când trebuie să îl aibă asupra sa.",
       },
       {
         title: "Dotările de siguranță obligatorii",
@@ -208,7 +208,7 @@ const LESSONS = [
           "Colac de salvare, stingător, dispozitiv de semnalizare",
           "Ancoră cu parâmă, ispol/pompă, trusă de prim ajutor, mijloc de comunicare",
         ],
-        narration: "Dotările de siguranță obligatorii includ câte o vestă de salvare pentru fiecare persoană aflată la bord, un colac de salvare, un stingător de incendiu, mijloace de semnalizare, o ancoră cu parâmă corespunzătoare, un dispozitiv de evacuare a apei, o trusă de prim ajutor și un mijloc de comunicare. Verifică valabilitatea stingătorului și a rachetelor de semnalizare.",
+        narration: "Echipamentul de siguranță este lista scurtă de obiecte care nu negociază. Vestele de salvare: câte una pentru fiecare persoană de la bord, în mărimea potrivită fiecăruia, accesibile imediat, nu îngropate sub bagaje. Colacul de salvare cu saulă, gata de aruncat spre un om în apă. Stingătorul de incendiu, verificat și neexpirat, montat la îndemână. Mijloacele de semnalizare pirotehnice, rachete și fumigene, în termen de valabilitate și ferite de umezeală. Ancora cu parâma ei, dimensionate pentru ambarcațiunea ta. Un ispol sau o pompă de mână pentru evacuarea apei, chiar dacă ai pompă electrică, pentru că electricitatea cedează prima. Trusa de prim ajutor completă. Și un mijloc de comunicare: stație radio sau măcar telefonul într-o husă etanșă. Două obiceiuri fac diferența: verifică periodic termenele de valabilitate și arată-le pasagerilor, la începutul fiecărei ieșiri, unde stau vestele și colacul. În urgență nu există timp de căutat prin cufere.",
       },
       {
         title: "Planificarea ieșirii pe apă",
@@ -217,7 +217,7 @@ const LESSONS = [
           "Anunță pe cineva de la mal: rută, ora estimată de întoarcere",
           "Verifică autonomia de combustibil (regula treimilor)",
         ],
-        narration: "Înainte de a ieși pe apă, verifică prognoza meteo și starea mării sau a fluviului. Anunță pe cineva de la mal despre ruta ta și ora estimată de întoarcere. Calculează combustibilul după regula treimilor: o treime pentru dus, o treime pentru întors și o treime rezervă pentru situații neprevăzute.",
+        narration: "O ieșire reușită pe apă se decide în mare parte înainte de a pleca de acasă. Primul pas: prognoza meteo, din surse dedicate navigației, nu doar aplicația de vreme generală. Te interesează vântul, în special rafalele, starea valurilor, vizibilitatea și tendința pentru orele următoare. Al doilea pas: spune cuiva de pe mal unde mergi și când estimezi că te întorci. Pare exagerat pentru o plimbare de două ore, dar dacă rămâi în pană fără semnal, acel om este cel care alertează salvarea și le spune unde să caute. Al treilea pas: combustibilul, calculat după regula treimilor. O treime pentru dus, o treime pentru întors și o treime rezervă intactă. Rezerva acoperă vântul care se întețește la întoarcere, curentul potrivnic sau ocolul neprevăzut. Adaugă la calcul orele de lumină rămase și un plan de rezervă: un adăpost sau un punct de acostare intermediar în caz că vremea se strică. Navigatorii bătrâni spun că planul bun este cel care include și planul de renunțare.",
       },
       {
         title: "Lista de control pre-plecare",
@@ -226,7 +226,7 @@ const LESSONS = [
           "Dotări de siguranță la locul lor și funcționale",
           "Luminile, instrumentele și pompa de santină — testate",
         ],
-        narration: "Chiar înainte de plecare, parcurge o listă de control: motorul pornește și se răcește corect, ai suficient combustibil și ulei, dotările de siguranță sunt la locul lor și funcționale, luminile de navigație și instrumentele merg, iar pompa de santină funcționează. O verificare disciplinată previne majoritatea incidentelor.",
+        narration: "A sosit momentul plecării, iar aici intră în scenă lista de control. Sună birocratic, dar piloții de avion o folosesc tocmai pentru că memoria omului obosit sau grăbit sare pași. Parcurge-o metodic. Motorul: pornește, jetul de control al răcirii curge, nivelul de ulei este corect. Combustibil: suficient după regula treimilor. Direcția: volanul rotit cap la cap, răspuns ferm. Luminile de navigație și instrumentele: funcționale, chiar dacă pleci ziua, pentru că întoarcerea poate prinde întunericul. Pompa de santină: testată manual și automat, santina uscată. Echipamentul de siguranță: veste, colac, stingător, semnalizare, toate la locul lor. Meteo verificată, persoana de contact anunțată. Iar la final, un scurt instructaj pentru pasageri: unde sunt vestele, cum se stă în barcă, ce nu se atinge. Cinci minute de disciplină înainte de plecare previn nouăzeci la sută din incidentele care se termină cu remorcaj sau mai rău. Cu asta, primul modul este complet: cunoști barca, motorul, sistemele și pregătirea. De mâine, trecem la manevre.",
       },
     ],
     quiz: [
@@ -250,7 +250,7 @@ const LESSONS = [
           "Viteză mică în port/zone aglomerate ('viteză de siguranță')",
           "Respectă distanța față de înotători, maluri, alte ambarcațiuni",
         ],
-        narration: "La plecare, verifică mai întâi zona din jur pentru alte ambarcațiuni, înotători sau obstacole. Molează parâmele treptat și pornește cu viteză mică. În porturi și zone aglomerate menține o viteză de siguranță, care îți permite să oprești la timp și să eviți valul de etravă ce poate deranja alte ambarcațiuni.",
+        narration: "Începem modulul de manevre cu plecarea de la ponton și primele reguli de conduită. Înainte de a atinge maneta de gaze, privește în jur: alte ambarcațiuni în mișcare, înotători, obstacole plutitoare. Molează parâmele în ordinea potrivită vântului, ține-le strânse la bord ca să nu ajungă în elice și pleacă cu mișcări blânde de manetă. În port și în apropierea malului menții viteza de siguranță, adică acea viteză care îți permite să oprești și să eviți în timp util orice apare în cale. Multe zone au limitări stricte, marcate pe geamanduri sau panouri, de exemplu cinci kilometri pe oră lângă plaje. Există și un aspect de care ești responsabil chiar fără indicator: valul de etravă pe care îl lasă barca ta. El poate legăna violent bărcile ancorate, poate răsturna un caiac sau poate pune în dificultate un înotător. Legea este simplă și apare la examen: răspunzi de efectele valului produs de ambarcațiunea ta. Deci lângă maluri, pontoane și alte ambarcațiuni: viteză mică și priviri în toate direcțiile.",
       },
       {
         title: "Guvernarea și virajele",
@@ -259,7 +259,7 @@ const LESSONS = [
           "Pupa se deplasează lateral în viraj — atenție la spațiul din spate",
           "Curentul și vântul influențează traiectoria reală",
         ],
-        narration: "Spre deosebire de o mașină, ambarcațiunea nu virează în jurul roților din față, ci în jurul unui punct de pivot situat mai spre prova. Când virezi, pupa se deplasează lateral în direcția opusă, așa că trebuie să ai grijă la spațiul din spate. Vântul și curentul modifică traiectoria reală, de aceea trebuie anticipate.",
+        narration: "Prima surpriză a oricărui începător: barca nu virează ca o mașină. Automobilul își schimbă direcția cu roțile din față; ambarcațiunea pivotează în jurul unui punct aflat cam la o treime de la provă, iar impulsul de direcție vine de la pupa. Consecința o vezi în desen: când virezi dreapta, prova se duce spre dreapta, dar pupa alunecă lateral spre stânga, măturând un arc surprinzător de larg. Lângă un ponton, această mișcare a pupei este cea care lovește: ai impresia că te-ai îndepărtat cu prova, iar spatele bărcii se apropie de obstacol. Regula practică: înainte de orice viraj strâns, verifică spațiul de lângă pupa, nu doar drumul din față. A doua consecință: nu poți vira eficient fără puțină viteză prin apă, pentru că elicea și cârma au nevoie de curent de apă ca să lucreze. Exersează în larg, departe de obstacole: viraje largi, viraje strânse, la viteze diferite, până când simți instinctiv pe unde trece pupa ta.",
       },
       {
         title: "Efectul elicei (efectul de evantai)",
@@ -268,7 +268,7 @@ const LESSONS = [
           "Elice pe dreapta: pupa tinde spre babord la marșarier",
           "Folosește acest efect în avantajul tău la acostare",
         ],
-        narration: "Elicea nu produce doar împingere înainte, ci și un efect lateral asupra pupei, numit efect de evantai, resimțit mai ales la marșarier. La o elice cu rotație pe dreapta, pupa tinde să se deplaseze spre babord când dai înapoi. Un conducător experimentat folosește acest efect în avantajul său la manevrele de acostare.",
+        narration: "Astăzi îți prezint un fenomen care încurcă pe toată lumea la început și devine cel mai bun aliat după ce îl înțelegi: efectul de evantai al elicei. Pe lângă împingerea principală înainte sau înapoi, elicea generează și o forță laterală care împinge pupa într-o parte, ca o roată care se sprijină pe apă. Efectul este slab la mers înainte, dar devine pronunțat la marșarier. La o elice care se rotește spre dreapta, regula este: la mers înapoi, pupa fuge spre babord, adică spre stânga. Ce faci cu informația asta? În loc să te lupți cu ea corectând permanent din volan, o folosești: știi dinainte în ce parte se va așeza pupa când dai înapoi, deci alegi partea de acostare și unghiul de apropiere în avantajul tău. De exemplu, la acostarea cu babordul la ponton, un scurt impuls de marșarier nu doar oprește barca, ci și lipește frumos pupa de ponton. Fiecare barcă are personalitatea ei: ieși în larg, dă înapoi la ralanti și observă în ce parte trage pupa ta. Cinci minute de test valorează cât o oră de teorie.",
       },
       {
         title: "Oprirea și controlul vitezei",
@@ -277,7 +277,7 @@ const LESSONS = [
           "Marșarierul (reversul) ajută la oprire, dar cu prudență",
           "Anticipează distanța de oprire, mai mare pe valuri/curent",
         ],
-        narration: "O ambarcațiune nu are frâne, așa că oprirea se face reducând din timp accelerația și, la nevoie, folosind marșarierul cu prudență. Distanța de oprire depinde de viteză, de încărcătură, de curent și de valuri. Anticipează întotdeauna și lasă spațiu suficient, mai ales în apropierea pontoanelor și a altor ambarcațiuni.",
+        narration: "Să vorbim despre oprire, pentru că pe apă nu există pedală de frână. O barcă la care tai gazul continuă să alunece, iar distanța de alunecare crește cu viteza, cu încărcătura și cu vântul sau curentul din spate. Prima tehnică este anticiparea: reduci viteza din timp, treptat, cu mult înainte de punctul unde vrei să oprești, și lași apa să frâneze barca. A doua tehnică este marșarierul, folosit corect: aduci întâi maneta la punctul mort, lași motorul să revină la ralanti o secundă, apoi cuplezi înapoi cu gaz moderat. Cuplarea brutală a marșarierului de la viteză mare solicită violent transmisia și poate arunca pasagerii din locuri. Ține cont și de efectul de evantai de care am vorbit: la marșarier pupa va trage lateral, deci corectezi din timp. Recomandarea mea: în prima ieșire, exersează opriri de urgență în larg. Măsoară din ochi câte lungimi de barcă îți trebuie de la viteza de croazieră până la oprire completă. Cifra aceea, înmulțită cu doi pentru zile cu valuri, este distanța minimă la care ai voie să te apropii de orice cu viteză.",
       },
     ],
     quiz: [
@@ -299,7 +299,7 @@ const LESSONS = [
           "Evaluează direcția vântului și a curentului",
           "Apropie-te încet, sub un unghi controlat",
         ],
-        narration: "Înainte de acostare, pregătește parâmele și baloanele de acostare, numite și tampoane, care protejează bordul. Evaluează direcția vântului și a curentului, deoarece acestea influențează puternic manevra. Apropie-te de ponton încet, sub un unghi de aproximativ douăzeci până la treizeci de grade, gata să corectezi.",
+        narration: "Acostarea este manevra care desparte începătorii de conducătorii stăpâni pe barcă, și vestea bună este că are rețetă. Totul începe cu pregătirea, făcută din timp, nu în ultimii metri. Scoate baloanele de acostare, tampoanele acelea gonflabile, și leagă-le pe bordul cu care vei atinge pontonul, la înălțimea potrivită marginii lui. Pregătește parâmele: una la provă, una la pupă, conduse pe sub balustradă și cu capetele libere, gata de dat la mal. Stabilește dinainte cine ce face: cine sare pe ponton, cine dă parâma, cine stă la motor. Apoi evaluează vântul și curentul, pentru că ele decid planul de apropiere, cum vei vedea în scenele următoare. Apropierea în sine se face încet, sub un unghi de douăzeci, treizeci de grade față de ponton, cu corecții fine. Viteza ideală de acostare este cea la care o atingere de ponton ar fi doar o îmbrățișare, nu o lovitură. Și ultima regulă, poate cea mai importantă: dacă apropierea nu iese bine, nu o forța. Te retragi, faci un cerc și încerci din nou. Nimeni nu punctează eleganța primei încercări, dar toți văd pontonul lovit.",
       },
       {
         title: "Acostarea cu vânt/curent dinspre ponton",
@@ -308,7 +308,7 @@ const LESSONS = [
           "Lasă natura să apropie ambarcațiunea, corectează fin",
           "Fixează întâi parâma din prova sau un spring",
         ],
-        narration: "Când vântul sau curentul bate dinspre apă spre ponton, te va împinge natural către mal. În acest caz apropie-te paralel și foarte încet, lăsând vântul să apropie ambarcațiunea, și corectează fin cu motorul. Fixează mai întâi o parâmă, de obicei din prova sau un spring, pentru a controla mișcarea.",
+        narration: "Primul scenariu de acostare: vântul sau curentul te împinge dinspre apă către ponton. Este situația cea mai iertătoare, cu o singură condiție: să lași natura să lucreze în locul motorului. Apropie-te paralel cu pontonul, la o distanță de aproximativ o lățime de barcă, și oprește complet elanul. Vântul va prelua de acolo: împinge barca lateral, uşor, până când baloanele ating pontonul pe toată lungimea. Tu doar corectezi fin din motor ca barca să rămână paralelă. Greșeala tipică aici este să te apropii sub unghi mare cu vântul în spate: barca accelerează spre ponton mai repede decât te aștepți și lovești cu prova. Odată lipit de ponton, fixează repede prima parâmă, de regulă cea de la provă sau springul, ca barca să nu mai poată fi rotită de rafale. Apoi, fără grabă, leagă restul. Reține principiul, pentru că apare și la examen: cu vânt spre ponton, apropiere paralelă și lentă, vântul face acostarea în locul tău.",
       },
       {
         title: "Acostarea cu vânt/curent dinspre mal",
@@ -317,7 +317,7 @@ const LESSONS = [
           "Apropiere mai fermă, fixează rapid prova",
           "Folosește un spring pentru a aduce pupa la ponton",
         ],
-        narration: "Când vântul bate dinspre ponton spre apă, te împinge departe de mal. În acest caz apropie-te sub un unghi mai mare și mai ferm, apoi fixează rapid parâma din prova. Folosind o parâmă spring și un ușor impuls de motor, poți aduce pupa lângă ponton, controlând întreaga ambarcațiune.",
+        narration: "Al doilea scenariu este mai tehnic: vântul suflă dinspre ponton și te împinge la larg. Aici o apropiere paralelă și timidă nu funcționează, pentru că vântul te îndepărtează înainte să apuci să legi ceva. Planul este altul: te apropii sub un unghi mai mare, de patruzeci, cincizeci de grade, cu prova către punctul de acostare și cu puțin mai multă hotărâre în manetă. Primul obiectiv este să aduci prova suficient de aproape încât echipierul să fixeze parâma de provă sau springul prova pe ponton. Odată prinsă acea parâmă, jocul este câștigat: cuplezi motorul încet înainte cu cârma întoarsă de la ponton, iar barca, ținută de spring, își rotește pupa lipind-o de ponton împotriva vântului. Este exact manevra desenată în ilustrație. Fără spring, ai lupta cu vântul din pură putere de motor, ceea ce se termină de obicei cu manevre bruște. Cu spring, folosești fizica în avantajul tău. Notează și varianta inversă: la plecarea cu vânt dinspre ponton, aceeași parâmă lucrată invers scoate elegant pupa sau prova în vânt.",
       },
       {
         title: "Parâmele de acostare",
@@ -326,7 +326,7 @@ const LESSONS = [
           "Springurile împiedică deplasarea înainte/înapoi",
           "Noduri utile: nodul de tachet, cap de berbec, ocheți",
         ],
-        narration: "Ambarcațiunea se fixează la ponton cu parâme: una din prova, una din pupa și una sau două parâme spring care împiedică deplasarea înainte și înapoi. Învață câteva noduri esențiale, cum ar fi nodul de tachet pentru fixarea rapidă și nodul cap de berbec pentru a lega ambarcațiunea de un stâlp. O legare corectă rezistă valurilor și vântului.",
+        narration: "Barca a atins pontonul; acum trebuie să și rămână acolo, indiferent de vânt, valuri sau trecerea altor ambarcațiuni. Schema completă de legare folosește patru parâme, fiecare cu rolul ei. Parâma de provă și parâma de pupă țin barca aproape de ponton. Springurile, parâmele încrucișate din desen, opresc mișcarea de-a lungul pontonului: springul de provă împiedică barca să avanseze, cel de pupă o împiedică să dea înapoi. Împreună, cele patru formează o cușcă elastică în care barca poate respira pe valuri fără să se plimbe. La ape cu variații de nivel, lași parâmelor puțin joc, altfel barca rămâne atârnată când apa scade. Capetele se leagă la tacheți cu nodul de tachet, acel opt culcat încheiat cu o jumătate de ochi, care ține ferm și se desface ușor chiar și sub tensiune. Merită să înveți și nodul cap de berbec pentru stâlpi și inele. Verifică și protecția la frecare: acolo unde parâma atinge muchii, un manșon sau o bucată de furtun îi prelungește viața. O barcă bine legată doarme liniștită și noaptea în furtună.",
       },
     ],
     quiz: [
@@ -348,7 +348,7 @@ const LESSONS = [
           "Alegerea depinde de fundul apei: nisip, mâl, pietre, alge",
           "Lanțul/parâma (calabrot) + eventual o lungime de lanț la ancoră",
         ],
-        narration: "Există mai multe tipuri de ancore: ancora tip plug, ancora Danforth cu palete late, ancora tip gheară și ancora grapnel cu brațe multiple. Alegerea depinde de natura fundului apei: nisip, mâl, pietre sau alge. Ancora este legată printr-un calabrot, adesea cu o porțiune de lanț lângă ancoră, care ajută la prinderea în fund.",
+        narration: "Ancorarea îți dă libertatea de a opri oriunde: într-un golf pentru o baie, la pescuit sau în așteptarea unei ecluze. Prima decizie este ancora potrivită, iar aici contează fundul apei mai mult decât orice. Ancora tip plug, în formă de brăzdar de plug, ară până se îngroapă și ține excelent în nisip și mâl. Ancora Danfort, cu două palete late articulate, are putere mare de ținere în nisip raportat la greutatea ei mică, de aceea este atât de răspândită pe ambarcațiunile de agrement. Ancora tip gheară, cunoscută și ca Bruce, se așază repede în poziție pe funduri mixte și pietroase, chiar dacă ține ceva mai puțin în nisip fin. Grapnelul, cu brațele lui multiple, agață pietre și stânci și rămâne favoritul bărcilor mici și al jet-ski-urilor, fiind pliabil. Între ancoră și parâmă se montează, ideal, câțiva metri de lanț: greutatea lui culcă ancora pe fund la unghiul corect de agățare și preia frecarea de pietre care ar tăia o parâmă textilă. Ansamblul complet, lanț plus parâmă, poartă numele de calabrot, un termen care apare des la examen.",
       },
       {
         title: "Alegerea locului de ancorare",
@@ -357,7 +357,7 @@ const LESSONS = [
           "Departe de șenal navigabil, cabluri, conducte submarine",
           "Verifică adâncimea și lasă spațiu de balans (swing)",
         ],
-        narration: "Alege un loc de ancorare cu fund bun de agățare, adăpostit de vânt și valuri și departe de șenalul navigabil, de cabluri sau conducte submarine. Verifică adâncimea și ține cont că ambarcațiunea se va roti în jurul ancorei odată cu vântul, deci lasă spațiu suficient de balans față de alte ambarcațiuni și obstacole.",
+        narration: "Unde arunci ancora contează la fel de mult ca ancora însăși. Caută un loc adăpostit de vânt și de valuri, cu un fund care ține bine: nisipul și mâlul compact sunt ideale, algele și piatra netedă sunt înșelătoare, pentru că ancora alunecă peste ele fără să se îngroape. Harta sau aplicația de navigație îți arată natura fundului și adâncimile. Evită categoric șenalul navigabil, pentru că o barcă ancorată pe culoarul navelor este un pericol public, precum și zonele marcate cu interdicții: cabluri submarine, conducte, zone de protecție. Aici greșeala poate însemna și o ancoră pierdută, agățată iremediabil, și o contravenție serioasă. Apoi gândește în cercuri: barca ancorată nu stă pe loc, ci se rotește în jurul ancorei după vânt, descriind cercul de balans pe care îl vezi în ilustrație. Raza lui este aproape cât lungimea calabrotului filat. Asigură-te că cercul tău nu se intersectează cu al vecinilor, cu malul sau cu geamandurile, inclusiv dacă vântul se rotește peste noapte. Distanța care pare exagerată la ancorare devine exact suficientă la miezul nopții.",
       },
       {
         title: "Procedura de ancorare",
@@ -366,7 +366,7 @@ const LESSONS = [
           "Filează ancora controlat — nu o arunca peste tot lanțul deodată",
           "Lungimea calabrotului: de 3–5 ori adâncimea (până la 7x pe vreme rea)",
         ],
-        narration: "Pentru a ancora, oprește ambarcațiunea deasupra locului ales, cu prova orientată în vânt. Filează ancora controlat, lăsând-o să coboare pe măsură ce ambarcațiunea derivă ușor înapoi. Lungimea calabrotului trebuie să fie de trei până la cinci ori adâncimea apei, iar pe vreme rea chiar de șapte ori, pentru ca ancora să se prindă bine.",
+        narration: "Să executăm ancorarea pas cu pas. Te apropii de punctul ales cu prova în vânt, adică împotriva vântului, pentru că așa barca se oprește natural și rămâne controlabilă la viteză mică. Oprești complet deasupra locului dorit. Cobori ancora controlat, mână peste mână sau cu vinciul, până atinge fundul; nu o arunci grămadă cu tot lanțul după ea, pentru că lanțul căzut peste ancoră o încurcă și o împiedică să lucreze. În timp ce vântul împinge barca ușor înapoi, filezi calabrotul treptat. Și acum cifra de aur, nelipsită la examen: lungimea filată trebuie să fie de trei până la cinci ori adâncimea apei, iar pe vreme rea chiar de șapte ori. De ce atât de mult? Pentru că ancora ține doar dacă tracțiunea vine orizontal, iar un calabrot lung și lăsat face exact asta: culcă smucitura pe fund. Cu calabrot scurt, tragi ancora în sus și o smulgi. La final, fixezi calabrotul la babaua din provă, niciodată la pupa, și cuplezi scurt marșarierul la ralanti: dacă barca se oprește ferm, ancora s-a înfipt. Această probă de tracțiune încheie manevra corectă.",
       },
       {
         title: "Verificarea prinderii și ridicarea ancorei",
@@ -375,7 +375,7 @@ const LESSONS = [
           "Ancoră care 'ară' (derapă) = ridici și repoziționezi",
           "Ridicare: te apropii deasupra ancorei, apoi o desprinzi vertical",
         ],
-        narration: "După ce ai ancorat, verifică dacă ancora ține: alege două repere fixe pe mal și urmărește dacă poziția rămâne constantă. Dacă ancora arează, adică derapă pe fund, ridic-o și repoziționează. Pentru ridicare, apropie ambarcațiunea deasupra ancorei folosind motorul, apoi trage calabrotul vertical pentru a o desprinde din fund.",
+        narration: "Ancora este jos, dar treaba nu s-a terminat: acum verifici că ține cu adevărat. Metoda clasică este alinierea reperelor, exact ca în desen: alegi două obiecte fixe pe mal, aflate aproximativ pe aceeași linie de vedere, de pildă un far și un vârf de deal, și memorezi cum se suprapun. Dacă peste câteva minute alinierea s-a schimbat vizibil, barca derapează, adică ancora ară pe fund fără să fie înfiptă. Același lucru îl vezi și pe GPS, dacă poziția migrează constant în aceeași direcție. Ancora care ară nu se repară de la distanță: o ridici complet și repeți manevra, eventual în alt loc sau cu mai mult calabrot. La ancorări lungi sau peste noapte se ține un veghe de ancoră, verificări periodice ale poziției. Ridicarea se face inteligent: în loc să tragi barca spre ancoră din brațe, avansezi ușor cu motorul până ajungi deasupra ei, recuperând calabrotul pe măsură; apoi o desprinzi cu o tracțiune verticală scurtă. Speli ancora de mâl înainte să o urci la bord și o amarezi la locul ei. Cu asta stăpânești ancorarea, iar modulul de manevre este complet.",
       },
     ],
     quiz: [
@@ -399,7 +399,7 @@ const LESSONS = [
           "Trebuie să fie de mărimea corectă și îmbrăcată corect",
           "Copiii și înotătorii slabi: vestă purtată permanent",
         ],
-        narration: "Vestele de salvare adevărate sunt concepute să întoarcă o persoană inconștientă cu fața în sus, spre deosebire de vestele de sprijin, folosite doar de înotători. Vesta trebuie să fie de mărimea corectă, îmbrăcată și încheiată corect. Copiii, înotătorii slabi și toți pasagerii pe vreme rea ar trebui să poarte vesta permanent.",
+        narration: "Începem modulul de siguranță cu obiectul care salvează cele mai multe vieți pe apă: vesta. Și primul lucru de lămurit este că nu toate vestele sunt egale. Vesta de salvare propriu-zisă are flotabilitate mare și un guler special conceput să întoarcă o persoană inconștientă cu fața în sus, ținându-i căile respiratorii afară din apă chiar dacă nu mai poate înota deloc. Vesta de sprijin, cea subțire folosită la schi nautic sau caiac, doar ajută la plutire: este comodă, dar nu te întoarce și nu te ține cu fața sus dacă ți-ai pierdut cunoștința. Diferența dintre ele apare la examen și, mai important, contează în realitate. Vesta trebuie să fie pe mărimea purtătorului și încheiată corect: o vestă prea mare pur și simplu alunecă peste cap la intrarea în apă. Copiii au nevoie de veste pe măsura lor, cu chingă între picioare, și le poartă tot timpul, fără negociere. La fel înotătorii slabi și, sincer, toată lumea pe vreme rea, noaptea sau la temperaturi mici ale apei. Vesta din cufăr nu a salvat pe nimeni; vesta purtată, pe foarte mulți.",
       },
       {
         title: "Colacul și dispozitivele de salvare",
@@ -408,7 +408,7 @@ const LESSONS = [
           "Bară/cârlig de salvare, scară de urcare la bord",
           "Dispozitiv de localizare (fluier, lumină, geamandură luminoasă)",
         ],
-        narration: "Colacul de salvare, prevăzut cu o saulă, se aruncă spre persoana căzută în apă pentru a o menține la suprafață și a o trage la bord. Utile sunt și cârligul de salvare, scara de urcare și dispozitivele de localizare precum fluierul, o lumină sau o geamandură luminoasă, care ajută la găsirea persoanei, mai ales noaptea.",
+        narration: "Când cineva ajunge în apă lângă barcă, primul reflex corect nu este săritul după el, ci aruncatul unui obiect plutitor. Colacul de salvare este proiectat exact pentru asta, iar detaliul care îl face cu adevărat util este saula, frânghia legată de el. Arunci colacul dincolo de persoană și îl tragi spre ea, apoi o tragi pe ea spre barcă, fără ca tu să părăsești puntea. Tehnica de aruncare merită exersată o dată pe sezon: picioarele bine proptite, aruncare pe deasupra sau pendulară, ținând capătul saulei sub talpă sau legat de barcă. Urcarea la bord este partea subestimată: un om obosit sau înfrigurat nu se poate ridica singur peste bordul liber. Scara de urcare, fixă sau agățabilă, rezolvă problema; în lipsa ei, o buclă de parâmă lăsată în apă poate servi drept treaptă. Completează echipamentul cu mijloace de localizare: un fluier atașat vestei se aude mult mai departe decât strigătul unui om epuizat, iar o lumină intermitentă pe vestă face vizibilă noaptea o siluetă pe care ochiul altfel nu ar găsi-o niciodată printre valuri.",
       },
       {
         title: "Stingătoarele de incendiu",
@@ -417,7 +417,7 @@ const LESSONS = [
           "Amplasare accesibilă, nu lângă motor",
           "Tehnica PASS: scoți siguranța, țintești baza focului, apeși, baleiezi",
         ],
-        narration: "Stingătorul de incendiu trebuie să fie de tipul potrivit ambarcațiunii și verificat ca presiune și valabilitate. Amplasează-l într-un loc accesibil, dar nu chiar lângă motor, unde ar putea izbucni focul. Folosește tehnica cunoscută: scoți siguranța, țintești baza flăcării, apeși mânerul și baleiezi de la o parte la alta.",
+        narration: "Focul la bord este rar, dar nu iartă improvizația, așa că hai să învățăm stingătorul ca la carte. Alege un stingător potrivit pentru incendii de combustibil și instalații electrice, montează-l într-un suport accesibil, pe drumul tău natural de evacuare, dar nu chiar deasupra motorului, pentru că exact acolo nu vei putea ajunge când arde. Verifică-i periodic presiunea pe manometru și termenul de valabilitate. Tehnica de folosire are patru pași, ușor de memorat: scoți siguranța, țintești baza focului, apeși mânerul și baleiezi dintr-o parte în alta. Subliniez pasul doi, pentru că este contraintuitiv: nu stingi flăcările, stingi combustibilul care le hrănește, deci jetul merge la baza focului. Poziționează-te cu spatele la calea de retragere și cu vântul în spate dacă se poate. Încă două reguli de aur: pe foc de benzină sau ulei nu se aruncă niciodată apă, pentru că împrăștie combustibilul aprins; și dacă focul este deja mai mare decât poate acoperi stingătorul tău, nu ești pompier: veste pe toată lumea, semnal de primejdie și pregătește abandonul. Barca se poate înlocui.",
       },
       {
         title: "Semnale de primejdie",
@@ -426,7 +426,7 @@ const LESSONS = [
           "Semnal sonor continuu, brațe ridicate și coborâte lateral",
           "Radio VHF: apel MAYDAY pe canalul 16",
         ],
-        narration: "Pentru a cere ajutor există mai multe semnale de primejdie: rachete de semnalizare roșii, fumigene portocalii, o oglindă heliografică pentru a reflecta soarele, un semnal sonor continuu sau mișcarea lentă a brațelor întinse, ridicate și coborâte lateral. Cel mai eficient este apelul MAYDAY prin radio VHF pe canalul șaisprezece.",
+        narration: "Să trecem în revistă limbajul universal al primejdiei, semnalele pe care orice navigator le recunoaște. Pe timp de zi, fumigena portocalie desenează pe cer o pată imposibil de confundat, iar oglinda heliografică aruncă sclipiri de soare vizibile de la kilometri. Noaptea, racheta de semnalizare roșie urcă și cade lent, anunțând tuturor că cineva are nevoie de ajutor; se lansează cu brațul întins, cu vântul în spate, niciodată spre elicoptere sau alte nave. Fără pirotehnie, ridicarea și coborârea lentă și repetată a brațelor întinse lateral este semnalul internațional de primejdie, la fel și un semnal sonor continuu. Iar cel mai eficient instrument rămâne radioul: pe canalul șaisprezece VHF rostești de trei ori meidei, apoi transmiți cine ești, unde ești, ce s-a întâmplat și câte persoane sunt la bord. Structura asta scurtă, cine, unde, ce, câți, este exact ce au nevoie salvatorii ca să pornească spre tine. Important de reținut și pentru examen: semnalele de primejdie se folosesc numai în pericol real; folosirea lor nejustificată este sancționată, pentru că trimite salvatori adevărați după o alarmă falsă.",
       },
     ],
     quiz: [
@@ -448,7 +448,7 @@ const LESSONS = [
           "Aruncă un obiect plutitor, întoarce ambarcațiunea spre ea",
           "Apropiere pe partea din vânt, motor la ralanti/oprit la preluare",
         ],
-        narration: "Dacă o persoană cade peste bord, strigă imediat om la apă și pune pe cineva să arate permanent spre ea, fără să o piardă din ochi. Aruncă un obiect plutitor pentru a marca locul și pentru flotabilitate, apoi întoarce ambarcațiunea. Apropie-te dinspre partea din vânt și, la preluare, pune motorul la ralanti sau oprește-l, pentru a nu răni persoana cu elicea.",
+        narration: "Om la apă este urgența clasică a navigației de agrement și se rezolvă prin roluri clare, jucate fără panică. În secunda în care cineva cade peste bord, oricine a văzut strigă tare om la apă și arată cu brațul întins spre persoana din apă, fără să o scape din ochi. Acest arătător uman este vital: printre valuri, un cap de om dispare din vedere în câteva secunde, iar cine îl pierde nu îl mai găsește ușor. Simultan, aruncă spre el colacul sau orice obiect plutitor: îi dă sprijin și marchează locul. Conducătorul reduce imediat viteza și întoarce ambarcațiunea. Apropierea finală se face împotriva vântului, cu prova în vânt, astfel încât barca să rămână controlabilă la viteză mică și să nu fie împinsă de rafale peste omul din apă. Iar regula absolută a momentului de contact: motorul la punct mort sau complet oprit. O elice care se rotește lângă un om în apă transformă salvarea în tragedie. Recuperarea se face pe bordul de sub vânt, pe la scară sau peste pupa, cu motorul oprit. Exersează scenariul cu echipajul tău pe vreme bună, cu o găleată drept victimă: trei minute de joc care pot valora o viață.",
       },
       {
         title: "Incendiu la bord",
@@ -457,7 +457,7 @@ const LESSONS = [
           "Folosește stingătorul pe baza focului",
           "Dacă nu poți controla focul: veste, semnal de primejdie, abandon",
         ],
-        narration: "În caz de incendiu, oprește motorul și sursa de combustibil și orientează ambarcațiunea astfel încât vântul să îndepărteze flăcările de pasageri. Folosește stingătorul, țintind baza focului. Dacă focul nu poate fi controlat, pune-le tuturor vestele, transmite un semnal de primejdie și pregătește abandonarea ambarcațiunii în siguranță.",
+        narration: "Dacă izbucnește foc la bord, primele zece secunde decid totul. Pasul unu: taie sursele. Oprești motorul, închizi robinetul de combustibil și scoți de sub tensiune circuitele electrice; focul fără hrană slăbește de la sine. Pasul doi: folosește vântul. Orientează ambarcațiunea astfel încât fumul și flăcările să fie duse de vânt peste bord, departe de oameni și de restul bărcii, nu peste cocpit. Pasul trei: atacă baza focului cu stingătorul, în mișcări de baleiere, exact cum am învățat ieri. Pasagerii se mută în partea opusă focului și își pun vestele, nu ca gest de panică, ci ca procedură standard. Dacă focul răspunde, continui până la stingere completă și apoi supraveghezi locul, pentru că benzina reaprinde ușor. Dacă focul crește în ciuda stingătorului, nu te încăpățâna: transmite meidei pe canalul șaisprezece cu poziția ta, pregătește abandonul organizat al ambarcațiunii și îndepărtează-te de ea pe direcția opusă vântului, ca să nu plutești în combustibilul care se poate scurge și aprinde pe apă. Oamenii se salvează întotdeauna înaintea bărcii.",
       },
       {
         title: "Avarie, infiltrații și eșuare",
@@ -466,7 +466,7 @@ const LESSONS = [
           "Eșuare (rămâi pe fund): oprești elicea, evaluezi avaria",
           "Nu forța motorul dacă rișți să afectezi corpul sau elicea",
         ],
-        narration: "În caz de avarie cu infiltrație de apă, încearcă să localizezi și să reduci intrarea apei, apoi pornește pompa de santină și evacuează manual. Dacă ambarcațiunea eșuează, adică rămâne pe fund, oprește imediat elicea și evaluează avaria. Nu forța motorul dacă rișți să deteriorezi corpul sau elicea; uneori e mai sigur să aștepți ajutor sau creșterea nivelului apei.",
+        narration: "Două avarii clasice îți pot testa calmul: gaura în barcă și eșuarea. La o infiltrație de apă, ordinea este: găsește, astupă, evacuează. Cauți sursa, care de multe ori este un furtun sărit sau o presetupă slăbită, nu neapărat o gaură spectaculoasă în bordaj. Astupi cu ce ai: dopuri conice de lemn sau cauciuc, ținute la bord exact pentru asta, cârpe presate, chiar și o pernă proptită. Apoi pornești pompa de santină și completezi cu ispolul; o echipă care evacuează organizat face față unei infiltrații surprinzător de mari. Dacă apa câștigă totuși teren, transmite din timp poziția și cere ajutor, nu când puntea este deja la nivelul apei. La eșuare, adică atunci când barca pune fundul pe bancul de nisip sau pe pietre, primul gest este oprirea imediată a elicei, care altfel se distruge în contact cu fundul. Evaluezi apoi situația: unde e adâncimea, ce spune carena, intră apă? Nu forța motorul înapoi orbește: poți agrava avaria sau înfige barca mai adânc. Uneori soluția este să muți greutatea, să împingi cu cangea sau să aștepți creșterea apei; alteori, cel mai înțelept este să ceri asistență. Grabă furioasă la eșuare înseamnă, de regulă, elice nouă.",
       },
       {
         title: "Remorcajul",
@@ -475,7 +475,7 @@ const LESSONS = [
           "Pornire lentă, fără smucituri, viteză redusă",
           "Comunicare clară între ambarcațiuni, atenție la parâma sub tensiune",
         ],
-        narration: "Când remorchezi sau ești remorcat, folosește o parâmă rezistentă, prinsă de puncte solide de structură. Pornește lent, fără smucituri, și menține o viteză redusă. Comunicați clar între ambarcațiuni și stați la distanță de parâma aflată sub tensiune, deoarece, dacă se rupe, poate provoca răni grave prin biciuire.",
+        narration: "Remorcajul pare banal, două bărci și o frânghie, dar parâma sub tensiune este una dintre cele mai subestimate surse de accidente pe apă. Regulile bune încep de la puncte de prindere: parâma se leagă doar de elemente structurale solide, baba de remorcă, tacheții prova dimensionați corespunzător, niciodată de balustrade sau mânere, care se smulg. Lungimea parâmei se alege generos, iar pe valuri se reglează astfel încât ambele ambarcațiuni să urce și să coboare pe val în același ritm, altfel smuciturile rup. Pornirea se face la pas: întinzi parâma încet, fără șocuri, apoi crești gradual viteza, care rămâne moderată pe tot parcursul. Cârmaciul remorcat ține prova pe urma remorcherului. Și acum zona hașurată cu roșu din desen: nimeni nu stă în prelungirea parâmei întinse sau lângă ea. O parâmă care cedează sub tensiune reculează ca un bici, cu putere de fractură. Pasagerii stau jos, în afara planului parâmei. Stabiliți dinainte semnale simple de comunicare între bărci: mai încet, stop, molează. Pe apă calmă, remorcajul la ureche, cu bărcile legate bord la bord, oferă mai mult control la manevre fine în port.",
       },
     ],
     quiz: [
@@ -497,7 +497,7 @@ const LESSONS = [
           "Semne: frisoane, confuzie, amorțeală, apatie",
           "Încălzire treptată, haine uscate, evită mișcările bruște",
         ],
-        narration: "Hipotermia apare când corpul pierde căldură mai repede decât o poate produce, iar apa rece accelerează acest proces. Semnele includ frisoane, confuzie, amorțeală și apatie. Scoate persoana din apă, înlătură hainele ude, învel-o în ceva uscat și încălzește-o treptat. Evită mișcările bruște și frecarea agresivă, care pot fi periculoase.",
+        narration: "Apa fură căldura corpului de aproximativ douăzeci și cinci de ori mai repede decât aerul, iar asta face din hipotermie un pericol real chiar vara, pe lacurile de munte sau după o oră de plutit în apă de optsprezece grade. Primele minute în apă rece aduc șocul termic: respirație necontrolată, puls urcat, panică; deja aici vesta face diferența, ținând capul afară cât corpul se obișnuiește. Apoi frigul amorțește treptat mușchii, iar înotul devine imposibil cu mult înainte ca victima să își piardă cunoștința. Semnele hipotermiei se citesc ușor: frisoane puternice la început, apoi, mai grav, frisoanele încetează, apar confuzia, vorbirea încâlcită, apatia. Ce faci: scoți persoana din apă cu blândețe, îi dai jos hainele ude, o învelești în pături sau folie termică, inclusiv capul, și o încălzești treptat, din interior spre exterior: adăpost, băuturi calde și dulci dacă este perfect conștientă. Ce nu faci: frecții energice, mișcări bruște, alcool. Toate acestea împing sângele rece de la periferie spre inimă și pot declanșa exact colapsul pe care încerci să îl eviți. Încălzirea corectă este lentă și răbdătoare.",
       },
       {
         title: "Înecul și degajarea căilor respiratorii",
@@ -506,7 +506,7 @@ const LESSONS = [
           "Verifică starea de conștiență și respirația",
           "Dacă nu respiră: începe resuscitarea, cere ajutor",
         ],
-        narration: "În caz de înec, scoate victima din apă cât mai repede și în siguranță, fără a te pune pe tine în pericol. Verifică dacă este conștientă și dacă respiră. Dacă nu respiră normal, eliberează căile respiratorii și începe imediat manevrele de resuscitare, cerând în paralel ajutor prin radio sau telefon.",
+        narration: "La un incident de înec, regula zero este să nu transformi o victimă în două. Salvatorii profesioniști au o ierarhie pe care o preiei ca atare: întinde, aruncă, vâslește, și abia la urmă înoată. Adică întinzi o cange, o vâslă, un braț de pe punte; arunci colacul cu saulă; te apropii cu barca; și doar dacă nu există altă cale și ești un înotător antrenat, intri în apă, ideal cu un obiect plutitor între tine și victimă, pentru că un om care se îneacă se agață cu o forță care scufundă și salvatorul. Odată victima la bord, treci pe modul prim ajutor: o întinzi pe spate, îi deschizi căile respiratorii cu capul lăsat ușor pe spate și verifici respirația cel mult zece secunde: privești pieptul, asculți, simți aerul pe obraz. Dacă respiră normal, o așezi în poziția laterală de siguranță, o acoperi și o supraveghezi continuu, pentru că starea se poate schimba. Dacă nu respiră sau doar horcăie ocazional, chemi ajutor prin radio sau telefon și începi imediat resuscitarea, despre care vorbim în scena următoare. Orice persoană scoasă din apă după un episod de înec ajunge la medic, chiar dacă pare complet refăcută: apa ajunsă în plămâni poate face probleme la ore după incident.",
       },
       {
         title: "Resuscitarea cardio-pulmonară (RCP)",
@@ -515,7 +515,7 @@ const LESSONS = [
           "Ritm ~100–120 compresii/minut, apăsare 5–6 cm",
           "Continui până sosește ajutorul sau victima își revine",
         ],
-        narration: "Resuscitarea cardio-pulmonară se face alternând treizeci de compresii toracice cu două ventilații. Apasă în centrul pieptului, la o adâncime de cinci până la șase centimetri, într-un ritm de aproximativ o sută până la o sută douăzeci de compresii pe minut. Continuă neîntrerupt până sosește ajutorul specializat sau până când victima începe să respire.",
+        narration: "Resuscitarea cardio-pulmonară este abilitatea pe care speri să nu o folosești niciodată și care trebuie să fie automată dacă momentul vine. Schema pentru adult: victima nu respiră, ai chemat ajutorul, începi compresiile. Poziționezi podul palmei în centrul pieptului, pe jumătatea inferioară a sternului, cealaltă mână deasupra, degetele împletite, brațele întinse, umerii deasupra mâinilor. Apeși tare și repede: cinci, șase centimetri adâncime, într-un ritm de o sută până la o sută douăzeci pe minut, cadenţa piesei Staying Alive, și lași pieptul să revină complet între apăsări. După treizeci de compresii, două ventilații: capul pe spate, bărbia ridicată, strângi nasul și sufli un secundă până se ridică pieptul. Și tot așa, treizeci la două, fără pauze mai lungi de câteva secunde. Dacă nu poți sau nu vrei să faci ventilații, compresiile continue singure sunt incomparabil mai bune decât nimic. Nu te opri până sosește ajutorul calificat, până victima începe să respire sau până te epuizezi și te schimbă altcineva; schimbul la două minute menține calitatea. Frica de a apăsa prea tare este cel mai mare dușman: coastele fisurate se vindecă, creierul fără oxigen nu.",
       },
       {
         title: "Răni frecvente și trusa de prim ajutor",
@@ -524,7 +524,7 @@ const LESSONS = [
           "Oprești sângerarea prin presiune directă, protejezi rana",
           "Trusa: pansamente, dezinfectant, foarfecă, folie termică, mănuși",
         ],
-        narration: "La bord pot apărea tăieturi, arsuri, insolație, rău de mare sau mușcături. O sângerare se oprește prin presiune directă pe rană, iar rana se protejează cu un pansament curat. Trusa de prim ajutor ar trebui să conțină pansamente, dezinfectant, o foarfecă, o folie termică de supraviețuire și mănuși de protecție. Verifică periodic conținutul și valabilitatea.",
+        narration: "Închidem modulul de siguranță cu rănile frecvente ale vieții pe apă și cu trusa care le răspunde. Sângerarea se oprește prin presiune directă: comprese sau orice textil curat apăsat ferm pe rană, minute în șir, fără să ridici mereu să verifici; dacă sângele trece prin pansament, adaugi alt strat peste, nu îl scoți pe primul. Arsurile, de la soare sau de la eșapament, se răcesc imediat cu apă, zece până la douăzeci de minute, apoi se acoperă lejer; fără gheață direct pe piele și fără creme miraculoase pe arsuri deschise. Insolația se anunță prin durere de cap, amețeală, greață: mută omul la umbră, hidratează-l, răcorește-l cu comprese. Răul de mare se previne mai ușor decât se tratează: privirea la orizont, aer proaspăt, poziție spre mijlocul bărcii unde mișcarea e mai mică, mâncare ușoară înainte de plecare. Iar trusa de prim ajutor, obligatorie la bord, conține minim: pansamente sterile și fașe, plasturi, dezinfectant, foarfecă, mănuși, folie termică de supraviețuire. Verific-o la începutul fiecărui sezon: dezinfectantul expiră, plasturii dispar misterios, iar trusa completă în ziua în care ai nevoie de ea este definiția pregătirii.",
       },
     ],
     quiz: [
@@ -548,7 +548,7 @@ const LESSONS = [
           "Sistemul internațional IALA — Regiunea A (Europa)",
           "Geamanduri (balize) plutitoare, cu formă, culoare și lumină",
         ],
-        narration: "Balizajul marchează șenalul navigabil, pericolele și zonele speciale de pe apă. În Europa se folosește sistemul internațional IALA, Regiunea A. Semnele plutitoare, numite geamanduri sau balize, se disting prin formă, culoare, marca de vârf și, noaptea, prin caracteristica luminii lor.",
+        narration: "Bine ai venit în modulul de navigație. Începem cu balizajul, sistemul de semne plutitoare care transformă apa necunoscută într-un drum marcat. Geamandurile, numite și balize, delimitează șenalul navigabil, adică fâșia de apă sigură și suficient de adâncă, avertizează asupra pericolelor izolate și marchează zonele speciale. Ca peste tot în Europa, la noi se aplică sistemul internațional iala, regiunea A; rețин denumirea, pentru că apare la examen. Fiecare geamandură comunică prin patru caractere: forma corpului, culoarea, semnul de vârf, adică silueta mică montată deasupra, și, pe timp de noapte, ritmul și culoarea luminii. Împreună, ele îți spun fără cuvinte pe unde să treci. În ilustrație vezi principiul general: șenalul spre port, încadrat de geamandurile roșii pe o parte și verzi pe cealaltă, ca niște borduri ale drumului pe apă. Convenția de citire funcționează în sensul de intrare dinspre larg spre port sau din aval spre amonte pe fluvii. În scenele următoare luăm pe rând fiecare familie de mărci: laterale, cardinale și speciale.",
       },
       {
         title: "Mărcile laterale (Regiunea A)",
@@ -557,7 +557,7 @@ const LESSONS = [
           "Tribord: verde, formă conică — o lași la dreapta la intrare",
           "'Intrare' = dinspre mare spre port / în sensul curentului de flux",
         ],
-        narration: "Mărcile laterale indică marginile șenalului. În Regiunea A, marca de babord este roșie și cilindrică, iar marca de tribord este verde și conică. La intrarea în port, dinspre mare, lași marca roșie la stânga și marca verde la dreapta. Sensul convențional de intrare este dinspre mare spre uscat sau în sensul curentului de flux.",
+        narration: "Mărcile laterale sunt cele mai des întâlnite și marchează cele două margini ale șenalului. În regiunea A regula sună așa: la intrarea dinspre larg spre port, lași geamandurile roșii la babord, adică pe stânga ta, și geamandurile verzi la tribord, pe dreapta ta. Forma le întărește mesajul: marca roșie de babord este cilindrică, precum o cutie de conserve, iar marca verde de tribord este conică, cu vârful în sus. Noaptea, fiecare aprinde lumină în propria culoare: roșie, respectiv verde. Un truc de memorare care funcționează: la intrare, culorile geamandurilor corespund luminilor de navigație ale bărcii tale: roșul tău de babord salută roșul geamandurii, verdele tău de tribord salută verdele ei. Atenție însă la sensul de mers: la ieșirea din port, totul se citește invers, roșul rămâne acum pe dreapta ta. De aceea întrebările de examen precizează întotdeauna sensul: intrare sau ieșire. Pe fluvii, precum Dunărea, sensul convențional de referință este din aval spre amonte, adică împotriva curgerii. Dacă ții minte imaginea cu barca intrând între roșu la stânga și verde la dreapta, ai rezolvat jumătate din întrebările de balizaj.",
       },
       {
         title: "Mărcile cardinale",
@@ -566,7 +566,7 @@ const LESSONS = [
           "Negru-galben, cu conuri de vârf orientate specific",
           "Treci prin partea indicată (ex. marca Nord: treci pe la nord de ea)",
         ],
-        narration: "Mărcile cardinale arată în ce direcție se află apa sigură față de un pericol, folosind punctele cardinale nord, est, sud și vest. Sunt vopsite în negru și galben și au două conuri de vârf orientate în mod specific fiecărei direcții. Treci prin partea indicată de marcă: pe la nord de o marcă Nord, pe la est de o marcă Est și așa mai departe.",
+        narration: "Mărcile cardinale rezolvă o problemă diferită: nu îți arată marginea unui șenal, ci în ce parte să ocolești un pericol punctual, folosind punctele cardinale. Numele mărcii spune unde este apa sigură: marca de nord se pune la nord de pericol și îți cere să treci pe la nord de ea; la fel pentru sud, est și vest. Toate sunt vopsite în combinații de negru și galben, iar cheia de citire rapidă este semnul de vârf, format din două conuri negre. La nord, ambele conuri arată în sus; la sud, ambele în jos, intuitiv ca pe hartă. La est, conurile stau cu bazele apropiate și vârfurile în afară, ca un ou; la vest, cu vârfurile față în față, ca un pahar cu picior, iar litera W de la vest îți amintește de paharul de vin. Poziția benzilor negre și galbene urmează aceeași logică: negrul stă acolo unde arată vârfurile conurilor. Când vezi în larg o geamandură galben-negru, algoritmul este: identifici conurile, îți spui numele punctului cardinal și treci de partea aceea a mărcii, lăsând pericolul de partea opusă. Simplu, elegant și obligatoriu de știut, pentru că mărcile cardinale sunt subiect garantat la examen.",
       },
       {
         title: "Alte mărci utile",
@@ -575,7 +575,7 @@ const LESSONS = [
           "Ape sigure: roșu-alb vertical, sferă roșie — poți trece pe oricare parte",
           "Marcă specială: galbenă (zone de agrement, cabluri, etc.)",
         ],
-        narration: "Mai există și alte mărci importante. Marca de pericol izolat este neagră cu o bandă roșie și are două sfere negre; se ancorează chiar deasupra pericolului, deci trebuie ocolită. Marca de ape sigure, cu dungi roșii și albe verticale și o sferă roșie la vârf, indică apă navigabilă de jur împrejur. Mărcile speciale, de culoare galbenă, semnalează zone de agrement, cabluri sau alte amenajări.",
+        narration: "Mai rămân trei semne speciale care completează alfabetul balizajului. Marca de pericol izolat se ancorează direct deasupra unui pericol de dimensiuni mici, o epavă, o stâncă, înconjurat de altfel de apă navigabilă. O recunoști după corpul negru cu una sau mai multe benzi late roșii și, semnul distinctiv absolut, două sfere negre suprapuse în vârf. Mesajul ei: nu te apropia, ocolește-o la distanță sigură pe oricare parte. Marca de ape sigure spune exact contrariul: în jurul meu totul este navigabil. Este singura marcă în dungi verticale roșii și albe, poartă o sferă roșie în vârf și marchează de obicei mijlocul unui șenal larg sau punctul de aterizare la intrarea în porturi. Poți trece pe oricare parte a ei. Marca specială, complet galbenă, cu semn de vârf în formă de X galben, nu vorbește despre pericole de navigație, ci delimitează zone cu destinație specială: perimetre de înot, zone militare, prize de apă, cabluri, parcuri de agrement nautic. Semnificația exactă o afli din hartă sau din avizele către navigatori. Recapitulând familia completă: laterale pentru marginile drumului, cardinale pentru ocolirea pericolelor, pericol izolat, ape sigure și speciale pentru restul mesajelor. Cu ele, apa devine un drum cu indicatoare.",
       },
     ],
     quiz: [
@@ -597,7 +597,7 @@ const LESSONS = [
           "Evită coliziunea din timp, cu manevre clare și vizibile",
           "Regulile se aplib tuturor; ai grijă și de nave mai mari/lente",
         ],
-        narration: "Regulile de evitare a coliziunilor, cunoscute ca RIPAM sau COLREG, cer în primul rând o veghe permanentă, vizuală și auditivă, și o viteză de siguranță adaptată condițiilor. Coliziunea se evită din timp, prin manevre clare și vizibile, făcute devreme și amplu. Regulile se aplică tuturor, dar trebuie să ții cont de navele mari sau greu manevrabile.",
+        narration: "Intrăm în regulile de drum, colregul internațional, numit la noi și ripam: codul rutier al apei. Înainte de cazurile concrete, trei principii de temelie. Primul: veghea permanentă. Conducătorul urmărește continuu, cu ochii și cu urechile, tot ce se întâmplă în jur: nave, înotători, geamanduri, schimbări de vreme. Muzica dată tare sau telefonul din mână sunt, pe apă, echivalentul condusului cu ochii închiși. Al doilea: viteza de siguranță. Nu există o cifră universală; viteza corectă depinde de vizibilitate, de aglomerație, de manevrabilitatea bărcii tale și de starea mării, și este întotdeauna aceea care îți lasă timp să eviți și să oprești. Al treilea: acțiunea de evitare se face din timp, amplu și vizibil. O schimbare mică și târzie de drum îl lasă pe celălalt să ghicească intențiile tale; o întoarcere clară, făcută devreme, se citește de departe și liniștește pe toată lumea. Mai adaugă un gram de realism marinăresc: regulile îți pot da prioritate, dar un cargou de două sute de metri nu poate opri în kilometrul lui de drum. Prudența față de navele mari și greu manevrabile nu este slăbiciune, este buna practică a mării.",
       },
       {
         title: "Întâlnirea față în față",
@@ -606,7 +606,7 @@ const LESSONS = [
           "Se trec pe partea babord (stânga) una față de cealaltă",
           "Manevră timpurie și clară",
         ],
-        narration: "Când două ambarcațiuni cu motor se apropie din sensuri opuse, față în față, fiecare trebuie să vireze la tribord, adică la dreapta. Astfel se vor trece una pe lângă cealaltă pe partea babord, ca pe un drum cu circulație pe dreapta. Manevra trebuie făcută din timp și suficient de amplu pentru a fi ușor de înțeles de cealaltă ambarcațiune.",
+        narration: "Primul caz concret: întâlnirea față în față, două ambarcațiuni cu motor venind una spre cealaltă pe drumuri opuse. Regula este simetrică și fără excepții: fiecare schimbă de drum spre tribord, adică spre dreapta, iar navele se încrucișează lăsându-și reciproc bordul babord, exact ca două mașini pe un drum cu circulație pe dreapta. Cum recunoști situația noaptea? Vezi ambele lumini laterale ale celuilalt, roșie și verde simultan, plus lumina albă de catarg deasupra: semn că prova lui este îndreptată fix spre tine. Ziua, vezi prova lui și valurile despicate simetric. Manevra corectă se face devreme și cu un unghi suficient de mare încât celălalt să o observe fără dubiu; dacă există vreo îndoială că te-a văzut sau că a înțeles, un semnal sonor scurt anunță: schimb de drum la tribord. Greșeala clasică a începătorilor este virajul la stânga, pe logica de pieton: te ferești din calea celuilalt exact în direcția în care se ferește și el, și traiectoriile se încrucișează din nou. Deci gravează regula: față în față înseamnă amândoi la dreapta, trecere babord la babord.",
       },
       {
         title: "Drumuri care se intersectează",
@@ -615,7 +615,7 @@ const LESSONS = [
           "Cel obligat să cedeze: reduce viteza sau trece prin spatele celeilalte",
           "Nava privilegiată își menține drumul și viteza",
         ],
-        narration: "Când drumurile a două ambarcațiuni cu motor se intersectează, are prioritate cea care vine din tribord, adică din dreapta ta. Ambarcațiunea obligată să cedeze trebuie să manevreze din timp, reducând viteza sau trecând prin spatele celeilalte. Nava care are prioritate, numită privilegiată, își menține în general drumul și viteza, pentru a fi previzibilă.",
+        narration: "Al doilea caz: drumurile se încrucișează, ca într-o intersecție fără semafor. Regula colreg: ambarcațiunea care o vede pe cealaltă venind din tribordul ei, adică din dreapta, este cea care cedează trecerea. În desen, tu ești barca din stânga-jos: celălalt îți vine din dreapta, deci tu ești nava care se ferește, iar el este nava privilegiată. Obligațiile sunt împărțite clar. Tu, cel care cedezi, acționezi din timp și vizibil: reduci viteza sau schimbi de drum astfel încât să treci prin pupa celuilalt, pe la spatele lui, cum arată săgeata galbenă. Evită să tai prin prova lui, chiar dacă pare că ai avea loc: este manevra care produce cele mai multe coliziuni. Celălalt, nava privilegiată, are și el o obligație, des uitată la examen: să își mențină drumul și viteza constante, ca manevra ta să se poată calcula; iar dacă vede că tu nu faci nimic și coliziunea devine iminentă, este obligat să manevreze el însuși pentru evitare. Prioritatea pe apă nu este un drept de a închide ochii, ci o împărțire a rolurilor pentru predictibilitate. Truc de memorare nocturn: dacă vezi lumina roșie a altei nave în drum de încrucișare, roșul îți spune stop, cedezi tu.",
       },
       {
         title: "Depășirea și ierarhia priorităților",
@@ -624,7 +624,7 @@ const LESSONS = [
           "Ambarcațiunile cu motor cedează celor cu vele, de pescuit, greu manevrabile",
           "Excepție: în șenal îngust, navele mari au prioritate practică",
         ],
-        narration: "Ambarcațiunea care depășește o alta trebuie întotdeauna să se ferească și să cedeze trecerea celei depășite, indiferent de tip. Există și o ierarhie a priorităților: ambarcațiunile cu motor cedează, de regulă, celor cu vele, celor angajate în pescuit sau navelor greu manevrabile. Totuși, în șenaluri înguste, navele mari care nu pot ieși din șenal au prioritate practică.",
+        narration: "Ultimele două piese ale regulilor de drum. Depășirea: oricine ajunge din urmă o altă ambarcațiune și vrea să o depășească este obligat să se țină la distanță de drumul ei, pe toată durata manevrei, până a trecut complet și liber. Nu contează cine e mai mare, mai rapid sau cu ce fel de propulsie merge fiecare: cel care depășește cedează, punct. Depășirea se face pe oricare bord este spațiu sigur, cu marjă generoasă și cu atenție la valul propriu. Apoi, ierarhia priorităților între categorii de nave, valabilă când drumurile se întâlnesc: ambarcațiunea cu motor cedează în fața navelor cu vele, a celor angajate în pescuit cu unelte care le limitează manevra și a navelor cu capacitate de manevră redusă sau nestăpâne pe manevră. Logica este pură fizică: cedează cel care poate manevra cel mai ușor, iar barca ta de agrement cu motor este aproape întotdeauna cea mai agilă de pe apă. Excepția pragmatică: în șenale înguste, navele mari care nu pot ieși din șenal au prioritate de facto, iar ambarcațiunile mici nu trebuie să le stânjenească trecerea. Recapitulare într-o frază: la dreapta când vii față în față, cedezi celui din dreapta la încrucișare, cedezi mereu când depășești, iar motorul cedează velelor.",
       },
     ],
     quiz: [
@@ -646,7 +646,7 @@ const LESSONS = [
           "Pupa: lumină albă (135°); Catarg/pe deasupra: alb",
           "Se aprind de la apus la răsărit și pe vizibilitate redusă",
         ],
-        narration: "Noaptea și pe vizibilitate redusă, ambarcațiunile poartă lumini de navigație. Lumina roșie marchează babordul, iar cea verde tribordul, fiecare acoperind un sector de o sută doisprezece grade și jumătate. La pupa se află o lumină albă, iar navele cu motor poartă și o lumină albă de catarg. Aceste lumini se aprind de la apus până la răsărit.",
+        narration: "Noaptea, navele vorbesc prin lumini, iar lecția de azi te învață să le citești. Fiecare navă cu motor în marș poartă un set standard: lumina roșie la babord și verde la tribord, fiecare acoperind un sector de o sută doisprezece grade și jumătate spre înainte; lumina albă de pupa, acoperind sectorul de o sută treizeci și cinci de grade dinspre înapoi; și una sau două lumini albe de catarg, vizibile de dinainte, deasupra celor laterale. Adunate, sectoarele acoperă exact cercul complet, iar asta nu e un accident: din orice direcție ai privi o navă, combinația de lumini pe care o vezi este unică și îți dezvăluie orientarea ei. Luminile se aprind de la apus până la răsărit și oricând vizibilitatea scade, pe ceață sau ploaie deasă. Înainte de orice ieșire care s-ar putea prelungi după lăsarea serii, verifică-ți luminile: un bec ars te face invizibil dintr-o direcție întreagă, iar celelalte nave decid manevrele lor pe baza a ceea ce văd, sau nu văd, la tine. Ancorat pe timp de noapte în afara porturilor, arborezi lumina albă circulară de ancoră, vizibilă de jur împrejur.",
       },
       {
         title: "Interpretarea luminilor altei nave",
@@ -655,7 +655,7 @@ const LESSONS = [
           "Vezi doar verde = o vezi pe tribordul ei; doar roșu = pe babordul ei",
           "Vezi doar alb (pupa) = o ajungi din urmă / merge în fața ta",
         ],
-        narration: "Luminile altei nave îți spun cum se mișcă. Dacă vezi simultan roșu și verde, plus o lumină albă deasupra, nava vine direct spre tine. Dacă vezi doar verde, o privești dinspre tribordul ei; dacă vezi doar roșu, dinspre babordul ei. Dacă vezi doar o lumină albă de pupa, înseamnă că o ajungi din urmă și trebuie să te fereștii ca cel care depășește.",
+        narration: "Acum aplicăm teoria: trei tablouri luminoase pe care trebuie să le decodezi instantaneu. Primul: vezi simultan roșu și verde, cu alb de catarg deasupra. Ambele lumini laterale vizibile înseamnă că privești nava exact din prova: vine spre tine. Este scenariul de întâlnire față în față, deci amândoi schimbați la tribord. Al doilea tablou: vezi doar verde. Sectorul verde acoperă bordul tribord al celeilalte nave, deci îi privești latura dreaptă; drumurile voastre probabil se încrucișează, iar culoarea verde îți dă indiciul: pentru el tu vii din babord... verifică geometria, dar verde tinde să însemne că poți menține. Al treilea: vezi doar roșu. Îi privești bordul babord, iar roșul funcționează ca un semafor: ea îți vine din tribordul tău, tu cedezi trecerea. De aici zicala navigatorilor: verde, drum liber; roșu, oprește-te și gândește. Al patrulea tablou, discret dar frecvent: o singură lumină albă joasă. Este pupa unei nave pe care o ajungi din urmă, iar cine ajunge din urmă cedează: ești în depășire cu toate obligațiile ei. Tot o singură lumină albă poartă și nava ancorată; diferența o face mișcarea relativă. Exersează aceste patru tablouri până devin reflex: la examen apar constant, iar pe apă noaptea nu ai timp de dicționar.",
       },
       {
         title: "Semnale sonore de manevră",
@@ -664,7 +664,7 @@ const LESSONS = [
           "Două sunete scurte = 'vireze la babord (stânga)'",
           "Trei sunete scurte = 'dau înapoi (marșarier)'",
         ],
-        narration: "Semnalele sonore comunică intențiile de manevră, mai ales când navele se văd. Un sunet scurt înseamnă vireze la tribord, adică la dreapta. Două sunete scurte înseamnă vireze la babord, la stânga. Trei sunete scurte înseamnă că nava dă înapoi, folosind marșarierul. Aceste semnale ajută la evitarea neînțelegerilor.",
+        narration: "Când navele se văd una pe alta, manevrele se anunță prin semnale sonore scurte, un cod morse minimal pe care îl emiți cu fluierul sau sirena bărcii; un mijloc de semnalizare sonoră este de altfel obligatoriu la bord. Un sunet scurt, de circa o secundă: îmi schimb drumul spre tribord, spre dreapta. Două sunete scurte: îmi schimb drumul spre babord, spre stânga. Trei sunete scurte: mașinile mele lucrează înapoi, adică am cuplat marșarierul și frânez sau dau înapoi. Observă logica de memorare: dreapta este prima opțiune, un singur semnal; stânga a doua, două semnale; iar cele trei sunete pentru marș înapoi seamănă cu bip-bip-bip-ul camioanelor care dau cu spatele. Aceste semnale nu cer voie și nu răspund la întrebări: ele anunță o manevră pe care o execuți, ca semnalizatorul la mașină. Le folosești în special când altă navă este aproape și manevra ta o privește direct: la întâlniri față în față, în încrucișări, în porturi aglomerate. Emite-le clar și la momentul manevrei, nu cu minute înainte. Iar când auzi tu semnalele altuia, tradu-le imediat: un scurt, virează dreapta; două, stânga; trei, frânează. Ele apar la examen în forma exact inversă: ce înseamnă sunetele pe care le auzi.",
       },
       {
         title: "Semnale de atenție și de vizibilitate redusă",
@@ -673,7 +673,7 @@ const LESSONS = [
           "Un sunet lung = 'ies dintr-un cot/port' sau semnal la vizibilitate redusă",
           "Pe ceață: semnale sonore periodice pentru a fi auzit",
         ],
-        narration: "Cinci sau mai multe sunete scurte și rapide reprezintă un semnal de atenție sau de îndoială, însemnând că nu înțelegi intențiile celeilalte nave sau că manevra ei te îngrijorează. Un sunet lung se folosește la ieșirea dintr-un cot de râu sau dintr-un port. Pe ceață și în vizibilitate redusă, navele emit semnale sonore periodice pentru a fi auzite de celelalte.",
+        narration: "Două situații speciale completează limbajul sonor. Prima: îndoiala. Dacă nu înțelegi intențiile celeilalte nave sau manevra ei te pune în pericol, emiți cel puțin cinci sunete scurte și rapide: semnalul de atenție și alarmă, echivalentul unui hei, trezește-te. Îl auzi des în porturi, când cineva taie calea altuia. A doua: vizibilitatea limitată de coturi, diguri sau construcții. Când te apropii de un cot de râu fără vizibilitate sau ieși dintr-un bazin portuar, anunți cu un sunet lung, de patru până la șase secunde; cine vine din partea opusă răspunde la fel, și amândoi știți unul de altul înainte să vă vedeți. Iar pe ceață, regulile se schimbă fundamental: reduci viteza drastic, postezi veghe suplimentară, asculți, și emiți periodic semnalele de ceață; nava cu motor în marș dă un sunet lung la cel mult două minute, iar oprită din marș, două sunete lungi. Radarul și GPS-ul ajută, dar urechea rămâne senzorul principal al bărcilor mici pe ceață. Sinceritatea marinărească spune așa: dacă prognoza anunță ceață serioasă, cea mai bună manevră a unei ambarcațiuni de agrement este să rămână la ponton. Cu asta, ai parcurs luminile și sunetele; mâine încheiem cu vremea și planificarea.",
       },
     ],
     quiz: [
@@ -695,7 +695,7 @@ const LESSONS = [
           "Semne: nori cumulonimbus, rafale, schimbare bruscă de vânt",
           "Buletine meteo marine înainte și în timpul ieșirii",
         ],
-        narration: "Vremea influențează direct siguranța pe apă. Urmărește vântul, valurile, vizibilitatea și presiunea atmosferică: o scădere rapidă a barometrului anunță adesea vreme rea. Norii cumulonimbus înalți, rafalele și schimbările bruște de vânt semnalează furtuni. Ascultă buletinele meteo marine înainte de plecare și, dacă se poate, și în timpul navigației.",
+        narration: "Ultima zi de curs începe cu cel mai capricios membru al echipajului: vremea. Câteva instrumente de citit cerul te scutesc de surprize. Barometrul măsoară presiunea atmosferică, iar tendința lui contează mai mult decât valoarea: o scădere rapidă, de câțiva milibari în câteva ore, anunță aproape întotdeauna înrăutățirea vremii, vânt și ploaie. Pe cer, urmărește norii cumulonimbus, turnurile acelea uriașe cu vârf de nicovală: sub ei se nasc furtunile, rafalele violente și schimbările bruște de direcție a vântului. O linie întunecată care avansează pe apă îți arată chiar rafala venind. Mai ține cont de un efect local: vântul care bate împotriva curentului unui fluviu ridică valuri scurte și abrupte, mult mai neplăcute decât ar sugera viteza vântului. Sursa ta de bază rămân buletinele meteo marine și aplicațiile dedicate, consultate obligatoriu înainte de plecare și, la ieșiri lungi, verificate și pe parcurs. Iar decizia grea, amânarea plecării, ia-o fără orgoliu: avertizările pentru ambarcațiuni mici există exact pentru barca ta. Pe apă nu există întâlnire atât de importantă încât să merite o furtună.",
       },
       {
         title: "Planificarea navigației",
@@ -704,7 +704,7 @@ const LESSONS = [
           "Maree/curenți, ore de lumină, autonomie de combustibil",
           "Plan alternativ dacă vremea se strică",
         ],
-        narration: "O navigație sigură începe cu un plan bun. Stabilește traseul, distanțele, punctele de reper și adăposturile posibile pe rută. Ține cont de curenți, de orele de lumină și de autonomia de combustibil. Pregătește întotdeauna un plan alternativ, ca să te poți adăposti rapid dacă vremea se strică sau apare o problemă tehnică.",
+        narration: "Planificarea voiajului leagă tot ce ai învățat într-un singur document simplu. Pe hartă, reală sau în aplicație, trasezi ruta prin puncte de drum, waypointuri, alese la vedere de repere ușor de recunoscut: faruri, geamanduri, promontorii. Măsori distanțele și le împarți la viteza ta de croazieră: obții timpul de marș, pe care îl compari cu orele de lumină disponibile, cu o marjă serioasă, pentru că pe apă totul durează mai mult decât pare. Din timp și consum derivezi combustibilul necesar, calculat cu regula treimilor pe care o știi deja: o treime dus, o treime întors, o treime rezervă neatinsă. Apoi studiezi harta pentru adăposturi: porturi, golfuri sau pontoane intermediare unde te poți retrage dacă vremea sau tehnica te trădează; ele sunt planul B, marcat cu portocaliu în desen. Notezi și particularitățile rutei: zone cu adâncimi mici, curenți, trafic comercial. La final, comunici planul unei persoane de pe mal, cu ora estimată de întoarcere și înțelegerea clară că o va alerta pe autorități dacă nu dai semn. Un plan de voiaj bun încape pe o jumătate de pagină și transformă orice imprevizibil dintr-o criză într-o schimbare de plan.",
       },
       {
         title: "Conduită responsabilă și mediul",
@@ -713,7 +713,7 @@ const LESSONS = [
           "Nu deranja înotătorii, fauna, alte ambarcațiuni (valul de etravă)",
           "Fără deversări; colectează deșeurile și combustibilul uzat",
         ],
-        narration: "Un conducător responsabil nu consumă alcool la comandă, respectă limitele de viteză și zonele reglementate și nu deranjează înotătorii, fauna sau alte ambarcațiuni prin valul de etravă. Protejează mediul: nu deversa combustibil sau deșeuri în apă, colectează gunoiul și folosește instalațiile portuare pentru reziduuri. Apa curată este responsabilitatea tuturor.",
+        narration: "Înainte de examen, să vorbim despre statutul tău pe apă: conducător responsabil. Alcoolul la comanda ambarcațiunii este interzis, exact ca la volan, și tratat de lege ca atare; reflexele, echilibrul și judecata sunt exact instrumentele de care depinde barca ta, iar soarele și legănarea amplifică orice pahar. Respectă limitele de viteză și zonele reglementate: perimetrele de înot marcate cu geamanduri galbene sunt sanctuare în care motorul tău nu are ce căuta, iar lângă plaje și pontoane valul tău de etravă rămâne responsabilitatea ta legală. Păstrează distanță de înotători, scafandri, semnalizați prin balize cu steag, caiace și fauna locului; păsările și peștii nu au unde depune plângere, dar colcăitul repetat al elicelor le distruge habitatul. Iar capitolul mediu este simplu și nenegociabil: nimic peste bord. Nici combustibil, nici ape uzate, nici gunoi; toate se aduc la mal, la instalațiile portuare de colectare. O pată de ulei de un litru acoperă o suprafață de apă uriașă. Apa curată pe care navighezi azi este moștenirea pe care o lași celor care navighează mâine, iar la examen, întrebările de legislație și mediu punctează exact aceste obligații.",
       },
       {
         title: "Recapitulare — ești pregătit pentru examen",
@@ -722,7 +722,7 @@ const LESSONS = [
           "Modul 3: siguranță și prim ajutor; Modul 4: navigație și reguli de drum",
           "Urmează simularea de examen — succes!",
         ],
-        narration: "Ai parcurs toate cele patru module: ambarcațiunea și motorul, manevrele și ancorarea, siguranța și primul ajutor, navigația și regulile de drum. Recapitulează termenii-cheie, regulile de prioritate, luminile și semnalele. Urmează simularea de examen, care combină întrebări din toate modulele. Ai încredere în ceea ce ai învățat. Mult succes la examen!",
+        narration: "Felicitări, marinare! Ai parcurs toate cele patru module ale cursului. Știi cum e construită ambarcațiunea și cum îi îngrijești motorul; stăpânești manevrele, de la plecarea de la ponton până la ancorarea cu calabrot filat de trei până la cinci ori adâncimea; ai în reflexe siguranța: vesta purtată, omul la apă, stingătorul țintit la baza focului, resuscitarea în ritmul treizeci la două; și citești apa ca pe un drum cu indicatoare: geamanduri laterale și cardinale, lumini roșii și verzi în noapte, sunete scurte și lungi, reguli de prioritate. Urmează simularea de examen: douăzeci și patru de întrebări extrase din toate categoriile reale de antrenament, cu prag de promovare de șaptezeci și cinci la sută, contra cronometru. Sfaturile mele de final: recitește o dată tabelele cu lumini și semnale sonore, cele mai punctate subiecte; citește fiecare întrebare până la capăt, pentru că variantele seamănă intenționat; și nu te grăbi, timpul ajunge. Dacă nu treci din prima, simularea se reia cu întrebări noi, iar fiecare încercare te face mai puternic. Îți mulțumesc că am navigat împreună aceste paisprezece zile. Vânt bun din pupa, mare liniștită și ne vedem pe apă, căpitane!",
       },
     ],
     quiz: [
