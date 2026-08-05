@@ -115,6 +115,19 @@ const App = {
       }
     });
 
+    // Sesiune server (dacă aplicația rulează în spatele serverului de auth).
+    // Servită static (file://, GitHub Pages etc.), cererea eșuează și rămâne ascuns.
+    fetch("/api/me").then((r) => (r.ok ? r.json() : null)).then((me) => {
+      if (!me) return;
+      const box = document.getElementById("userBox");
+      box.hidden = false;
+      document.getElementById("userEmail").textContent = me.email;
+      if (me.role === "admin") document.getElementById("adminLink").hidden = false;
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        fetch("/api/logout", { method: "POST" }).then(() => (location.href = "/login"));
+      });
+    }).catch(() => {});
+
     // Voce TTS: forțează încărcarea vocilor (dacă API-ul e disponibil).
     if (window.speechSynthesis && typeof window.speechSynthesis.getVoices === "function") {
       window.speechSynthesis.getVoices();

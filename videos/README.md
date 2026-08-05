@@ -1,11 +1,14 @@
-# Folder pentru fișiere video (opțional)
+# Videourile lecțiilor
 
-Pune aici fișiere video reale pentru a înlocui lecțiile narate cu diapozitive.
+`day01.mp4` … `day14.mp4` — câte un video per zi de curs (H.264 + AAC,
+1280×720), generate din conținutul lecțiilor cu vocea neuronală românească
+Piper *ro_RO-mihai-medium* (vezi `tools/README.md` pentru regenerare).
 
-- Nume fișier așteptat: `day01.mp4`, `day02.mp4`, … `day14.mp4`
-- Player-ul le detectează automat (prin `HEAD` request) și le redă în locul
-  diapozitivelor, păstrând urmărirea vizionării integrale înainte de deblocarea
-  verificării de cunoștințe.
+Player-ul le detectează automat și le redă cu urmărirea vizionării integrale
+(nu se poate sări peste porțiuni nevizionate) înainte de deblocarea verificării
+de cunoștințe.
 
-Dacă nu există niciun fișier aici, aplicația funcționează complet, folosind
-lecțiile narate în limba română (Web Speech API).
+- Poți înlocui oricare `dayNN.mp4` cu propriul tău clip.
+- Opțional, un `dayNN.webm` (VP9/Opus) servește ca alternativă pentru browsere
+  fără suport H.264; dacă browserul nu poate reda niciun format, lecția revine
+  automat la diapozitivele narate în aplicație.

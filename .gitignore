@@ -1,7 +1,8 @@
-# Video files (optional, large binaries) — keep them out of git by default.
-videos/*.mp4
-videos/*.webm
-videos/*.mov
+# Datele serverului (utilizatori, secrete) — NU se versionează niciodată.
+data/
+
+# Artefacte intermediare ale generatorului de videouri.
+tools/build/
 
 # OS / editor cruft
 .DS_Store

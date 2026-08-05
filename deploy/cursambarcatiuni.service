@@ -1,0 +1,28 @@
+# systemd unit — Curs Ambarcațiuni
+# Instalare:
+#   sudo cp deploy/cursambarcatiuni.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now cursambarcatiuni
+[Unit]
+Description=Curs Conducator de Ambarcatiune cu Motor (mini-LMS)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/cursambarcatiuni
+Environment=PORT=3000
+Environment=DATA_DIR=/opt/cursambarcatiuni/data
+ExecStart=/usr/bin/node /opt/cursambarcatiuni/server/server.js
+Restart=on-failure
+RestartSec=3
+
+# Întărire (hardening)
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/cursambarcatiuni/data
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

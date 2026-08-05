@@ -1,0 +1,17 @@
+# Caddyfile — reverse proxy cu HTTPS automat (Let's Encrypt).
+#
+# VARIANTA A — ai un domeniu (recomandat):
+#   Înlocuiește exemplu.ro cu domeniul tău (cu DNS A record spre IP-ul VPS-ului),
+#   apoi: sudo systemctl reload caddy
+#
+# exemplu.ro {
+#     reverse_proxy 127.0.0.1:3000
+#     encode gzip
+# }
+#
+# VARIANTA B — fără domeniu (doar IP): servește pe portul 80, fără TLS.
+# (Caddy nu poate emite certificat pentru un IP simplu.)
+:80 {
+    reverse_proxy 127.0.0.1:3000
+    encode gzip
+}

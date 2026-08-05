@@ -30,19 +30,27 @@ class LessonPlayer {
     this._destroyed = false;
   }
 
-  /* Verifică dacă există un fișier video real pentru ziua respectivă. */
-  async _hasRealVideo() {
-    const src = `videos/${this.lesson.id}.mp4`;
-    try {
-      const res = await fetch(src, { method: "HEAD" });
-      return res.ok ? src : null;
-    } catch (_) {
-      return null;
+  /* Caută un fișier video real pe care browserul curent îl POATE reda.
+   * Se verifică atât existența (HEAD), cât și suportul de codec
+   * (canPlayType) — altfel se folosesc diapozitivele narate. */
+  async _findPlayableVideo() {
+    const probe = document.createElement("video");
+    const candidates = [
+      { src: `videos/${this.lesson.id}.mp4`, type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' },
+      { src: `videos/${this.lesson.id}.webm`, type: 'video/webm; codecs="vp9, opus"' },
+    ];
+    for (const c of candidates) {
+      if (!probe.canPlayType(c.type)) continue;
+      try {
+        const res = await fetch(c.src, { method: "HEAD" });
+        if (res.ok) return c.src;
+      } catch (_) { /* fișier absent sau eroare de rețea → următorul */ }
     }
+    return null;
   }
 
   async render() {
-    const realSrc = await this._hasRealVideo();
+    const realSrc = await this._findPlayableVideo();
     if (this._destroyed) return;
     if (realSrc) {
       this.mode = "video";
@@ -57,7 +65,7 @@ class LessonPlayer {
   _renderVideo(src) {
     this.root.innerHTML = `
       <div class="player player--video">
-        <video id="lessonVideo" playsinline preload="metadata"></video>
+        <video id="lessonVideo" playsinline preload="metadata" controls controlslist="nodownload"></video>
         <div class="player__note">Video în redare. Vizionează integral pentru a debloca verificarea.</div>
       </div>`;
     const v = this.root.querySelector("#lessonVideo");
@@ -78,6 +86,13 @@ class LessonPlayer {
       }
     });
     v.addEventListener("ended", () => this._markComplete());
+    // Dacă redarea eșuează (codec lipsă, fișier corupt), revino la diapozitive.
+    v.addEventListener("error", () => {
+      if (this.completed || this._destroyed) return;
+      this.mode = "slides";
+      this.playing = false;
+      this._renderSlides();
+    });
   }
 
   /* ---------------- Modul DIAPOZITIVE + NARAȚIUNE ---------------- */

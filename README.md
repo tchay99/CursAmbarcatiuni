@@ -4,74 +4,83 @@ Un mini-LMS (Learning Management System) în limba română pentru pregătirea
 examenului de **conducător de ambarcațiune cu motor pentru agrement**, construit
 pe baza planului de studiu de 14 zile organizat în 4 module.
 
-Aplicația rulează integral în browser — **fără server, fără build, fără
-dependențe externe**. Progresul se salvează local (`localStorage`).
-
 ## Ce include
 
-- **14 lecții „video"**, câte una pe zi, organizate în 4 module:
+- **14 lecții video MP4** (în `videos/`), câte una pe zi, cu narațiune în
+  limba română (voce neuronală Piper `ro_RO-mihai-medium`), organizate în
+  4 module:
   1. Ambarcațiunea și motorul (zilele 1–4)
   2. Manevre și ancorare (zilele 5–7)
   3. Siguranță și prim ajutor (zilele 8–10)
   4. Navigație și reguli de drum (zilele 11–14)
-- **Narațiune în limba română** — fiecare lecție se redă ca o succesiune de
-  diapozitive sincronizate cu voce (Web Speech API, `ro-RO`), funcționând ca un
-  clip video. Vizionarea integrală este urmărită și necesară pentru a continua.
-- **Verificare de cunoștințe** la finalul fiecărei lecții. Prag: **75%**.
-- **Reluare la eșec** — dacă pici verificarea, **trebuie să revizionezi**
-  lecția înainte de a reîncerca, iar lecția următoare rămâne blocată.
+- **Vizionare integrală obligatorie** — nu se poate sări peste porțiuni
+  nevizionate; abia la final se deblochează verificarea.
+- **Verificare de cunoștințe** la finalul fiecărei lecții (prag **75%**).
+- **Reluare la eșec** — dacă pici verificarea, trebuie să revizionezi lecția
+  înainte de a reîncerca; lecția următoare rămâne blocată.
 - **Deblocare progresivă** — ziua N se deschide doar după promovarea zilei N-1.
-- **Simulare de examen final** — grilă cu 20 de întrebări (echilibrate pe
-  module), cronometru de 30 de minute, prag de promovare 70%. Se deblochează
-  după promovarea tuturor celor 14 lecții.
+- **Simulare de examen final** — 20 de întrebări grilă echilibrate pe module,
+  cronometru 30 min, prag 70%; se deblochează după toate cele 14 lecții.
+- **Autentificare și provizionare utilizatori** (opțional, pentru publicare):
+  server Node **fără dependențe npm** cu link privat de înregistrare, aprobare
+  din panou de admin și acces protejat la tot conținutul.
 
-## Cum se folosește
+Progresul lecțiilor se salvează în browser (localStorage).
 
-Deschide `index.html` într-un browser modern. Pentru cea mai bună experiență
-(inclusiv vocea în română), servește folderul local:
+## Rulare locală (fără autentificare)
 
 ```bash
-# Python 3
 python3 -m http.server 8000
-# apoi deschide http://localhost:8000
+# deschide http://localhost:8000
 ```
 
-> **Notă despre voce:** narațiunea folosește vocile de sinteză instalate în
-> sistem/browser. Dacă lipsește o voce `ro-RO`, aplicația continuă automat pe
-> bază de temporizare (diapozitivele avansează singure), astfel încât lecția
-> curge chiar și fără voce românească instalată. Pe Chrome/Edge vocile Google
-> `ro-RO` sunt de obicei disponibile online.
+## Rulare cu autentificare (modul „publicat")
 
-## Folosirea unor fișiere video reale (opțional)
+```bash
+# 1. Creează administratorul
+node server/server.js --create-admin adresa-ta@email.com ParolaSigura123
 
-Player-ul detectează automat fișiere video reale. Dacă pui un fișier
-`videos/dayNN.mp4` (ex. `videos/day01.mp4` … `videos/day14.mp4`), lecția
-respectivă va reda acel clip în locul diapozitivelor narate — cu tot cu
-urmărirea vizionării integrale (nu se poate sări înainte peste porțiuni
-nevizionate) înainte de deblocarea verificării.
+# 2. Pornește serverul
+node server/server.js          # implicit port 3000
+```
 
-Identificatorii lecțiilor sunt `day01` … `day14` (vezi `assets/js/content.js`).
+Apoi:
+- `/login` — autentificare;
+- `/register?token=...` — înregistrare DOAR prin linkul privat (afișat la
+  pornire sau în panoul de admin);
+- `/admin` — panoul de administrare: aprobi/respingi/ștergi utilizatori și
+  poți regenera linkul de înregistrare.
+
+Conturile noi intră „în așteptare" și nu au acces la curs până le aprobi.
+Un cont respins pierde accesul imediat, chiar dacă avea sesiune activă.
+
+## Publicare pe VPS (Oracle Cloud Free Tier)
+
+Vezi ghidul pas-cu-pas din **[DEPLOY.md](DEPLOY.md)** — creare VM, firewall,
+systemd, Caddy (HTTPS automat cu domeniu), provizionarea cursanților.
 
 ## Structura proiectului
 
 ```
-index.html                 – shell-ul aplicației
-assets/css/styles.css      – stiluri
+index.html                 – aplicația (shell)
 assets/js/content.js       – cele 14 lecții + banca de întrebări pentru examen
-assets/js/player.js        – player-ul lecției (video MP4 sau diapozitive narate)
+assets/js/player.js        – player video (MP4/WebM; fallback diapozitive narate)
 assets/js/quiz.js          – verificarea de cunoștințe + regula de reluare
-assets/js/exam.js          – simularea examenului final (cronometrat, grilă)
+assets/js/exam.js          – simularea examenului final
 assets/js/app.js           – navigare, progres, blocare/deblocare
-videos/                    – (opțional) pune aici dayNN.mp4
+videos/day01..14.mp4       – videourile lecțiilor (generate, comise în repo)
+server/server.js           – server cu autentificare (Node pur, zero dependențe)
+deploy/                    – systemd unit + Caddyfile
+tools/                     – generatorul de videouri (Playwright + Piper TTS + ffmpeg)
+DEPLOY.md                  – ghid de publicare pe Oracle Cloud Free Tier
 ```
 
 ## Personalizare
 
-- **Conținutul lecțiilor** (diapozitive + narațiune) și **întrebările** se
-  editează în `assets/js/content.js`.
-- **Pragul verificărilor** se modifică prin `QUIZ_PASS` în `assets/js/quiz.js`.
-- **Numărul de întrebări / timpul / pragul examenului** se modifică prin
-  `EXAM_CONFIG` în `assets/js/content.js`.
+- Conținutul lecțiilor și întrebările: `assets/js/content.js`
+  (după modificare, regenerează videourile — vezi `tools/README.md`).
+- Pragul verificărilor: `QUIZ_PASS` în `assets/js/quiz.js`.
+- Configurația examenului: `EXAM_CONFIG` în `assets/js/content.js`.
 
 ## Disclaimer
 
