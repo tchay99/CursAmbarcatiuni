@@ -1,88 +1,166 @@
 #!/usr/bin/env node
 /*
- * generate-videos.mjs — Generează fișierele video MP4 ale lecțiilor.
+ * generate-videos.mjs — Generează videourile MP4 ale lecțiilor (stil YouTube).
+ *
+ * Formatul cadrului (1280×720):
+ *   - ¾ din ecran: ILUSTRAȚIE EXPLICATIVĂ (diagramă SVG per scenă, tools/visuals.mjs)
+ *   - ¼ (coloana din dreapta): NARATOR animat (căpitan care „vorbește”)
+ *   - jos: SUBTITRĂRI sincronizate cu narațiunea (arse în video, stil YouTube)
  *
  * Pipeline:
- *   1. Încarcă lecțiile din assets/js/content.js.
- *   2. Randează fiecare diapozitiv ca PNG 1280x720 (Playwright + Chromium).
- *   3. Sintetizează narațiunea în română (Piper ro_RO-mihai-medium via
- *      sherpa-onnx, apelat prin tools/tts_batch.py).
- *   4. Asamblează cu ffmpeg: imagine + audio per diapozitiv, apoi concatenare
- *      în videos/dayNN.mp4.
- *
- * Cerințe: node + playwright + chromium, python3 + sherpa-onnx + soundfile,
- *          ffmpeg, modelul vits-piper-ro_RO-mihai-medium (vezi tools/README.md).
+ *   1. Lecții din assets/js/content.js; narațiunea se împarte în fraze.
+ *   2. TTS pe fraze (Piper ro_RO-mihai-medium via sherpa-onnx) → audio + timpi
+ *      exacți per frază (tools/tts_batch.py).
+ *   3. Cadre PNG cu Playwright: 3 stări de narator (gură închisă/deschisă,
+ *      clipit) → animație de vorbire la 4 fps.
+ *   4. ffmpeg: secvență de cadre + audio per scenă → concatenare → subtitrări
+ *      arse (libass) → videos/dayNN.mp4.
  *
  * Utilizare:
- *   node tools/generate-videos.mjs [--only day01,day02] [--model-dir DIR]
+ *   node tools/generate-videos.mjs [--only day01,day02] --model-dir DIR
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, linkSync, copyFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { sceneSVG } from "./visuals.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const BUILD = join(ROOT, "tools", "build");
 const OUT = join(ROOT, "videos");
+const FPS = 4;           // suficient pentru animația de vorbire; fișiere mici
+const TAIL_SEC = 0.7;    // liniște la finalul fiecărei scene
 
-// ---------- CLI ----------
+/* ---------- CLI ---------- */
 const args = process.argv.slice(2);
-const getArg = (name, def) => {
-  const i = args.indexOf(name);
-  return i !== -1 && args[i + 1] ? args[i + 1] : def;
-};
+const getArg = (n, d) => { const i = args.indexOf(n); return i !== -1 && args[i + 1] ? args[i + 1] : d; };
 const ONLY = (getArg("--only", "") || "").split(",").filter(Boolean);
 const MODEL_DIR = getArg("--model-dir", process.env.PIPER_RO_MODEL_DIR || "");
 if (!MODEL_DIR || !existsSync(join(MODEL_DIR, "tokens.txt"))) {
-  console.error("EROARE: specifică directorul modelului Piper românesc cu --model-dir sau PIPER_RO_MODEL_DIR");
-  console.error("(directorul trebuie să conțină ro_RO-mihai-medium.onnx, tokens.txt, espeak-ng-data/)");
+  console.error("EROARE: dă directorul modelului Piper cu --model-dir sau PIPER_RO_MODEL_DIR");
   process.exit(1);
 }
 
-// ---------- 1. Încarcă lecțiile ----------
+/* ---------- 1. Lecțiile + împărțirea în fraze ---------- */
 const contentSrc = readFileSync(join(ROOT, "assets/js/content.js"), "utf8");
 const sandbox = { window: {} };
 vm.runInNewContext(contentSrc, sandbox);
 const { LESSONS, MODULES } = sandbox.window.COURSE;
 const lessons = ONLY.length ? LESSONS.filter((l) => ONLY.includes(l.id)) : LESSONS;
 
-mkdirSync(join(BUILD, "slides"), { recursive: true });
-mkdirSync(join(BUILD, "audio"), { recursive: true });
-mkdirSync(join(BUILD, "segments"), { recursive: true });
+/* Împarte narațiunea în fraze de subtitrare (≤ ~90 caractere). */
+function splitPhrases(text) {
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const out = [];
+  for (const s of sentences) {
+    if (s.length <= 95) { out.push(s); continue; }
+    // împarte propozițiile lungi la virgule
+    let cur = "";
+    for (const part of s.split(/,\s*/)) {
+      const cand = cur ? cur + ", " + part : part;
+      if (cand.length > 90 && cur) { out.push(cur + ","); cur = part; }
+      else cur = cand;
+    }
+    if (cur) out.push(cur);
+  }
+  return out;
+}
+
+for (const d of ["slides", "audio", "segments", "frames"]) mkdirSync(join(BUILD, d), { recursive: true });
 mkdirSync(OUT, { recursive: true });
 
-// ---------- 2. Randează diapozitivele ca PNG ----------
-const slideHTML = (lesson, slide, idx, total, modTitle, modColor) => `<!DOCTYPE html>
-<html lang="ro"><head><meta charset="utf-8"><style>
+/* ---------- Narator (căpitan) — SVG cu stări ---------- */
+function narratorSVG({ mouthOpen, blink }) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
+  <defs><linearGradient id="jk" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#172554"/></linearGradient></defs>
+  <!-- umeri / sacou bleumarin -->
+  <path d="M 26,300 Q 30,214 78,196 L 162,196 Q 210,214 214,300 Z" fill="url(#jk)"/>
+  <path d="M 104,196 L 120,232 L 136,196 L 128,196 L 120,212 L 112,196 Z" fill="#f8fafc"/>
+  <path d="M 113,214 L 127,214 L 132,268 L 120,286 L 108,268 Z" fill="#b91c1c"/>
+  <!-- epoleți -->
+  <rect x="34" y="212" width="42" height="13" rx="6" fill="#facc15"/>
+  <rect x="164" y="212" width="42" height="13" rx="6" fill="#facc15"/>
+  <!-- gât + cap -->
+  <rect x="103" y="164" width="34" height="38" rx="12" fill="#eebd96"/>
+  <ellipse cx="120" cy="122" rx="52" ry="58" fill="#f6cfa8"/>
+  <!-- urechi -->
+  <ellipse cx="66" cy="128" rx="9" ry="13" fill="#eebd96"/><ellipse cx="174" cy="128" rx="9" ry="13" fill="#eebd96"/>
+  <!-- barbă căruntă -->
+  <path d="M 68,128 Q 64,196 120,202 Q 176,196 172,128 Q 168,168 120,172 Q 72,168 68,128 Z" fill="#cbd5e1"/>
+  <path d="M 96,158 Q 120,170 144,158 L 140,176 Q 120,186 100,176 Z" fill="#e2e8f0"/>
+  <!-- gura -->
+  ${mouthOpen
+    ? `<ellipse cx="120" cy="163" rx="13" ry="9" fill="#7c2d12"/><path d="M 109,160 Q 120,154 131,160" fill="none" stroke="#450a0a" stroke-width="2"/>`
+    : `<path d="M 106,162 Q 120,170 134,162" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>`}
+  <!-- nas -->
+  <path d="M 120,128 q -7,14 0,20 q 5,4 9,0" fill="none" stroke="#d9a173" stroke-width="4" stroke-linecap="round"/>
+  <!-- ochi -->
+  ${blink
+    ? `<path d="M 88,112 q 10,6 22,0 M 130,112 q 10,6 22,0" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>`
+    : `<circle cx="99" cy="112" r="7" fill="#1e293b"/><circle cx="141" cy="112" r="7" fill="#1e293b"/>
+       <circle cx="101" cy="110" r="2.4" fill="#fff"/><circle cx="143" cy="110" r="2.4" fill="#fff"/>`}
+  <!-- sprâncene cărunte -->
+  <path d="M 86,98 q 13,-8 27,-3 M 127,95 q 14,-5 27,3" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+  <!-- chipiu de căpitan -->
+  <path d="M 62,92 Q 66,44 120,42 Q 174,44 178,92 L 178,80 Q 174,36 120,34 Q 66,36 62,80 Z" fill="#f8fafc"/>
+  <path d="M 62,86 Q 120,64 178,86 L 178,74 Q 120,52 62,74 Z" fill="#f8fafc"/>
+  <path d="M 60,88 Q 120,70 180,88 L 180,100 Q 120,84 60,100 Z" fill="#0f172a"/>
+  <ellipse cx="120" cy="60" rx="60" ry="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="120" cy="92" r="9" fill="#facc15"/>
+  <path d="M 116,90 l 8,0 M 120,86 l 0,10" stroke="#92400e" stroke-width="2"/>
+</svg>`;
+}
+
+/* ---------- Șablonul cadrului video ---------- */
+function frameHTML(lesson, mod, slide, idx, total, state) {
+  const svg = sceneSVG(`${lesson.id}-s${idx + 1}`);
+  return `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { width:1280px; height:720px; overflow:hidden;
-    font-family:"DejaVu Sans","Segoe UI",system-ui,sans-serif;
-    background:linear-gradient(135deg,#0b1220,#14213d 60%,#1a2b52);
-    color:#eaf1ff; display:flex; flex-direction:column; padding:56px 72px; }
-  .top { display:flex; justify-content:space-between; align-items:center;
-    font-size:19px; color:#9fb3d1; margin-bottom:30px; }
-  .top .mod { color:${JSON.stringify(modColor)}; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-  h1 { font-size:46px; line-height:1.15; margin-bottom:38px; color:#fff; }
-  ul { list-style:none; }
-  li { font-size:30px; line-height:1.5; margin-bottom:24px; padding-left:40px; position:relative; }
-  li::before { content:"⚓"; position:absolute; left:0; font-size:24px; opacity:.8; }
-  .foot { margin-top:auto; display:flex; justify-content:space-between; align-items:center;
-    border-top:1px solid #ffffff22; padding-top:20px; font-size:18px; color:#9fb3d1; }
-  .day { background:#ffffff14; border-radius:10px; padding:6px 16px; }
+  body { width:1280px; height:720px; overflow:hidden; font-family:"DejaVu Sans",sans-serif;
+    background:linear-gradient(135deg,#0b1220,#14213d); display:flex; flex-direction:column; }
+  .top { height:64px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 26px; color:#cbd5e1; }
+  .top .mod { color:${JSON.stringify(mod.color)}; font-weight:bold; font-size:19px;
+    text-transform:uppercase; letter-spacing:.6px; }
+  .top .ttl { font-size:19px; color:#e2e8f0; font-weight:bold; }
+  .top .cnt { font-size:16px; opacity:.7; }
+  .main { flex:1; display:flex; gap:14px; padding:0 20px 18px; }
+  .visual { width:952px; background:#f8fafc; border-radius:16px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 30px rgba(0,0,0,.4); }
+  .visual svg { width:100%; height:100%; }
+  .narr { flex:1; display:flex; flex-direction:column; gap:10px; }
+  .avatar { flex:1; background:linear-gradient(180deg,#1e3a5f,#0f2440); border-radius:16px;
+    border:2px solid #2c4a73; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
+  .avatar svg { width:86%; }
+  .plate { background:#0f172a; border:2px solid #2c4a73; border-radius:12px; color:#e2e8f0;
+    text-align:center; padding:9px 6px; }
+  .plate .nm { font-weight:bold; font-size:19px; }
+  .plate .rl { font-size:13.5px; color:#93b1d4; margin-top:2px; }
+  .day { background:${JSON.stringify(mod.color)}; color:#fff; border-radius:12px;
+    text-align:center; padding:8px 6px; font-weight:bold; font-size:17px; }
 </style></head><body>
-  <div class="top"><span class="mod">${modTitle}</span><span>Diapozitiv ${idx + 1} / ${total}</span></div>
-  <h1>${slide.title}</h1>
-  <ul>${slide.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>
-  <div class="foot">
-    <span>Curs: Conducător de ambarcațiune cu motor</span>
-    <span class="day">Ziua ${lesson.day}: ${lesson.title}</span>
+  <div class="top">
+    <span class="mod">${mod.title}</span>
+    <span class="ttl">${slide.title}</span>
+    <span class="cnt">${idx + 1} / ${total}</span>
+  </div>
+  <div class="main">
+    <div class="visual">${svg}</div>
+    <div class="narr">
+      <div class="avatar">${narratorSVG(state)}</div>
+      <div class="plate"><div class="nm">Cpt. Mihai</div><div class="rl">instructorul tău</div></div>
+      <div class="day">Ziua ${lesson.day} din 14</div>
+    </div>
   </div>
 </body></html>`;
+}
 
-console.log("→ Randez diapozitivele (Playwright)...");
+/* ---------- 2. Randare cadre (3 stări per scenă) ---------- */
+console.log("→ Randez cadrele scenelor (Playwright)...");
 const pw = await import("playwright").catch(() => import("/opt/node22/lib/node_modules/playwright/index.js"));
 const chromium = (pw.default || pw).chromium;
 const browser = await chromium.launch({
@@ -90,51 +168,116 @@ const browser = await chromium.launch({
 });
 const page = await (await browser.newContext({ viewport: { width: 1280, height: 720 } })).newPage();
 
-const jobs = []; // {png, wav, seg, text}
+const STATES = [
+  { key: "a", mouthOpen: false, blink: false },
+  { key: "b", mouthOpen: true, blink: false },
+  { key: "c", mouthOpen: false, blink: true },
+];
+
+const scenes = []; // {lesson, base, pngs:{a,b,c}, wav, timings, seg, phrases}
 for (const lesson of lessons) {
   const mod = MODULES.find((m) => m.id === lesson.module);
   for (let i = 0; i < lesson.slides.length; i++) {
-    const s = lesson.slides[i];
     const base = `${lesson.id}-s${String(i + 1).padStart(2, "0")}`;
-    const png = join(BUILD, "slides", base + ".png");
-    await page.setContent(slideHTML(lesson, s, i, lesson.slides.length, mod.title, mod.color), { waitUntil: "load" });
-    await page.screenshot({ path: png });
-    jobs.push({ lesson: lesson.id, png, wav: join(BUILD, "audio", base + ".wav"), seg: join(BUILD, "segments", base + ".mp4"), text: s.narration });
+    const pngs = {};
+    for (const st of STATES) {
+      pngs[st.key] = join(BUILD, "slides", `${base}-${st.key}.png`);
+      await page.setContent(frameHTML(lesson, mod, lesson.slides[i], i, lesson.slides.length, st), { waitUntil: "load" });
+      await page.screenshot({ path: pngs[st.key] });
+    }
+    scenes.push({
+      lesson: lesson.id, base, pngs,
+      wav: join(BUILD, "audio", base + ".wav"),
+      timings: join(BUILD, "audio", base + ".json"),
+      seg: join(BUILD, "segments", base + ".mp4"),
+      phrases: splitPhrases(lesson.slides[i].narration),
+    });
   }
-  console.log(`   ${lesson.id}: ${lesson.slides.length} diapozitive`);
+  console.log(`   ${lesson.id}: ${lesson.slides.length} scene`);
 }
 await browser.close();
 
-// ---------- 3. Sinteză vocală (un singur proces python, modelul se încarcă o dată) ----------
-console.log("→ Generez narațiunea (Piper ro_RO-mihai-medium)...");
-const ttsManifest = jobs.map((j) => ({ text: j.text, out: j.wav }));
+/* ---------- 3. TTS pe fraze ---------- */
+console.log("→ Generez narațiunea pe fraze (Piper ro_RO-mihai-medium)...");
+const manifest = scenes.map((s) => ({ phrases: s.phrases, out: s.wav, timings: s.timings }));
 const manifestPath = join(BUILD, "tts_manifest.json");
-writeFileSync(manifestPath, JSON.stringify(ttsManifest));
+writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });
 
-// ---------- 4. Asamblare ffmpeg ----------
-console.log("→ Asamblez videourile (ffmpeg)...");
-for (const j of jobs) {
-  // Segment: imagine statică + audio; +0.6s liniște la final pentru respirație.
+/* ---------- 4. Segmente video cu animație de vorbire ---------- */
+console.log("→ Asamblez segmentele (ffmpeg)...");
+for (const s of scenes) {
+  const t = JSON.parse(readFileSync(s.timings, "utf8"));
+  s.audioDur = t.duration;
+  s.phraseTimings = t.phrases;
+  const segDur = t.duration + TAIL_SEC;
+  const nFrames = Math.ceil(segDur * FPS) + 1;
+
+  // Secvență de cadre: vorbire = alternanță a/b; liniștea de final = a; clipit la ~3s.
+  const dir = join(BUILD, "frames", s.base);
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(dir, { recursive: true });
+  for (let f = 0; f < nFrames; f++) {
+    const time = f / FPS;
+    let st;
+    if (time >= t.duration) st = "a";                    // tăcere la final
+    else if (f % 12 === 11) st = "c";                    // clipit
+    else st = f % 2 === 0 ? "a" : "b";                   // vorbire
+    const dst = join(dir, `f${String(f).padStart(4, "0")}.png`);
+    try { linkSync(s.pngs[st], dst); } catch (_) { copyFileSync(s.pngs[st], dst); }
+  }
+
   execFileSync("ffmpeg", [
     "-y", "-loglevel", "error",
-    "-loop", "1", "-i", j.png,
-    "-i", j.wav,
-    "-af", "apad=pad_dur=0.6",
-    "-c:v", "libx264", "-tune", "stillimage", "-pix_fmt", "yuv420p", "-r", "6",
+    "-framerate", String(FPS), "-i", join(dir, "f%04d.png"),
+    "-i", s.wav,
+    "-t", String(segDur),
+    "-c:v", "libx264", "-preset", "medium", "-crf", "24", "-pix_fmt", "yuv420p",
     "-c:a", "aac", "-b:a", "80k", "-ar", "22050", "-ac", "1",
-    "-shortest", j.seg,
+    s.seg,
   ]);
+  rmSync(dir, { recursive: true, force: true });
 }
 
+/* ---------- 5. Concatenare + subtitrări arse ---------- */
+console.log("→ Concatenez lecțiile și ard subtitrările...");
+const fmtSrt = (sec) => {
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s2 = Math.floor(sec % 60),
+    ms = Math.round((sec - Math.floor(sec)) * 1000);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s2).padStart(2, "0")},${String(ms).padStart(3, "0")}`;
+};
+
 for (const lesson of lessons) {
-  const segs = jobs.filter((j) => j.lesson === lesson.id);
-  const listFile = join(BUILD, `${lesson.id}.txt`);
-  writeFileSync(listFile, segs.map((j) => `file '${j.seg.replace(/'/g, "'\\''")}'`).join("\n"));
+  const ls = scenes.filter((s) => s.lesson === lesson.id);
+  // durate reale ale segmentelor (audio + tail; concat le însumează)
+  let offset = 0, srtIdx = 1;
+  const srtLines = [];
+  for (const s of ls) {
+    const probed = parseFloat(execFileSync("ffprobe", ["-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", s.seg]).toString());
+    for (const ph of s.phraseTimings) {
+      srtLines.push(`${srtIdx++}\n${fmtSrt(offset + ph.start)} --> ${fmtSrt(offset + Math.min(ph.end + 0.15, s.audioDur))}\n${ph.text}\n`);
+    }
+    s.realDur = probed;
+    offset += probed;
+  }
+  const srtPath = join(BUILD, `${lesson.id}.srt`);
+  writeFileSync(srtPath, srtLines.join("\n"));
+
+  const listPath = join(BUILD, `${lesson.id}.txt`);
+  writeFileSync(listPath, ls.map((s) => `file '${s.seg}'`).join("\n"));
+
   const out = join(OUT, `${lesson.id}.mp4`);
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", listFile, "-c", "copy", "-movflags", "+faststart", out]);
+  const style = "FontName=DejaVu Sans,FontSize=13,PrimaryColour=&H00ffffff,BackColour=&H58000000,BorderStyle=4,Outline=0,Shadow=0,MarginV=18,MarginL=28,MarginR=28,Alignment=2,WrapStyle=0";
+  execFileSync("ffmpeg", [
+    "-y", "-loglevel", "error",
+    "-f", "concat", "-safe", "0", "-i", listPath,
+    "-vf", `subtitles=filename=${srtPath}:force_style='${style}'`,
+    "-c:v", "libx264", "-preset", "medium", "-crf", "24", "-pix_fmt", "yuv420p",
+    "-c:a", "copy", "-movflags", "+faststart",
+    out,
+  ]);
   const dur = execFileSync("ffprobe", ["-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", out]).toString().trim();
-  console.log(`   ${lesson.id}.mp4 — ${Math.round(parseFloat(dur))}s`);
+  console.log(`   ${lesson.id}.mp4 — ${Math.round(parseFloat(dur))}s, ${ls.length} scene`);
 }
 
 console.log("✔ Gata. Videourile sunt în videos/.");

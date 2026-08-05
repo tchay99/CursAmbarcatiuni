@@ -28,7 +28,20 @@ node tools/generate-videos.mjs --model-dir ./vits-piper-ro_RO-mihai-medium
 node tools/generate-videos.mjs --only day03,day07 --model-dir ./vits-piper-ro_RO-mihai-medium
 ```
 
-Pipeline: diapozitive HTML → PNG 1280×720 (Playwright) → narațiune WAV
-(Piper TTS, voce neuronală românească) → segmente MP4 (H.264 + AAC, ffmpeg) →
-concatenare per lecție. Artefactele intermediare rămân în `tools/build/`
-(ignorat de git).
+## Formatul videoclipului (stil YouTube)
+
+- **¾ din cadru**: ilustrație explicativă per scenă — diagrame SVG desenate
+  programatic în `tools/visuals.mjs` (ambarcațiuni etichetate, geamanduri
+  IALA, reguli de drum, lumini de navigație etc.);
+- **¼ (coloana din dreapta)**: naratorul „Cpt. Mihai”, animat (gura se mișcă
+  în timpul vorbirii, clipește periodic);
+- **jos**: subtitrări sincronizate frază-cu-frază cu narațiunea, arse în video
+  (libass), ca la YouTube.
+
+Pipeline: narațiunea se împarte în fraze → TTS per frază (timpi exacți) →
+cadre PNG cu 3 stări de narator (Playwright) → animație 4 fps + audio per
+scenă (ffmpeg) → concatenare + subtitrări arse → `videos/dayNN.mp4`.
+Artefactele intermediare rămân în `tools/build/` (ignorat de git).
+
+Dacă modifici o ilustrație în `tools/visuals.mjs`, regenerezi doar lecțiile
+afectate cu `--only`.
