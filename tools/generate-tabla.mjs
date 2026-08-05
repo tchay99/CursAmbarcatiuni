@@ -31,7 +31,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const BUILD = join(ROOT, "tools", "build", "tabla");
 const OUT = join(ROOT, "videos", "tabla");
-const FPS = 6;
+const FPS = 12; // suficient de fin ca dezvăluirea să cadă pe cuvânt (±42ms)
 const TAIL_SEC = 0.7;
 
 const args = process.argv.slice(2);
@@ -68,13 +68,15 @@ function chapterScenes(ch) {
 
   // — cele 10 înmulțiri: vocea narează doar operația și rezultatul, într-o
   // singură propoziție (cuvintele scurte rostite izolat sunt „înghițite” de
-  // Piper); rezultatul de pe ecran se dezvăluie când vocea ajunge la el —
-  // momentul e estimat din poziția cuvântului-rezultat în propoziție
+  // Piper). Momentul în care vocea ajunge la rezultat NU poate fi estimat
+  // fiabil din poziția cuvântului în text (Piper lungește mult ultimul
+  // cuvânt), așa că sintetizăm separat prefixul („Doi ori patru fac”) ca
+  // sondă de timp și măsurăm durata lui reală de vorbire — scene.revealAt
+  // e completat în pasul de asamblare, din timings-ul sondei.
   ch.verses.forEach((v, i) => {
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-    const fact = `${cap(numWord(v.a))} ori ${numWord(v.b)} fac ${v.rWord}!`;
-    const revealFrac = fact.lastIndexOf(v.rWord) / fact.length;
-    scenes.push({
+    const prefix = `${cap(numWord(v.a))} ori ${numWord(v.b)} fac`;
+    const sc = {
       id: `v${String(i + 1).padStart(2, "0")}`,
       states: {
         q_a: verseHTML(ch, i, false, false),
@@ -82,15 +84,15 @@ function chapterScenes(ch) {
         res_a: verseHTML(ch, i, true, false),
         res_b: verseHTML(ch, i, true, true),
       },
-      phrases: [fact],
-      pick: (t, ph) => {
-        // durata utilă exclude liniștea pe care Piper o lasă la finalul
-        // frazei (~0,35s) — altfel rezultatul apare după ce a fost rostit
-        const f = ph[0];
-        const eff = Math.max(0.5, f.end - f.start - 0.35);
-        return t >= f.start + revealFrac * eff ? "res" : "q";
-      },
-    });
+      phrases: [`${prefix} ${v.rWord}!`],
+      probe: prefix,
+    };
+    sc.pick = (t, ph) => {
+      const f = ph[0];
+      const fallback = f.start + 0.6 * ((f.speechEnd ?? f.end) - f.start);
+      return t >= (sc.revealAt ?? fallback) ? "res" : "q";
+    };
+    scenes.push(sc);
   });
 
   // — finalul: lista completă rămâne pe ecran, cu o pauză lungă,
@@ -142,6 +144,12 @@ await browser.close();
 /* ---------- 2. Vocea (TTS pe fraze, cu timpi exacți) ---------- */
 console.log("→ Generez vocea (Piper ro_RO-mihai-medium)...");
 const manifest = scenes.map((s) => ({ phrases: s.scene.phrases, out: s.wav, timings: s.timings }));
+// sondele de timp: prefixul fiecărei înmulțiri, sintetizat separat doar ca
+// să-i măsurăm durata reală de vorbire (audio-ul sondei nu intră în video)
+for (const s of scenes.filter((x) => x.scene.probe)) {
+  s.probeTimings = join(BUILD, "audio", s.base + "-probe.json");
+  manifest.push({ phrases: [s.scene.probe], out: join(BUILD, "audio", s.base + "-probe.wav"), timings: s.probeTimings });
+}
 const manifestPath = join(BUILD, "tts_manifest.json");
 writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });
@@ -154,14 +162,28 @@ for (const s of scenes) {
   const segDur = t.duration + tail;
   const nFrames = Math.ceil(segDur * FPS) + 1;
 
+  // momentul dezvăluirii rezultatului = durata de vorbire măsurată a
+  // prefixului (sonda), cu o mică avans (lungirea de final a sondei +
+  // cuantizarea pe cadre) — astfel rezultatul apare chiar pe cuvânt
+  if (s.probeTimings) {
+    const probe = JSON.parse(readFileSync(s.probeTimings, "utf8")).phrases[0];
+    const f0 = t.phrases[0];
+    const speechDur = probe.speechEnd - probe.start;
+    s.scene.revealAt = Math.min(
+      Math.max(f0.start + 0.35, f0.start + speechDur - 0.12),
+      (f0.speechEnd ?? f0.end) - 0.15,
+    );
+  }
+
   const dir = join(BUILD, "frames", s.base);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
   for (let f = 0; f < nFrames; f++) {
     const time = f / FPS;
     const stateKey = s.scene.pick(time, t.phrases, t.duration);
-    // gura se mișcă doar cât se vorbește (nu în pauzele dintre fraze)
-    const speaking = t.phrases.some((p) => time >= p.start && time < p.end);
+    // gura se mișcă doar cât se vorbește efectiv (nu în liniștea de la
+    // finalul frazelor sau în pauzele dintre ele)
+    const speaking = t.phrases.some((p) => time >= p.start && time < (p.speechEnd ?? p.end));
     const mouth = speaking && f % 2 === 1 ? "b" : "a";
     const png = s.pngs[`${stateKey}_${mouth}`] || s.pngs[`${stateKey}_a`];
     const dst = join(dir, `f${String(f).padStart(4, "0")}.png`);

@@ -51,7 +51,12 @@ def main() -> None:
             sr = audio.sample_rate
             samples = np.asarray(audio.samples, dtype=np.float32)
             dur = len(samples) / sr
-            timings.append({"text": phrase, "start": round(t, 3), "end": round(t + dur, 3)})
+            # sfârșitul real al vorbirii (fără liniștea de final a sintezei),
+            # pentru sincronizarea exactă a graficii cu vocea
+            loud = np.flatnonzero(np.abs(samples) > 0.02 * (np.max(np.abs(samples)) or 1.0))
+            speech_end = (loud[-1] / sr) if len(loud) else dur
+            timings.append({"text": phrase, "start": round(t, 3), "end": round(t + dur, 3),
+                            "speechEnd": round(t + speech_end, 3)})
             chunks.append(samples)
             chunks.append(np.zeros(int(GAP_SEC * sr), dtype=np.float32))
             t += dur + GAP_SEC
