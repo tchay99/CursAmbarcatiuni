@@ -34,7 +34,7 @@ export const CHAPTERS = [
       { a: 1, b: 9, r: 9, rWord: "nouă" },
       { a: 1, b: 10, r: 10, rWord: "zece" },
     ],
-    outro: ["Bravo! Tabla cu unu e a ta!", "Ne vedem la înmulțirea cu doi!"],
+    outro: ["Bravo! Aceasta este toată tabla cu unu.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 2,
@@ -56,7 +56,7 @@ export const CHAPTERS = [
       { a: 2, b: 9, r: 18, rWord: "optsprezece" },
       { a: 2, b: 10, r: 20, rWord: "douăzeci" },
     ],
-    outro: ["Bravo! Dublul nu mai are secrete!", "Urmează înmulțirea cu trei!"],
+    outro: ["Bravo! Aceasta este toată tabla cu doi.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 3,
@@ -78,7 +78,7 @@ export const CHAPTERS = [
       { a: 3, b: 9, r: 27, rWord: "douăzeci și șapte" },
       { a: 3, b: 10, r: 30, rWord: "treizeci" },
     ],
-    outro: ["Bravo! Grădina ta de numere înflorește!", "Urmează înmulțirea cu patru!"],
+    outro: ["Bravo! Aceasta este toată tabla cu trei.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 4,
@@ -100,7 +100,7 @@ export const CHAPTERS = [
       { a: 4, b: 9, r: 36, rWord: "treizeci și șase" },
       { a: 4, b: 10, r: 40, rWord: "patruzeci" },
     ],
-    outro: ["Bravo! Coșul cu mere e plin!", "Urmează înmulțirea cu cinci!"],
+    outro: ["Bravo! Aceasta este toată tabla cu patru.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 5,
@@ -122,7 +122,7 @@ export const CHAPTERS = [
       { a: 5, b: 9, r: 45, rWord: "patruzeci și cinci" },
       { a: 5, b: 10, r: 50, rWord: "cincizeci" },
     ],
-    outro: ["Bravo! Ești harnică precum albinuțele!", "Urmează înmulțirea cu șase!"],
+    outro: ["Bravo! Aceasta este toată tabla cu cinci.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 6,
@@ -144,7 +144,7 @@ export const CHAPTERS = [
       { a: 6, b: 9, r: 54, rWord: "cincizeci și patru" },
       { a: 6, b: 10, r: 60, rWord: "șaizeci" },
     ],
-    outro: ["Bravo! Buburuzele îți poartă noroc la socotit!", "Urmează înmulțirea cu șapte!"],
+    outro: ["Bravo! Aceasta este toată tabla cu șase.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 7,
@@ -166,7 +166,7 @@ export const CHAPTERS = [
       { a: 7, b: 9, r: 63, rWord: "șaizeci și trei" },
       { a: 7, b: 10, r: 70, rWord: "șaptezeci" },
     ],
-    outro: ["Bravo! Cea mai grea tablă zboară acum cu tine!", "Urmează înmulțirea cu opt!"],
+    outro: ["Bravo! Aceasta este toată tabla cu șapte.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 8,
@@ -188,7 +188,7 @@ export const CHAPTERS = [
       { a: 8, b: 9, r: 72, rWord: "șaptezeci și doi" },
       { a: 8, b: 10, r: 80, rWord: "optzeci" },
     ],
-    outro: ["Bravo! Ai traversat oceanul numerelor!", "Urmează înmulțirea cu nouă!"],
+    outro: ["Bravo! Aceasta este toată tabla cu opt.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 9,
@@ -211,7 +211,7 @@ export const CHAPTERS = [
       { a: 9, b: 9, r: 81, rWord: "optzeci și unu" },
       { a: 9, b: 10, r: 90, rWord: "nouăzeci" },
     ],
-    outro: ["Bravo! Trucul lui nouă e magia ta!", "Urmează marele final: înmulțirea cu zece!"],
+    outro: ["Bravo! Aceasta este toată tabla cu nouă.", "Repet-o și tu, cu voce tare!"],
   },
   {
     n: 10,
@@ -233,6 +233,6 @@ export const CHAPTERS = [
       { a: 10, b: 9, r: 90, rWord: "nouăzeci" },
       { a: 10, b: 10, r: 100, rWord: "o sută" },
     ],
-    outro: ["Bravo! Ai ajuns la o sută!", "Toată tabla înmulțirii e acum a ta. Te felicit!"],
+    outro: ["Bravo! Ai terminat întreaga tablă a înmulțirii!", "Repet-o și tu, cu voce tare!"],
   },
 ];

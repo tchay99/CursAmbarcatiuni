@@ -9,7 +9,7 @@
  *             opt!”), iar pe ecran lista înmulțirilor capitolului se
  *             completează rând cu rând (cele precedente rămân la vedere);
  *             alături, rețeaua de obiecte a×b crește cu un rând per operație;
- *   outro   — „Bravo!” cu confetti.
+ *   outro   — lista completă rămâne pe ecran, de repetat cu voce tare.
  *
  * Pipeline (aceleași unelte ca generate-videos.mjs): stări de cadru randate cu
  * Playwright → TTS pe fraze cu timpi exacți (tools/tts_batch.py, Piper
@@ -84,19 +84,23 @@ function chapterScenes(ch) {
       },
       phrases: [fact],
       pick: (t, ph) => {
+        // durata utilă exclude liniștea pe care Piper o lasă la finalul
+        // frazei (~0,35s) — altfel rezultatul apare după ce a fost rostit
         const f = ph[0];
-        return t >= f.start + revealFrac * (f.end - f.start) ? "res" : "q";
+        const eff = Math.max(0.5, f.end - f.start - 0.35);
+        return t >= f.start + revealFrac * eff ? "res" : "q";
       },
     });
   });
 
-  // — outro —
+  // — finalul: lista completă rămâne pe ecran, cu o pauză lungă,
+  // ca să poată fi citită și repetată cu voce tare —
   scenes.push({
     id: "outro",
     states: { outro_a: outroHTML(ch, false), outro_b: outroHTML(ch, true) },
     phrases: ch.outro,
     pick: () => "outro",
-    tail: 1.3,
+    tail: 10,
   });
 
   return scenes;

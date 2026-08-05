@@ -10,7 +10,7 @@
  *   verse  — lista înmulțirilor capitolului, care se completează pe măsură
  *            ce vocea le narează (cele precedente rămân la vedere), plus
  *            rețeaua de obiecte a×b care crește cu un rând per operație;
- *   outro  — „Bravo!” cu confetti.
+ *   outro  — lista completă, lăsată pe ecran pentru repetare.
  */
 
 /* ---------- Obiectele tematice (definite o dată, folosite cu <use>) ---------- */
@@ -186,24 +186,31 @@ export function introHTML(ch, mouthOpen) {
   return shell(ch, `10 cântecele`, visual, bubble, { mouthOpen });
 }
 
-export function verseHTML(ch, vIdx, showResult, mouthOpen) {
-  const v = ch.verses[vIdx];
-  // lista capitolului — operațiile deja narate rămân completate, cea curentă
-  // e evidențiată, iar cele care urmează așteaptă cu rezultatul gol
+/*
+ * Lista capitolului: operațiile deja narate rămân completate, cea curentă
+ * (cur) e evidențiată, iar cele care urmează așteaptă cu rezultatul gol.
+ * cur = -1 → lista completă (folosită în scena finală).
+ */
+function listHTML(ch, cur, showResult) {
   const rows = ch.verses.map((w, i) => {
-    const done = i < vIdx || (i === vIdx && showResult);
-    const cur = i === vIdx;
+    const done = cur === -1 || i < cur || (i === cur && showResult);
+    const isCur = i === cur;
     let style = "opacity:.45;background:rgba(255,255,255,.12);color:#fff;";
-    if (done && !cur) style = "background:rgba(255,255,255,.9);color:#1e293b;";
-    if (cur) style = `background:${ch.theme.accent};color:#1c1917;transform:scale(1.05);box-shadow:0 0 18px ${ch.theme.accent};`;
+    if (done && !isCur) style = "background:rgba(255,255,255,.9);color:#1e293b;";
+    if (isCur) style = `background:${ch.theme.accent};color:#1c1917;transform:scale(1.05);box-shadow:0 0 18px ${ch.theme.accent};`;
     return `<div style="display:flex;align-items:center;justify-content:center;gap:10px;height:42px;
       border-radius:10px;font-weight:bold;font-size:27px;${style}">
       <span style="width:118px;text-align:right">${w.a} × ${w.b}</span>
       <span>=</span>
-      <span style="width:78px;text-align:left">${done ? w.r : cur ? "?" : ""}</span>
+      <span style="width:78px;text-align:left">${done ? w.r : isCur ? "?" : ""}</span>
     </div>`;
   }).join("");
-  const list = `<div style="width:420px;display:flex;flex-direction:column;gap:6px;justify-content:center;padding:8px 0">${rows}</div>`;
+  return `<div style="width:420px;display:flex;flex-direction:column;gap:6px;justify-content:center;padding:8px 0">${rows}</div>`;
+}
+
+export function verseHTML(ch, vIdx, showResult, mouthOpen) {
+  const v = ch.verses[vIdx];
+  const list = listHTML(ch, vIdx, showResult);
 
   const eq = `<div style="height:110px;display:flex;align-items:center;justify-content:center;gap:16px;
       color:#fff;font-size:64px;font-weight:bold;text-shadow:0 4px 12px rgba(0,0,0,.45)">
@@ -228,24 +235,19 @@ export function verseHTML(ch, vIdx, showResult, mouthOpen) {
     { mouthOpen, cheer: showResult });
 }
 
+/* Scena finală: lista completă rămâne pe ecran, ca să poată fi repetată. */
 export function outroHTML(ch, mouthOpen) {
-  let seed = ch.n * 37 + 11;
-  const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
-  const colors = ["#fbbf24", "#f472b6", "#4ade80", "#60a5fa", "#fb923c", "#a78bfa"];
-  let confetti = "";
-  for (let i = 0; i < 46; i++) {
-    confetti += `<rect x="${Math.round(rnd() * 940)}" y="${Math.round(rnd() * 430)}" width="11" height="17"
-      rx="3" fill="${colors[i % colors.length]}" opacity=".9"
-      transform="rotate(${Math.round(rnd() * 360)} ${Math.round(rnd() * 940)} ${Math.round(rnd() * 430)})"/>`;
-  }
-  const visual = `
-    <div style="flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
-      <svg style="position:absolute;inset:0" viewBox="0 0 952 460" xmlns="http://www.w3.org/2000/svg">${confetti}</svg>
-      <div style="position:relative;color:${ch.theme.accent};font-size:120px;font-weight:bold;
-        text-shadow:0 6px 0 rgba(0,0,0,.3)">BRAVO!</div>
-      <div style="position:relative;color:#fff;font-size:34px;font-weight:bold;text-align:center;
-        text-shadow:0 3px 8px rgba(0,0,0,.4);max-width:820px">${ch.outro[0].replace(/^Bravo!\s*/, "")}</div>
-    </div>`;
-  const bubble = `<span style="font-size:29px;font-weight:bold;color:#1e293b">${ch.outro[ch.outro.length - 1]}</span>`;
-  return shell(ch, `Felicitări!`, visual, bubble, { mouthOpen, cheer: true });
+  const title = `<div style="height:110px;display:flex;align-items:center;justify-content:center;gap:14px;
+      color:#fff;font-size:36px;font-weight:bold;white-space:nowrap;text-shadow:0 4px 12px rgba(0,0,0,.45)">
+    <span style="color:${ch.theme.accent}">★</span><span>Toată tabla cu ${ch.n}!</span>
+    <span style="color:${ch.theme.accent}">★</span>
+  </div>`;
+  const full = ch.verses[ch.verses.length - 1];
+  const right = `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
+    ${title}<div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, full, 480, 372)}</div>
+  </div>`;
+  const bubble = `<span style="font-size:30px;font-weight:bold;color:#1e293b">${ch.outro[ch.outro.length - 1]}</span>`;
+  return shell(ch, `Repetă cu voce tare!`,
+    `<div style="flex:1;display:flex;gap:14px">${listHTML(ch, -1, true)}${right}</div>`, bubble,
+    { mouthOpen, cheer: true });
 }
