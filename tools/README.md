@@ -48,18 +48,22 @@ afectate cu `--only`.
 
 ## Bonus: Cântecelul tablei înmulțirii (`videos/tabla/`)
 
-Un set separat de 10 videoclipuri educative pentru copii — un „cântecel” în
-rime pentru memorarea tablei înmulțirii, câte un capitol pentru înmulțirea
+Un set separat de 10 videoclipuri educative pentru copii — un „cântecel”
+ritmat pentru memorarea tablei înmulțirii, câte un capitol pentru înmulțirea
 cu 1 … cu 10 (pagina de vizionare: `tabla/index.html`):
 
-- versuri în rime în care rima „cheamă” rezultatul (îl anticipezi înainte să
-  fie rostit) — conținutul în `tools/tabla-content.mjs`;
+- pentru fiecare înmulțire, vocea numără cumulat („doi, patru, șase, opt”)
+  în timp ce grupele apar pe ecran, apoi rostește propoziția completă
+  („Doi ori patru fac opt!”) — conținutul în `tools/tabla-content.mjs`;
 - obiecte tematice per capitol (steluțe, rățuște, flori, mere, albinuțe…)
   care apar grup cu grup, cu totalurile cumulate sub fiecare grup — puntea
   vizuală de la adunarea repetată la înmulțire (`tools/tabla-visuals.mjs`);
-- rezultatul se dezvăluie exact pe silaba pe care vocea îl cântă;
+- rezultatul se dezvăluie exact când vocea îl rostește;
 - recapitulare cu numărarea din N în N și truc de memorare per capitol;
 - muzică de fundal veselă, sintetizată programatic (`tools/tabla_music.py`).
+
+Notă TTS: cuvintele scurte rostite izolat („opt!”) sunt trunchiate de vocea
+Piper — de aceea totul este formulat în propoziții sau perechi de numere.
 
 Regenerare (aceleași cerințe ca mai sus):
 

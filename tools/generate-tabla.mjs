@@ -75,16 +75,30 @@ function chapterScenes(ch) {
     }
     states.res_a = verseHTML(ch, i, v.b, true, false);
     states.res_b = verseHTML(ch, i, v.b, true, true);
+    // vocea numără cumulat („doi, patru, șase, opt”) cât apar grupele, apoi
+    // rostește propoziția completă; cuvintele scurte nu se rostesc izolat
+    // (Piper le „înghite”), deci totul stă în propoziții.
+    const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+    const countWords = ch.recapWords.slice(0, v.b);
+    const counting = countWords.join(", ") + ".";
+    const fact = `${cap(numWord(v.a))} ori ${numWord(v.b)} fac ${v.rWord}!`;
+    // pragurile (fracție din fraza de numărare) la care „cade” fiecare grup,
+    // ponderate cu lungimea cuvintelor (cele lungi durează mai mult)
+    let acc = 0;
+    const starts = countWords.map((w) => { const s = acc; acc += w.length + 2; return s / (counting.length || 1); });
     scenes.push({
       id: `v${String(i + 1).padStart(2, "0")}`,
       states,
-      phrases: [v.cue, `${numWord(v.a)} ori ${numWord(v.b)} fac`, `${v.rWord}!`],
+      phrases: v.b === 1 ? [fact] : [counting, fact],
       pick: (t, ph) => {
-        if (ph[2] && t >= ph[2].start - 0.05) return "res";
-        if (ph[1] && t >= ph[1].start) return `g${v.b}`;
-        const cue = ph[0];
-        const prog = Math.max(0, Math.min(1, (t - cue.start) / Math.max(0.3, cue.end - cue.start)));
-        return `g${Math.min(v.b, 1 + Math.floor(prog * v.b))}`;
+        const f = ph[ph.length - 1];
+        if (t >= f.start + 0.55 * (f.end - f.start)) return "res";
+        if (ph.length === 1 || t >= ph[1].start) return `g${v.b}`;
+        const c = ph[0];
+        const prog = Math.max(0, Math.min(1, (t - c.start) / Math.max(0.3, c.end - c.start)));
+        let k = 1;
+        for (let w = 1; w < starts.length; w++) if (prog >= starts[w]) k = w + 1;
+        return `g${k}`;
       },
     });
   });
@@ -95,14 +109,24 @@ function chapterScenes(ch) {
     recapStates[`r${k}_a`] = recapHTML(ch, k, false);
     recapStates[`r${k}_b`] = recapHTML(ch, k, true);
   }
+  // numerele se rostesc în perechi (nu izolat — Piper înghite cuvintele
+  // scurte singure); primul jeton al perechii se aprinde la începutul
+  // frazei, al doilea la mijlocul ei
+  const pairs = [];
+  for (let i = 0; i < ch.recapWords.length; i += 2) {
+    pairs.push(ch.recapWords[i] + ", " + ch.recapWords[i + 1] + (i + 2 >= ch.recapWords.length ? "!" : ","));
+  }
   scenes.push({
     id: "recap",
     states: recapStates,
-    phrases: [ch.recapIntro, ...ch.recapWords.map((w) => w + "!")],
+    phrases: [ch.recapIntro, ...pairs],
     pick: (t, ph) => {
       let lit = 0;
-      for (let i = 1; i < ph.length; i++) if (t >= ph[i].start - 0.03) lit = i;
-      return `r${lit}`;
+      for (let i = 1; i < ph.length; i++) {
+        if (t >= ph[i].start - 0.03) lit = 2 * i - 1;
+        if (t >= (ph[i].start + ph[i].end) / 2) lit = 2 * i;
+      }
+      return `r${Math.min(lit, 10)}`;
     },
   });
 

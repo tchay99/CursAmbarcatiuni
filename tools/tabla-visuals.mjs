@@ -9,7 +9,7 @@
  *   intro  — titlul capitolului + trucul de memorare;
  *   verse  — ecuația mare + grupele de obiecte care apar rând pe rând, cu
  *            totalurile cumulate sub fiecare grup (puntea de la adunarea
- *            repetată la înmulțire) + versul-rimă în bula de jos;
+ *            repetată la înmulțire) + numărarea cumulată în bula de jos;
  *   recap  — numărarea din N în N, cu jetoane care se aprind pe rând;
  *   outro  — „Bravo!” cu confetti.
  */
@@ -220,11 +220,13 @@ export function verseHTML(ch, vIdx, revealed, showResult, mouthOpen) {
       : `<span style="opacity:.55">?</span>`}
     ${showResult ? `<span style="font-size:56px">🎉</span>` : ""}
   </div>`;
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const counts = Array.from({ length: revealed }, (_, i) => v.a * (i + 1)).join(", ");
   const bubble = showResult
-    ? `<span style="font-size:29px;font-weight:bold;color:#334155">${v.cue}</span>
-       <span style="font-size:31px;font-weight:bold;color:#b45309">${numWord(v.a)} ori ${numWord(v.b)} — ${v.rWord}!</span>`
-    : `<span style="font-size:30px;font-weight:bold;color:#334155">${v.cue}</span>
-       <span style="font-size:30px;font-weight:bold;color:#94a3b8">${numWord(v.a)} ori ${numWord(v.b)} fac…</span>`;
+    ? `<span style="font-size:31px;font-weight:bold;color:#334155">${cap(numWord(v.a))} ori ${numWord(v.b)} fac</span>
+       <span style="font-size:35px;font-weight:bold;color:#b45309">${v.rWord}!</span>`
+    : `<span style="font-size:33px;font-weight:bold;color:#b45309">${counts}</span>
+       <span style="font-size:33px;font-weight:bold;color:#94a3b8">…</span>`;
   return shell(ch, `Cântecelul ${vIdx + 1} / 10`, eq + groupsHTML(ch, v, revealed, !showResult), bubble,
     { mouthOpen, cheer: showResult });
 }
