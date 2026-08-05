@@ -15,12 +15,15 @@ pe baza planului de studiu de 14 zile organizat în 4 module.
   4. Navigație și reguli de drum (zilele 11–14)
 - **Vizionare integrală obligatorie** — nu se poate sări peste porțiuni
   nevizionate; abia la final se deblochează verificarea.
-- **Verificare de cunoștințe** la finalul fiecărei lecții (prag **75%**).
+- **Verificare de cunoștințe** la finalul fiecărei lecții (prag **75%**):
+  4 întrebări din lecție + 2 întrebări reale din setul de antrenament ANR
+  al categoriei corespunzătoare.
 - **Reluare la eșec** — dacă pici verificarea, trebuie să revizionezi lecția
   înainte de a reîncerca; lecția următoare rămâne blocată.
 - **Deblocare progresivă** — ziua N se deschide doar după promovarea zilei N-1.
-- **Simulare de examen final** — 20 de întrebări grilă echilibrate pe module,
-  cronometru 30 min, prag 70%; se deblochează după toate cele 14 lecții.
+- **Simulare de examen final** — 24 de întrebări grilă din banca reală de
+  antrenament ANR (7 categorii), cronometru 30 min, prag 75%; se deblochează
+  după toate cele 14 lecții.
 - **Autentificare și provizionare utilizatori** (opțional, pentru publicare):
   server Node **fără dependențe npm** cu link privat de înregistrare, aprobare
   din panou de admin și acces protejat la tot conținutul.
@@ -63,7 +66,8 @@ systemd, Caddy (HTTPS automat cu domeniu), provizionarea cursanților.
 
 ```
 index.html                 – aplicația (shell)
-assets/js/content.js       – cele 14 lecții + banca de întrebări pentru examen
+assets/js/content.js       – cele 14 lecții + configurația examenului
+assets/js/questions-anr.js – banca de întrebări reale de antrenament ANR (568)
 assets/js/player.js        – player video (MP4/WebM; fallback diapozitive narate)
 assets/js/quiz.js          – verificarea de cunoștințe + regula de reluare
 assets/js/exam.js          – simularea examenului final

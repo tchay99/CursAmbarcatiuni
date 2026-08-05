@@ -19,7 +19,8 @@ import numpy as np
 import sherpa_onnx
 import soundfile as sf
 
-GAP_SEC = 0.22  # pauză între fraze
+GAP_SEC = 0.42   # pauză între fraze — respirație naturală între idei
+SPEED = 0.88     # <1 = vorbire mai lentă (length_scale invers în VITS)
 
 
 def main() -> None:
@@ -46,8 +47,9 @@ def main() -> None:
     sr = None
     for i, scene in enumerate(scenes, 1):
         chunks, timings, t = [], [], 0.0
-        for phrase in scene["phrases"]:
-            audio = tts.generate(phrase)
+        speech = scene.get("speech") or scene["phrases"]
+        for phrase, spoken in zip(scene["phrases"], speech):
+            audio = tts.generate(spoken, sid=0, speed=SPEED)
             sr = audio.sample_rate
             samples = np.asarray(audio.samples, dtype=np.float32)
             dur = len(samples) / sr

@@ -408,8 +408,10 @@ const App = {
       document.getElementById("examIntro").style.display = "none";
       // Sămânță derivată din numărul de încercări (întrebări diferite la reluare).
       const seed = 1000 + this.state.exam.attempts * 37 + this.lessonList().length;
+      // Banca reală ANR (7 categorii) dacă e disponibilă; altfel banca proprie.
+      const anr = (window.ANR_BANK || []).map((q) => ({ m: q.cat, q: q.q, options: q.options, answer: q.answer }));
       this.exam = new Exam(document.getElementById("examRoot"), {
-        bank: window.COURSE.EXAM_BANK,
+        bank: anr.length ? anr : window.COURSE.EXAM_BANK,
         config: cfg,
         seed,
         onFinish: (res) => {

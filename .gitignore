@@ -10,3 +10,6 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Exportul pentru designer (generat cu export-art.mjs)
+tools/art-export/

@@ -115,9 +115,38 @@ function narratorSVG({ mouthOpen, blink }) {
 </svg>`;
 }
 
+/* ---------- Ilustrația scenei: override din tools/art/ sau SVG programatic ----------
+ * Un designer poate pune dayNN-sM.svg sau dayNN-sM.png în tools/art/ — acele
+ * fișiere au prioritate în fața ilustrațiilor generate din visuals.mjs. */
+function sceneArt(key) {
+  const svgPath = join(__dirname, "art", `${key}.svg`);
+  if (existsSync(svgPath)) return readFileSync(svgPath, "utf8");
+  const pngPath = join(__dirname, "art", `${key}.png`);
+  if (existsSync(pngPath)) {
+    const b64 = readFileSync(pngPath).toString("base64");
+    return `<img src="data:image/png;base64,${b64}" style="width:100%;height:100%;object-fit:contain" alt="">`;
+  }
+  return sceneSVG(key);
+}
+
+/* ---------- Pronunție: text pentru TTS ≠ text pentru subtitrare ----------
+ * Vocea citește varianta fonetică; subtitrarea păstrează scrierea corectă. */
+const PRONUNCIATIONS = [
+  [/\bVHF\b/g, "ve-haș-ef"],
+  [/\bMAYDAY\b/gi, "meidei"],
+  [/\boutboard\b/gi, "autbord"],
+  [/\binboard\b/gi, "inbord"],
+  [/\bsterndrive\b/gi, "sterndraiv"],
+  [/\bRIB\b/g, "rib"],
+  [/\bDanforth\b/gi, "Danfort"],
+  [/\bCOLREG\b/g, "colreg"],
+  [/\bRIPAM\b/g, "ripam"],
+];
+const ttsText = (s) => PRONUNCIATIONS.reduce((t, [re, rep]) => t.replace(re, rep), s);
+
 /* ---------- Șablonul cadrului video ---------- */
 function frameHTML(lesson, mod, slide, idx, total, state) {
-  const svg = sceneSVG(`${lesson.id}-s${idx + 1}`);
+  const svg = sceneArt(`${lesson.id}-s${idx + 1}`);
   return `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { width:1280px; height:720px; overflow:hidden; font-family:"DejaVu Sans",sans-serif;
@@ -199,7 +228,11 @@ await browser.close();
 
 /* ---------- 3. TTS pe fraze ---------- */
 console.log("→ Generez narațiunea pe fraze (Piper ro_RO-mihai-medium)...");
-const manifest = scenes.map((s) => ({ phrases: s.phrases, out: s.wav, timings: s.timings }));
+const manifest = scenes.map((s) => ({
+  phrases: s.phrases,             // textul subtitrărilor (scriere corectă)
+  speech: s.phrases.map(ttsText), // textul citit de voce (fonetic)
+  out: s.wav, timings: s.timings,
+}));
 const manifestPath = join(BUILD, "tts_manifest.json");
 writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });

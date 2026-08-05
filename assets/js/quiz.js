@@ -9,9 +9,39 @@
  */
 
 const QUIZ_PASS = 0.75;
+const QUIZ_ANR_EXTRA = 2; // întrebări reale ANR adăugate fiecărei verificări
+
+/* Extrage n întrebări reale ANR din categoriile modulului lecției,
+ * cu opțiunile amestecate. */
+function pickAnrQuestions(lesson, n) {
+  const bank = window.ANR_BANK || [];
+  const cats = (window.COURSE.MODULE_CATS || {})[lesson.module] || [];
+  const pool = bank.filter((q) => cats.includes(q.cat));
+  const picked = [];
+  const used = new Set();
+  while (picked.length < n && used.size < pool.length) {
+    const i = Math.floor(Math.random() * pool.length);
+    if (used.has(i)) continue;
+    used.add(i);
+    const src = pool[i];
+    const opts = src.options.map((text, oi) => ({ text, correct: oi === src.answer }));
+    for (let j = opts.length - 1; j > 0; j--) {
+      const k = Math.floor(Math.random() * (j + 1));
+      [opts[j], opts[k]] = [opts[k], opts[j]];
+    }
+    picked.push({
+      q: src.q,
+      options: opts.map((o) => o.text),
+      answer: opts.findIndex((o) => o.correct),
+      explain: "Întrebare din setul oficial de antrenament pentru examenul ANR.",
+      anr: true,
+    });
+  }
+  return picked;
+}
 
 function renderQuiz(root, lesson, { unlocked, onPass, onFail }) {
-  const questions = lesson.quiz;
+  const questions = lesson.quiz.concat(pickAnrQuestions(lesson, QUIZ_ANR_EXTRA));
   const answers = new Array(questions.length).fill(null);
 
   function paint() {

@@ -45,3 +45,19 @@ Artefactele intermediare rămân în `tools/build/` (ignorat de git).
 
 Dacă modifici o ilustrație în `tools/visuals.mjs`, regenerezi doar lecțiile
 afectate cu `--only`.
+
+## Banca de întrebări ANR
+
+`assets/js/questions-anr.js` conține întrebările reale din seturile de
+antrenament ale simulatorului ANR (7 categorii, extrase automat din PDF-urile
+de recapitulare cu `pdftotext -layout` + parser pe stări). Verificările de
+lecție adaugă 2 întrebări reale din categoriile modulului; examenul final
+extrage 24 de întrebări echilibrate pe categorii.
+
+## Grafica scenelor — flux cu designer
+
+- `node tools/export-art.mjs` → `tools/art-export/` (SVG editabile + PNG
+  de referință + README cu reguli).
+- Fișierele reluate de designer se pun în `tools/art/` cu același nume
+  (`dayNN-sM.svg` sau `.png`) — generatorul le folosește automat în locul
+  ilustrațiilor programatice la următoarea regenerare.

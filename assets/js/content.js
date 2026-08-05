@@ -736,7 +736,15 @@ const LESSONS = [
 
 /* ============ BANCA DE ÎNTREBĂRI — SIMULAREA DE EXAMEN ============ */
 /* Se extrag aleator EXAM_CONFIG.count întrebări; prag de promovare EXAM_CONFIG.pass. */
-const EXAM_CONFIG = { count: 20, pass: 0.7, minutes: 30 };
+const EXAM_CONFIG = { count: 24, pass: 0.75, minutes: 30 };
+
+/* Categoriile ANR din care se extrag întrebări reale pentru fiecare modul. */
+const MODULE_CATS = {
+  1: ["marinarie", "legislatie"],
+  2: ["manevra", "marinarie"],
+  3: ["prim-ajutor", "legislatie"],
+  4: ["colreg", "navigatie", "rnd"],
+};
 
 const EXAM_BANK = [
   // Modul 1
@@ -781,4 +789,4 @@ const EXAM_BANK = [
 ];
 
 // Expune datele către restul aplicației
-window.COURSE = { MODULES, LESSONS, EXAM_CONFIG, EXAM_BANK };
+window.COURSE = { MODULES, LESSONS, EXAM_CONFIG, EXAM_BANK, MODULE_CATS };
