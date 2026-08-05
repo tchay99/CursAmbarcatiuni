@@ -32,7 +32,7 @@ const ROOT = resolve(__dirname, "..");
 const BUILD = join(ROOT, "tools", "build", "tabla");
 const OUT = join(ROOT, "videos", "tabla");
 const FPS = 12; // suficient de fin ca dezvăluirea să cadă pe cuvânt (±42ms)
-const TAIL_SEC = 0.7;
+const TAIL_SEC = 1.0; // pauză de respiro după fiecare operație
 
 const args = process.argv.slice(2);
 const getArg = (n, d) => { const i = args.indexOf(n); return i !== -1 && args[i + 1] ? args[i + 1] : d; };
@@ -66,20 +66,16 @@ function chapterScenes(ch) {
     pick: () => "intro",
   });
 
-  // — cele 10 înmulțiri: vocea narează operația și rezultatul în două fraze
-  // TTS, iar rezultatul de pe ecran apare pe DEBUTUL numărului rostit:
-  //   * număr „lung” (≥3 silabe sau compus) → poate fi rostit singur, deci
-  //     tăiem chiar înaintea lui („Șapte ori șase fac” + „patruzeci și doi!”)
-  //     — granița e cunoscută la eșantion din tts_batch;
-  //   * număr scurt (Piper îl „înghite” rostit izolat) → rămâne lipit de
-  //     „fac” („Doi ori patru” + „fac opt!”), iar dezvăluirea sare peste
-  //     durata lui „fac” (~0,3s, cuvânt identic în toate versurile).
-  // +0,05s compensează întârzierea de codare AAC a segmentelor.
+  // — cele 10 înmulțiri. Regula de ritm: GRAFICA ÎNTÂI, VOCEA DUPĂ —
+  // ecranul nou („7 × 6 = ?”) apare cu ~0,8s înaintea vocii (lead),
+  // rezultatul apare în pauza dintre cele două fraze, iar vocea îl
+  // rostește la ~0,5s DUPĂ apariție (gap mărit între fraze).
+  // Numerele scurte nu se rostesc izolat (Piper le „înghite”), deci rămân
+  // lipite de „fac”; cele lungi formează singure fraza a doua.
   ch.verses.forEach((v, i) => {
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
     const syllables = (v.rWord.match(/[aeiouăâî]/gi) || []).length;
     const standalone = v.rWord.includes(" ") || syllables >= 3;
-    const offset = standalone ? 0.05 : 0.35;
     scenes.push({
       id: `v${String(i + 1).padStart(2, "0")}`,
       states: {
@@ -91,9 +87,13 @@ function chapterScenes(ch) {
       phrases: standalone
         ? [`${cap(numWord(v.a))} ori ${numWord(v.b)} fac`, `${v.rWord}!`]
         : [`${cap(numWord(v.a))} ori ${numWord(v.b)}`, `fac ${v.rWord}!`],
+      lead: 0.8,
+      gap: 0.55,
       pick: (t, ph) => {
         if (!ph[1]) return "q";
-        const at = Math.min(ph[1].start + offset, (ph[1].speechEnd ?? ph[1].end) - 0.15);
+        // rezultatul apare imediat ce s-a terminat de rostit fraza 1,
+        // cu ~0,5s înainte ca vocea să înceapă fraza cu numărul
+        const at = Math.max((ph[0].speechEnd ?? ph[0].end) + 0.08, ph[1].start - 0.5);
         return t >= at ? "res" : "q";
       },
     });
@@ -105,6 +105,7 @@ function chapterScenes(ch) {
     id: "outro",
     states: { outro_a: outroHTML(ch, false), outro_b: outroHTML(ch, true) },
     phrases: ch.outro,
+    lead: 0.6,
     pick: () => "outro",
     tail: 10,
   });
@@ -147,7 +148,11 @@ await browser.close();
 
 /* ---------- 2. Vocea (TTS pe fraze, cu timpi exacți) ---------- */
 console.log("→ Generez vocea (Piper ro_RO-mihai-medium)...");
-const manifest = scenes.map((s) => ({ phrases: s.scene.phrases, out: s.wav, timings: s.timings }));
+const manifest = scenes.map((s) => ({
+  phrases: s.scene.phrases, out: s.wav, timings: s.timings,
+  ...(s.scene.lead ? { lead: s.scene.lead } : {}),
+  ...(s.scene.gap ? { gap: s.scene.gap } : {}),
+}));
 const manifestPath = join(BUILD, "tts_manifest.json");
 writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });

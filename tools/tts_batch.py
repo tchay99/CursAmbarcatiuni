@@ -5,7 +5,10 @@ Utilizare: python3 tts_batch.py MANIFEST.json MODEL_DIR
 
 MANIFEST.json (per scenă):
   [{"phrases": ["fraza 1", "fraza 2", ...], "out": "scena.wav",
-    "timings": "scena.json"}, ...]
+    "timings": "scena.json",
+    "lead": 0.8,   # opțional: liniște înaintea primei fraze (implicit 0)
+    "gap": 0.55},  # opțional: pauza dintre fraze (implicit GAP_SEC)
+   ...]
 
 Pentru fiecare scenă: sintetizează frazele, le concatenează (cu o pauză scurtă
 între ele) într-un singur WAV și scrie momentele de început/sfârșit ale
@@ -45,7 +48,11 @@ def main() -> None:
 
     sr = None
     for i, scene in enumerate(scenes, 1):
-        chunks, timings, t = [], [], 0.0
+        gap = float(scene.get("gap", GAP_SEC))
+        lead = float(scene.get("lead", 0.0))
+        chunks, timings, t = [], [], lead
+        if lead > 0:
+            chunks.append(np.zeros(int(lead * 22050), dtype=np.float32))
         for phrase in scene["phrases"]:
             audio = tts.generate(phrase)
             sr = audio.sample_rate
@@ -58,8 +65,8 @@ def main() -> None:
             timings.append({"text": phrase, "start": round(t, 3), "end": round(t + dur, 3),
                             "speechEnd": round(t + speech_end, 3)})
             chunks.append(samples)
-            chunks.append(np.zeros(int(GAP_SEC * sr), dtype=np.float32))
-            t += dur + GAP_SEC
+            chunks.append(np.zeros(int(gap * sr), dtype=np.float32))
+            t += dur + gap
         full = np.concatenate(chunks) if chunks else np.zeros(1, dtype=np.float32)
         sf.write(scene["out"], full, sr or 22050)
         with open(scene["timings"], "w", encoding="utf-8") as f:
