@@ -45,3 +45,28 @@ Artefactele intermediare rămân în `tools/build/` (ignorat de git).
 
 Dacă modifici o ilustrație în `tools/visuals.mjs`, regenerezi doar lecțiile
 afectate cu `--only`.
+
+## Bonus: Cântecelul tablei înmulțirii (`videos/tabla/`)
+
+Un set separat de 10 videoclipuri educative pentru copii — un „cântecel” în
+rime pentru memorarea tablei înmulțirii, câte un capitol pentru înmulțirea
+cu 1 … cu 10 (pagina de vizionare: `tabla/index.html`):
+
+- versuri în rime în care rima „cheamă” rezultatul (îl anticipezi înainte să
+  fie rostit) — conținutul în `tools/tabla-content.mjs`;
+- obiecte tematice per capitol (steluțe, rățuște, flori, mere, albinuțe…)
+  care apar grup cu grup, cu totalurile cumulate sub fiecare grup — puntea
+  vizuală de la adunarea repetată la înmulțire (`tools/tabla-visuals.mjs`);
+- rezultatul se dezvăluie exact pe silaba pe care vocea îl cântă;
+- recapitulare cu numărarea din N în N și truc de memorare per capitol;
+- muzică de fundal veselă, sintetizată programatic (`tools/tabla_music.py`).
+
+Regenerare (aceleași cerințe ca mai sus):
+
+```bash
+# toate capitolele
+node tools/generate-tabla.mjs --model-dir ./vits-piper-ro_RO-mihai-medium
+
+# doar anumite capitole
+node tools/generate-tabla.mjs --only 2,7 --model-dir ./vits-piper-ro_RO-mihai-medium
+```

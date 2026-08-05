@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cântecelul tablei înmulțirii</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Trebuchet MS","DejaVu Sans",sans-serif; min-height:100vh;
+    background:linear-gradient(140deg,#312e81,#6d28d9); color:#fff; padding:24px 16px 48px; }
+  .wrap { max-width:1000px; margin:0 auto; }
+  h1 { text-align:center; font-size:clamp(26px,4.5vw,42px); text-shadow:0 3px 10px rgba(0,0,0,.4); }
+  .sub { text-align:center; margin:10px 0 26px; opacity:.9; font-size:clamp(15px,2.2vw,19px); }
+  .player { background:rgba(0,0,0,.35); border-radius:20px; padding:14px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4); margin-bottom:26px; }
+  video { width:100%; border-radius:12px; display:block; background:#000; }
+  .now { text-align:center; font-weight:bold; font-size:19px; margin-top:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
+  .chap { border:0; cursor:pointer; border-radius:16px; padding:14px 10px; text-align:center;
+    font-family:inherit; font-weight:bold; color:#1c1917; font-size:17px;
+    box-shadow:0 6px 18px rgba(0,0,0,.3); transition:transform .15s; }
+  .chap:hover { transform:scale(1.05); }
+  .chap.active { outline:4px solid #fff; }
+  .chap .big { font-size:44px; display:block; }
+  .chap .obj { font-size:26px; display:block; margin-top:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>♪ Cântecelul tablei înmulțirii</h1>
+  <p class="sub">Alege un capitol, cântă împreună cu Steluțul Socotel și tabla se lipește singură de tine!</p>
+  <div class="player">
+    <video id="video" controls playsinline></video>
+    <div class="now" id="now"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+  const CHAPTERS = [
+    { n:1,  obj:"⭐", nume:"steluțe",   c:"#fde68a" },
+    { n:2,  obj:"🦆", nume:"rățuște",   c:"#bae6fd" },
+    { n:3,  obj:"🌸", nume:"flori",     c:"#fbcfe8" },
+    { n:4,  obj:"🍎", nume:"mere",      c:"#bbf7d0" },
+    { n:5,  obj:"🐝", nume:"albinuțe",  c:"#fef08a" },
+    { n:6,  obj:"🐞", nume:"buburuze",  c:"#fecaca" },
+    { n:7,  obj:"🎈", nume:"baloane",   c:"#fed7aa" },
+    { n:8,  obj:"🐠", nume:"peștișori", c:"#a5f3fc" },
+    { n:9,  obj:"🦋", nume:"fluturași", c:"#ddd6fe" },
+    { n:10, obj:"🍬", nume:"bomboane",  c:"#f9a8d4" },
+  ];
+  const grid = document.getElementById("grid");
+  const video = document.getElementById("video");
+  const now = document.getElementById("now");
+
+  function play(ch, scroll) {
+    video.src = "../videos/tabla/tabla-" + String(ch.n).padStart(2, "0") + ".mp4";
+    now.textContent = "Capitolul " + ch.n + " — înmulțirea cu " + ch.n + " (" + ch.nume + " " + ch.obj + ")";
+    document.querySelectorAll(".chap").forEach((b) => b.classList.toggle("active", +b.dataset.n === ch.n));
+    if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+    video.play().catch(() => {});
+  }
+
+  CHAPTERS.forEach((ch) => {
+    const b = document.createElement("button");
+    b.className = "chap";
+    b.style.background = ch.c;
+    b.dataset.n = ch.n;
+    b.innerHTML = '<span class="big">× ' + ch.n + '</span><span class="obj">' + ch.obj + "</span>" + ch.nume;
+    b.onclick = () => play(ch, true);
+    grid.appendChild(b);
+  });
+
+  // la finalul unui capitol trece singur la următorul
+  video.addEventListener("ended", () => {
+    const cur = +document.querySelector(".chap.active")?.dataset.n || 0;
+    const next = CHAPTERS.find((c) => c.n === cur + 1);
+    if (next) play(next, false);
+  });
+
+  play(CHAPTERS[0], false);
+</script>
+</body>
+</html>
