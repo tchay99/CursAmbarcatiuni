@@ -5,10 +5,10 @@
  * Pentru fiecare capitol N (înmulțirea cu 1 … cu 10) produce
  * videos/tabla/tabla-NN.mp4 cu structura:
  *   intro   — titlul + trucul de memorare al capitolului;
- *   10 versuri — „N × M = ?”: grupele de obiecte tematice apar rând pe rând
- *             (cu totaluri cumulate — adunarea repetată devine înmulțire),
- *             iar rezultatul se dezvăluie exact când vocea îl cântă;
- *   recap   — numărarea din N în N, jetoanele se aprind în ritmul vocii;
+ *   10 înmulțiri — vocea narează operația și rezultatul („Doi ori patru fac
+ *             opt!”), iar pe ecran lista înmulțirilor capitolului se
+ *             completează rând cu rând (cele precedente rămân la vedere);
+ *             alături, rețeaua de obiecte a×b crește cu un rând per operație;
  *   outro   — „Bravo!” cu confetti.
  *
  * Pipeline (aceleași unelte ca generate-videos.mjs): stări de cadru randate cu
@@ -25,7 +25,7 @@ import { execFileSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CHAPTERS } from "./tabla-content.mjs";
-import { introHTML, verseHTML, recapHTML, outroHTML, numWord } from "./tabla-visuals.mjs";
+import { introHTML, verseHTML, outroHTML, numWord } from "./tabla-visuals.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -66,68 +66,28 @@ function chapterScenes(ch) {
     pick: () => "intro",
   });
 
-  // — versuri —
+  // — cele 10 înmulțiri: vocea narează doar operația și rezultatul, într-o
+  // singură propoziție (cuvintele scurte rostite izolat sunt „înghițite” de
+  // Piper); rezultatul de pe ecran se dezvăluie când vocea ajunge la el —
+  // momentul e estimat din poziția cuvântului-rezultat în propoziție
   ch.verses.forEach((v, i) => {
-    const states = {};
-    for (let k = 0; k <= v.b; k++) {
-      states[`g${k}_a`] = verseHTML(ch, i, k, false, false);
-      states[`g${k}_b`] = verseHTML(ch, i, k, false, true);
-    }
-    states.res_a = verseHTML(ch, i, v.b, true, false);
-    states.res_b = verseHTML(ch, i, v.b, true, true);
-    // vocea numără cumulat („doi, patru, șase, opt”) cât apar grupele, apoi
-    // rostește propoziția completă; cuvintele scurte nu se rostesc izolat
-    // (Piper le „înghite”), deci totul stă în propoziții.
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-    const countWords = ch.recapWords.slice(0, v.b);
-    const counting = countWords.join(", ") + ".";
     const fact = `${cap(numWord(v.a))} ori ${numWord(v.b)} fac ${v.rWord}!`;
-    // pragurile (fracție din fraza de numărare) la care „cade” fiecare grup,
-    // ponderate cu lungimea cuvintelor (cele lungi durează mai mult)
-    let acc = 0;
-    const starts = countWords.map((w) => { const s = acc; acc += w.length + 2; return s / (counting.length || 1); });
+    const revealFrac = fact.lastIndexOf(v.rWord) / fact.length;
     scenes.push({
       id: `v${String(i + 1).padStart(2, "0")}`,
-      states,
-      phrases: v.b === 1 ? [fact] : [counting, fact],
+      states: {
+        q_a: verseHTML(ch, i, false, false),
+        q_b: verseHTML(ch, i, false, true),
+        res_a: verseHTML(ch, i, true, false),
+        res_b: verseHTML(ch, i, true, true),
+      },
+      phrases: [fact],
       pick: (t, ph) => {
-        const f = ph[ph.length - 1];
-        if (t >= f.start + 0.55 * (f.end - f.start)) return "res";
-        if (ph.length === 1 || t >= ph[1].start) return `g${v.b}`;
-        const c = ph[0];
-        const prog = Math.max(0, Math.min(1, (t - c.start) / Math.max(0.3, c.end - c.start)));
-        let k = 1;
-        for (let w = 1; w < starts.length; w++) if (prog >= starts[w]) k = w + 1;
-        return `g${k}`;
+        const f = ph[0];
+        return t >= f.start + revealFrac * (f.end - f.start) ? "res" : "q";
       },
     });
-  });
-
-  // — recapitulare (numărare din N în N) —
-  const recapStates = {};
-  for (let k = 0; k <= 10; k++) {
-    recapStates[`r${k}_a`] = recapHTML(ch, k, false);
-    recapStates[`r${k}_b`] = recapHTML(ch, k, true);
-  }
-  // numerele se rostesc în perechi (nu izolat — Piper înghite cuvintele
-  // scurte singure); primul jeton al perechii se aprinde la începutul
-  // frazei, al doilea la mijlocul ei
-  const pairs = [];
-  for (let i = 0; i < ch.recapWords.length; i += 2) {
-    pairs.push(ch.recapWords[i] + ", " + ch.recapWords[i + 1] + (i + 2 >= ch.recapWords.length ? "!" : ","));
-  }
-  scenes.push({
-    id: "recap",
-    states: recapStates,
-    phrases: [ch.recapIntro, ...pairs],
-    pick: (t, ph) => {
-      let lit = 0;
-      for (let i = 1; i < ph.length; i++) {
-        if (t >= ph[i].start - 0.03) lit = 2 * i - 1;
-        if (t >= (ph[i].start + ph[i].end) / 2) lit = 2 * i;
-      }
-      return `r${Math.min(lit, 10)}`;
-    },
   });
 
   // — outro —

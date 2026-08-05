@@ -48,18 +48,18 @@ afectate cu `--only`.
 
 ## Bonus: Cântecelul tablei înmulțirii (`videos/tabla/`)
 
-Un set separat de 10 videoclipuri educative pentru copii — un „cântecel”
-ritmat pentru memorarea tablei înmulțirii, câte un capitol pentru înmulțirea
-cu 1 … cu 10 (pagina de vizionare: `tabla/index.html`):
+Un set separat de 10 videoclipuri educative pentru copii, pentru memorarea
+tablei înmulțirii, câte un capitol pentru înmulțirea cu 1 … cu 10 (pagina de
+vizionare: `tabla/index.html`):
 
-- pentru fiecare înmulțire, vocea numără cumulat („doi, patru, șase, opt”)
-  în timp ce grupele apar pe ecran, apoi rostește propoziția completă
-  („Doi ori patru fac opt!”) — conținutul în `tools/tabla-content.mjs`;
-- obiecte tematice per capitol (steluțe, rățuște, flori, mere, albinuțe…)
-  care apar grup cu grup, cu totalurile cumulate sub fiecare grup — puntea
-  vizuală de la adunarea repetată la înmulțire (`tools/tabla-visuals.mjs`);
-- rezultatul se dezvăluie exact când vocea îl rostește;
-- recapitulare cu numărarea din N în N și truc de memorare per capitol;
+- vocea narează simplu fiecare operație și rezultatul ei („Doi ori patru fac
+  opt!”) — conținutul în `tools/tabla-content.mjs`;
+- pe ecran, lista înmulțirilor capitolului se completează rând cu rând, iar
+  operațiile deja narate rămân la vedere (`tools/tabla-visuals.mjs`);
+- alături, o rețea de obiecte tematice per capitol (steluțe, rățuște, flori,
+  mere, albinuțe…) crește cu un rând la fiecare operație, iar rezultatul se
+  dezvăluie exact când vocea îl rostește;
+- truc de memorare per capitol în intro;
 - muzică de fundal veselă, sintetizată programatic (`tools/tabla_music.py`).
 
 Notă TTS: cuvintele scurte rostite izolat („opt!”) sunt trunchiate de vocea

@@ -4,10 +4,9 @@
  * 10 capitole (înmulțirea cu 1 … cu 10), fiecare cu:
  *   - theme:  obiectul vizual al capitolului + culorile scenei;
  *   - intro:  salutul + trucul de memorare al capitolului;
- *   - verses: cele 10 înmulțiri — vocea numără cumulat („doi, patru, șase,
- *             opt”) cât timp apar grupele, apoi rostește propoziția completă
- *             („Doi ori patru fac opt!”);
- *   - recap:  numărarea din N în N (skip counting), rostită în perechi;
+ *   - verses: cele 10 înmulțiri — vocea narează operația și rezultatul
+ *             („Doi ori patru fac opt!”), iar lista de pe ecran se
+ *             completează rând cu rând;
  *   - outro:  încurajarea de final.
  *
  * `a`,`b` = factorii; `r` = rezultatul; `rWord` = rezultatul în litere (TTS).
@@ -35,8 +34,6 @@ export const CHAPTERS = [
       { a: 1, b: 9, r: 9, rWord: "nouă" },
       { a: 1, b: 10, r: 10, rWord: "zece" },
     ],
-    recapIntro: "Hai să numărăm din unu în unu:",
-    recapWords: ["unu", "doi", "trei", "patru", "cinci", "șase", "șapte", "opt", "nouă", "zece"],
     outro: ["Bravo! Tabla cu unu e a ta!", "Ne vedem la înmulțirea cu doi!"],
   },
   {
@@ -59,8 +56,6 @@ export const CHAPTERS = [
       { a: 2, b: 9, r: 18, rWord: "optsprezece" },
       { a: 2, b: 10, r: 20, rWord: "douăzeci" },
     ],
-    recapIntro: "Numărăm din doi în doi:",
-    recapWords: ["doi", "patru", "șase", "opt", "zece", "doisprezece", "paisprezece", "șaisprezece", "optsprezece", "douăzeci"],
     outro: ["Bravo! Dublul nu mai are secrete!", "Urmează înmulțirea cu trei!"],
   },
   {
@@ -83,8 +78,6 @@ export const CHAPTERS = [
       { a: 3, b: 9, r: 27, rWord: "douăzeci și șapte" },
       { a: 3, b: 10, r: 30, rWord: "treizeci" },
     ],
-    recapIntro: "Numărăm din trei în trei:",
-    recapWords: ["trei", "șase", "nouă", "doisprezece", "cincisprezece", "optsprezece", "douăzeci și unu", "douăzeci și patru", "douăzeci și șapte", "treizeci"],
     outro: ["Bravo! Grădina ta de numere înflorește!", "Urmează înmulțirea cu patru!"],
   },
   {
@@ -107,8 +100,6 @@ export const CHAPTERS = [
       { a: 4, b: 9, r: 36, rWord: "treizeci și șase" },
       { a: 4, b: 10, r: 40, rWord: "patruzeci" },
     ],
-    recapIntro: "Numărăm din patru în patru:",
-    recapWords: ["patru", "opt", "doisprezece", "șaisprezece", "douăzeci", "douăzeci și patru", "douăzeci și opt", "treizeci și doi", "treizeci și șase", "patruzeci"],
     outro: ["Bravo! Coșul cu mere e plin!", "Urmează înmulțirea cu cinci!"],
   },
   {
@@ -131,8 +122,6 @@ export const CHAPTERS = [
       { a: 5, b: 9, r: 45, rWord: "patruzeci și cinci" },
       { a: 5, b: 10, r: 50, rWord: "cincizeci" },
     ],
-    recapIntro: "Numărăm din cinci în cinci:",
-    recapWords: ["cinci", "zece", "cincisprezece", "douăzeci", "douăzeci și cinci", "treizeci", "treizeci și cinci", "patruzeci", "patruzeci și cinci", "cincizeci"],
     outro: ["Bravo! Ești harnică precum albinuțele!", "Urmează înmulțirea cu șase!"],
   },
   {
@@ -155,8 +144,6 @@ export const CHAPTERS = [
       { a: 6, b: 9, r: 54, rWord: "cincizeci și patru" },
       { a: 6, b: 10, r: 60, rWord: "șaizeci" },
     ],
-    recapIntro: "Numărăm din șase în șase:",
-    recapWords: ["șase", "doisprezece", "optsprezece", "douăzeci și patru", "treizeci", "treizeci și șase", "patruzeci și doi", "patruzeci și opt", "cincizeci și patru", "șaizeci"],
     outro: ["Bravo! Buburuzele îți poartă noroc la socotit!", "Urmează înmulțirea cu șapte!"],
   },
   {
@@ -179,8 +166,6 @@ export const CHAPTERS = [
       { a: 7, b: 9, r: 63, rWord: "șaizeci și trei" },
       { a: 7, b: 10, r: 70, rWord: "șaptezeci" },
     ],
-    recapIntro: "Numărăm din șapte în șapte:",
-    recapWords: ["șapte", "paisprezece", "douăzeci și unu", "douăzeci și opt", "treizeci și cinci", "patruzeci și doi", "patruzeci și nouă", "cincizeci și șase", "șaizeci și trei", "șaptezeci"],
     outro: ["Bravo! Cea mai grea tablă zboară acum cu tine!", "Urmează înmulțirea cu opt!"],
   },
   {
@@ -203,8 +188,6 @@ export const CHAPTERS = [
       { a: 8, b: 9, r: 72, rWord: "șaptezeci și doi" },
       { a: 8, b: 10, r: 80, rWord: "optzeci" },
     ],
-    recapIntro: "Numărăm din opt în opt:",
-    recapWords: ["opt", "șaisprezece", "douăzeci și patru", "treizeci și doi", "patruzeci", "patruzeci și opt", "cincizeci și șase", "șaizeci și patru", "șaptezeci și doi", "optzeci"],
     outro: ["Bravo! Ai traversat oceanul numerelor!", "Urmează înmulțirea cu nouă!"],
   },
   {
@@ -228,8 +211,6 @@ export const CHAPTERS = [
       { a: 9, b: 9, r: 81, rWord: "optzeci și unu" },
       { a: 9, b: 10, r: 90, rWord: "nouăzeci" },
     ],
-    recapIntro: "Numărăm din nouă în nouă:",
-    recapWords: ["nouă", "optsprezece", "douăzeci și șapte", "treizeci și șase", "patruzeci și cinci", "cincizeci și patru", "șaizeci și trei", "șaptezeci și doi", "optzeci și unu", "nouăzeci"],
     outro: ["Bravo! Trucul lui nouă e magia ta!", "Urmează marele final: înmulțirea cu zece!"],
   },
   {
@@ -252,8 +233,6 @@ export const CHAPTERS = [
       { a: 10, b: 9, r: 90, rWord: "nouăzeci" },
       { a: 10, b: 10, r: 100, rWord: "o sută" },
     ],
-    recapIntro: "Numărăm din zece în zece:",
-    recapWords: ["zece", "douăzeci", "treizeci", "patruzeci", "cincizeci", "șaizeci", "șaptezeci", "optzeci", "nouăzeci", "o sută"],
     outro: ["Bravo! Ai ajuns la o sută!", "Toată tabla înmulțirii e acum a ta. Te felicit!"],
   },
 ];

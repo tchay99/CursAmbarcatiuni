@@ -7,10 +7,9 @@
  *
  * Scenele unui capitol:
  *   intro  — titlul capitolului + trucul de memorare;
- *   verse  — ecuația mare + grupele de obiecte care apar rând pe rând, cu
- *            totalurile cumulate sub fiecare grup (puntea de la adunarea
- *            repetată la înmulțire) + numărarea cumulată în bula de jos;
- *   recap  — numărarea din N în N, cu jetoane care se aprind pe rând;
+ *   verse  — lista înmulțirilor capitolului, care se completează pe măsură
+ *            ce vocea le narează (cele precedente rămân la vedere), plus
+ *            rețeaua de obiecte a×b care crește cu un rând per operație;
  *   outro  — „Bravo!” cu confetti.
  */
 
@@ -106,44 +105,22 @@ export function mascotSVG({ mouthOpen = false, cheer = false } = {}) {
 const NUM_WORDS = ["", "unu", "doi", "trei", "patru", "cinci", "șase", "șapte", "opt", "nouă", "zece"];
 export const numWord = (n) => NUM_WORDS[n];
 
-/* Grupele de obiecte pentru versul a×b: b grupe a câte a obiecte. */
-function groupsHTML(ch, verse, revealed, highlightLast) {
+/*
+ * Rețeaua de obiecte pentru a×b: b rânduri a câte a obiecte — crește cu un
+ * rând la fiecare operație a capitolului (modelul „array” al înmulțirii).
+ */
+function arrayHTML(ch, verse, panelW, panelH) {
   const { a, b } = verse;
-  const cols = b <= 5 ? b : 5;
-  const rows = b > 5 ? 2 : 1;
-  const areaW = 908, areaH = rows === 1 ? 320 : 348;
-  const cellW = Math.min(200, Math.floor(areaW / cols) - 8);
-  const cellH = Math.floor(areaH / rows) - 8;
-  const orows = a <= 5 ? 1 : 2;
-  const ocols = Math.ceil(a / orows);
-  const os = Math.max(16, Math.min(84, Math.floor((cellW - 26) / ocols) - 3, Math.floor((cellH - 56) / orows) - 3));
-  const cards = [];
-  for (let g = 0; g < b; g++) {
-    const shown = g < revealed;
-    const bounce = highlightLast && g === revealed - 1;
-    let objs = "";
-    if (shown) {
-      const usedCols = Math.min(a, ocols);
-      const gw = usedCols * (os + 4), gh = orows * (os + 4);
-      for (let i = 0; i < a; i++) {
-        const r = Math.floor(i / ocols), c = i % ocols;
-        const inRow = r === orows - 1 && a % ocols !== 0 ? a % ocols : usedCols;
-        const rowW = inRow * (os + 4);
-        objs += `<svg viewBox="0 0 40 40" style="position:absolute;width:${os}px;height:${os}px;
-          left:${Math.round((cellW - rowW) / 2 + c * (os + 4) + 2)}px;top:${Math.round(6 + (cellH - 44 - gh) / 2 + r * (os + 4))}px"><use href="#ob"/></svg>`;
-      }
+  const os = Math.max(16, Math.min(46, Math.floor(panelW / a) - 4, Math.floor(panelH / b) - 4));
+  const gw = a * (os + 4), gh = b * (os + 4);
+  let objs = "";
+  for (let r = 0; r < b; r++) {
+    for (let c = 0; c < a; c++) {
+      objs += `<svg viewBox="0 0 40 40" style="position:absolute;width:${os}px;height:${os}px;
+        left:${Math.round((panelW - gw) / 2 + c * (os + 4))}px;top:${Math.round((panelH - gh) / 2 + r * (os + 4))}px"><use href="#ob"/></svg>`;
     }
-    cards.push(`<div style="position:relative;width:${cellW}px;height:${cellH}px;border-radius:16px;
-      background:${shown ? ch.theme.card : "rgba(255,255,255,.25)"};
-      border:3px ${shown ? "solid " + ch.theme.accent : "dashed rgba(255,255,255,.45)"};
-      ${bounce ? "transform:scale(1.06);box-shadow:0 0 22px " + ch.theme.accent + ";" : ""}">
-      ${objs}
-      ${shown ? `<div style="position:absolute;left:50%;bottom:5px;transform:translateX(-50%);
-        background:${ch.theme.accent};color:#1c1917;font-weight:bold;font-size:${cellH > 130 ? 24 : 20}px;
-        border-radius:999px;padding:1px 14px;border:2px solid rgba(0,0,0,.25)">${a * (g + 1)}</div>` : ""}
-    </div>`);
   }
-  return `<div style="flex:1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;align-content:center">${cards.join("")}</div>`;
+  return `<div style="position:relative;width:${panelW}px;height:${panelH}px">${objs}</div>`;
 }
 
 /* ---------- Șablonul general al cadrului (1280×720) ---------- */
@@ -209,46 +186,46 @@ export function introHTML(ch, mouthOpen) {
   return shell(ch, `10 cântecele`, visual, bubble, { mouthOpen });
 }
 
-export function verseHTML(ch, vIdx, revealed, showResult, mouthOpen) {
+export function verseHTML(ch, vIdx, showResult, mouthOpen) {
   const v = ch.verses[vIdx];
-  const eq = `<div style="height:118px;display:flex;align-items:center;justify-content:center;gap:20px;
-      color:#fff;font-size:76px;font-weight:bold;text-shadow:0 4px 12px rgba(0,0,0,.45)">
+  // lista capitolului — operațiile deja narate rămân completate, cea curentă
+  // e evidențiată, iar cele care urmează așteaptă cu rezultatul gol
+  const rows = ch.verses.map((w, i) => {
+    const done = i < vIdx || (i === vIdx && showResult);
+    const cur = i === vIdx;
+    let style = "opacity:.45;background:rgba(255,255,255,.12);color:#fff;";
+    if (done && !cur) style = "background:rgba(255,255,255,.9);color:#1e293b;";
+    if (cur) style = `background:${ch.theme.accent};color:#1c1917;transform:scale(1.05);box-shadow:0 0 18px ${ch.theme.accent};`;
+    return `<div style="display:flex;align-items:center;justify-content:center;gap:10px;height:42px;
+      border-radius:10px;font-weight:bold;font-size:27px;${style}">
+      <span style="width:118px;text-align:right">${w.a} × ${w.b}</span>
+      <span>=</span>
+      <span style="width:78px;text-align:left">${done ? w.r : cur ? "?" : ""}</span>
+    </div>`;
+  }).join("");
+  const list = `<div style="width:420px;display:flex;flex-direction:column;gap:6px;justify-content:center;padding:8px 0">${rows}</div>`;
+
+  const eq = `<div style="height:110px;display:flex;align-items:center;justify-content:center;gap:16px;
+      color:#fff;font-size:64px;font-weight:bold;text-shadow:0 4px 12px rgba(0,0,0,.45)">
     <span>${v.a}</span><span style="color:${ch.theme.accent}">×</span><span>${v.b}</span><span>=</span>
     ${showResult
-      ? `<span style="background:${ch.theme.accent};color:#1c1917;border-radius:22px;padding:0 30px;
-          border:5px solid #fff;box-shadow:0 0 34px ${ch.theme.accent}">${v.r}</span>`
+      ? `<span style="background:${ch.theme.accent};color:#1c1917;border-radius:18px;padding:0 24px;
+          border:4px solid #fff;box-shadow:0 0 30px ${ch.theme.accent}">${v.r}</span>`
       : `<span style="opacity:.55">?</span>`}
-    ${showResult ? `<span style="font-size:56px">🎉</span>` : ""}
   </div>`;
+  const right = `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
+    ${eq}<div style="flex:1;display:flex;align-items:center">${arrayHTML(ch, v, 480, 372)}</div>
+  </div>`;
+
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const counts = Array.from({ length: revealed }, (_, i) => v.a * (i + 1)).join(", ");
   const bubble = showResult
     ? `<span style="font-size:31px;font-weight:bold;color:#334155">${cap(numWord(v.a))} ori ${numWord(v.b)} fac</span>
        <span style="font-size:35px;font-weight:bold;color:#b45309">${v.rWord}!</span>`
-    : `<span style="font-size:33px;font-weight:bold;color:#b45309">${counts}</span>
-       <span style="font-size:33px;font-weight:bold;color:#94a3b8">…</span>`;
-  return shell(ch, `Cântecelul ${vIdx + 1} / 10`, eq + groupsHTML(ch, v, revealed, !showResult), bubble,
+    : `<span style="font-size:31px;font-weight:bold;color:#334155">${cap(numWord(v.a))} ori ${numWord(v.b)} fac</span>
+       <span style="font-size:31px;font-weight:bold;color:#94a3b8">…</span>`;
+  return shell(ch, `Înmulțirea ${vIdx + 1} / 10`,
+    `<div style="flex:1;display:flex;gap:14px">${list}${right}</div>`, bubble,
     { mouthOpen, cheer: showResult });
-}
-
-export function recapHTML(ch, litCount, mouthOpen) {
-  const chips = ch.verses.map((v, i) => {
-    const lit = i < litCount;
-    const last = i === litCount - 1;
-    return `<div style="width:166px;height:96px;border-radius:18px;display:flex;align-items:center;justify-content:center;
-      font-size:46px;font-weight:bold;
-      background:${lit ? ch.theme.accent : "rgba(255,255,255,.14)"};
-      color:${lit ? "#1c1917" : "rgba(255,255,255,.5)"};
-      border:3px solid ${lit ? "#fff" : "rgba(255,255,255,.3)"};
-      ${last ? "transform:scale(1.08);box-shadow:0 0 26px " + ch.theme.accent + ";" : ""}">${v.r}</div>`;
-  }).join("");
-  const visual = `
-    <div style="height:96px;display:flex;align-items:center;justify-content:center;color:#fff;
-      font-size:42px;font-weight:bold;text-shadow:0 3px 10px rgba(0,0,0,.4)">Numărăm din ${ch.n} în ${ch.n}!</div>
-    <div style="flex:1;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;align-content:center">${chips}</div>`;
-  const bubble = `<span style="font-size:30px;font-weight:bold;color:#1e293b">${ch.recapIntro}</span>
-    <svg viewBox="0 0 40 40" style="width:44px;height:44px"><use href="#ob"/></svg>`;
-  return shell(ch, `Recapitulare`, visual, bubble, { mouthOpen });
 }
 
 export function outroHTML(ch, mouthOpen) {
