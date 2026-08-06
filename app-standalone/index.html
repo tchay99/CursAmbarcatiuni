@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tabla înmulțirii</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1120">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tabla ×">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Trebuchet MS","DejaVu Sans",sans-serif; min-height:100vh; color:#f1f5f9;
+    background:radial-gradient(ellipse 1200px 800px at 25% -10%, #1e293b, #0b1120 70%);
+    padding:24px 12px 48px; }
+  .wrap { max-width:1000px; margin:0 auto; }
+  h1 { text-align:center; font-size:clamp(24px,4vw,38px); letter-spacing:2px; text-transform:uppercase; }
+  .sub { text-align:center; margin:10px 0 26px; color:#94a3b8; font-size:clamp(14px,2vw,17px); }
+  .card { background:rgba(148,163,184,.08); border:1px solid rgba(148,163,184,.2);
+    border-radius:20px; padding:14px; margin-bottom:22px; }
+  video { width:100%; border-radius:12px; display:block; background:#000; }
+  .now { text-align:center; font-weight:bold; font-size:18px; margin-top:10px; color:#e2e8f0; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; }
+  .chap { border:1px solid rgba(148,163,184,.25); cursor:pointer; border-radius:16px; padding:14px 8px;
+    text-align:center; font-family:inherit; font-weight:bold; color:#f1f5f9; font-size:15px;
+    background:rgba(148,163,184,.08); transition:transform .15s, box-shadow .15s; }
+  .chap:hover { transform:scale(1.05); }
+  .chap.active { border-color:#fff; }
+  .chap .big { font-size:36px; display:block; margin-bottom:2px; }
+
+  /* ---------- Quiz ---------- */
+  #quiz { display:none; }
+  #quiz h2 { text-align:center; font-size:clamp(19px,3vw,26px); margin:6px 0 4px; }
+  #quiz .qsub { text-align:center; color:#94a3b8; font-size:14px; margin-bottom:14px; }
+  .slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:18px; }
+  .slotrow { display:flex; align-items:center; justify-content:center; gap:8px;
+    background:rgba(148,163,184,.07); border:1px solid rgba(148,163,184,.18);
+    border-radius:14px; padding:10px 6px; font-size:clamp(18px,2.4vw,22px); font-weight:bold; }
+  .slotrow span { white-space:nowrap; }
+  .slot { width:64px; height:52px; border-radius:12px; border:2px dashed rgba(148,163,184,.5);
+    display:flex; align-items:center; justify-content:center; transition:background .15s, border-color .15s; }
+  .slot.over { background:rgba(255,255,255,.14); border-style:solid; }
+  .slot.filled { border-style:solid; }
+  .slot.shake { animation:shake .35s; border-color:#f87171 !important; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .pool { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; min-height:64px;
+    padding:12px; border-radius:14px; background:rgba(0,0,0,.25); }
+  .tile { width:64px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:bold; color:#0b1120; cursor:grab;
+    touch-action:none; user-select:none; -webkit-user-select:none; }
+  .tile.dragging { position:fixed; z-index:50; pointer-events:none; cursor:grabbing;
+    transform:scale(1.12); box-shadow:0 10px 30px rgba(0,0,0,.6); }
+  .tile.placed { cursor:default; }
+  #qresult { display:none; text-align:center; margin-top:16px; }
+  #qresult .msg { font-size:clamp(20px,3.5vw,28px); font-weight:bold; margin-bottom:12px; }
+  .btn { border:0; cursor:pointer; border-radius:999px; padding:12px 22px; font-family:inherit;
+    font-weight:bold; font-size:16px; color:#0b1120; margin:4px; }
+  .btn.ghost { background:rgba(148,163,184,.2); color:#e2e8f0; }
+  .skip { text-align:center; margin-top:10px; }
+  .skip a { color:#94a3b8; font-size:14px; cursor:pointer; text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tabla înmulțirii</h1>
+  <p class="sub">Vezi capitolul, apoi rezolvă quizul: trage fiecare rezultat pe operația lui!</p>
+
+  <div class="card">
+    <video id="video" controls playsinline></video>
+    <div class="now" id="now"></div>
+  </div>
+
+  <div class="card" id="quiz">
+    <h2 id="qtitle"></h2>
+    <p class="qsub">Trage rezultatele de jos în căsuțele potrivite.</p>
+    <div class="slots" id="slots"></div>
+    <div class="pool" id="pool"></div>
+    <div id="qresult">
+      <div class="msg" id="qmsg"></div>
+      <button class="btn" id="qnext"></button>
+      <button class="btn ghost" id="qretry">Mai joacă o dată</button>
+    </div>
+    <div class="skip" id="qskip"><a id="qskipa">sari peste quiz →</a></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+  var ACCENTS = ["#22d3ee","#a78bfa","#f472b6","#34d399","#fbbf24","#fb7185","#60a5fa","#2dd4bf","#c084fc","#f97316"];
+  var grid = document.getElementById("grid");
+  var video = document.getElementById("video");
+  var now = document.getElementById("now");
+  var quiz = document.getElementById("quiz");
+  var cur = 1;
+
+  function accent(n) { return ACCENTS[n - 1]; }
+
+  function play(n, scroll) {
+    cur = n;
+    hideQuiz();
+    video.src = "videos/tabla-" + String(n).padStart(2, "0") + ".mp4";
+    now.textContent = "Capitolul " + n + " — înmulțirea cu " + n;
+    now.style.color = accent(n);
+    document.querySelectorAll(".chap").forEach(function (b) {
+      var on = +b.dataset.n === n;
+      b.classList.toggle("active", on);
+      b.style.boxShadow = on ? "0 0 22px " + accent(+b.dataset.n) + "66" : "none";
+    });
+    if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+    video.play().catch(function () {});
+  }
+
+  for (var n = 1; n <= 10; n++) {
+    (function (n) {
+      var b = document.createElement("button");
+      b.className = "chap";
+      b.dataset.n = n;
+      b.innerHTML = '<span class="big" style="color:' + accent(n) + '">× ' + n + "</span>capitolul " + n;
+      b.onclick = function () { play(n, true); };
+      grid.appendChild(b);
+    })(n);
+  }
+
+  // la finalul capitolului: quizul lui (nu sărim direct mai departe)
+  video.addEventListener("ended", function () { startQuiz(cur); });
+
+  /* ================= QUIZ (drag & drop cu Pointer Events — merge pe touch) ================= */
+  var QN = 6; // întrebări per quiz
+  var slotsEl = document.getElementById("slots");
+  var poolEl = document.getElementById("pool");
+  var qresult = document.getElementById("qresult");
+  var mistakes = 0, solved = 0, quizN = 1;
+
+  function hideQuiz() { quiz.style.display = "none"; }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function startQuiz(n) {
+    quizN = n; mistakes = 0; solved = 0;
+    var ac = accent(n);
+    document.getElementById("qtitle").textContent = "Quiz — tabla cu " + n;
+    document.getElementById("qtitle").style.color = ac;
+    qresult.style.display = "none";
+    document.getElementById("qskip").style.display = "block";
+    slotsEl.innerHTML = ""; poolEl.innerHTML = "";
+
+    var bs = shuffle([1,2,3,4,5,6,7,8,9,10]).slice(0, QN).sort(function (x, y) { return x - y; });
+    bs.forEach(function (b) {
+      var row = document.createElement("div");
+      row.className = "slotrow";
+      row.innerHTML = "<span>" + n + " × " + b + " =</span>";
+      var slot = document.createElement("div");
+      slot.className = "slot";
+      slot.dataset.answer = n * b;
+      row.appendChild(slot);
+      slotsEl.appendChild(row);
+    });
+    shuffle(bs.slice()).forEach(function (b) {
+      var tile = document.createElement("div");
+      tile.className = "tile";
+      tile.textContent = n * b;
+      tile.dataset.value = n * b;
+      tile.style.background = ac;
+      poolEl.appendChild(tile);
+    });
+
+    quiz.style.display = "block";
+    quiz.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function finishQuiz() {
+    var ac = accent(quizN);
+    document.getElementById("qskip").style.display = "none";
+    var msg = document.getElementById("qmsg");
+    msg.textContent = mistakes === 0 ? "PERFECT! 🎯 Zero greșeli!"
+      : mistakes <= 2 ? "Bravo! Doar " + mistakes + (mistakes === 1 ? " greșeală." : " greșeli.")
+      : mistakes + " greșeli — mai vezi o dată capitolul și încearcă iar!";
+    msg.style.color = ac;
+    var next = document.getElementById("qnext");
+    next.style.background = ac;
+    next.textContent = quizN < 10 ? "Capitolul următor ▶" : "De la început ↺";
+    qresult.style.display = "block";
+    qresult.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  document.getElementById("qnext").onclick = function () { play(quizN < 10 ? quizN + 1 : 1, true); };
+  document.getElementById("qretry").onclick = function () { startQuiz(quizN); };
+  document.getElementById("qskipa").onclick = function () { play(quizN < 10 ? quizN + 1 : 1, true); };
+
+  /* tragerea plăcuțelor: pointerdown pe plăcuță → urmează degetul/mouse-ul;
+     la eliberare, căsuța de sub punct decide (elementFromPoint) */
+  var drag = null;
+
+  poolEl.addEventListener("pointerdown", function (e) {
+    var tile = e.target.closest(".tile");
+    if (!tile || tile.classList.contains("placed")) return;
+    e.preventDefault();
+    var r = tile.getBoundingClientRect();
+    // un substituent păstrează locul în pool cât timp plăcuța zboară
+    var ghost = document.createElement("div");
+    ghost.style.width = r.width + "px"; ghost.style.height = r.height + "px";
+    ghost.style.borderRadius = "12px"; ghost.style.border = "2px dashed rgba(148,163,184,.35)";
+    tile.parentNode.insertBefore(ghost, tile);
+    drag = { tile: tile, ghost: ghost, dx: e.clientX - r.left, dy: e.clientY - r.top, overSlot: null };
+    tile.classList.add("dragging");
+    moveTo(e.clientX, e.clientY);
+  });
+
+  function moveTo(x, y) {
+    drag.tile.style.left = (x - drag.dx) + "px";
+    drag.tile.style.top = (y - drag.dy) + "px";
+    var el = document.elementFromPoint(x, y);
+    var slot = el && el.closest ? el.closest(".slot") : null;
+    if (drag.overSlot && drag.overSlot !== slot) drag.overSlot.classList.remove("over");
+    if (slot && !slot.classList.contains("filled")) { slot.classList.add("over"); drag.overSlot = slot; }
+    else drag.overSlot = null;
+  }
+
+  window.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    e.preventDefault();
+    moveTo(e.clientX, e.clientY);
+  }, { passive: false });
+
+  window.addEventListener("pointerup", function (e) {
+    if (!drag) return;
+    var tile = drag.tile, ghost = drag.ghost;
+    var el = document.elementFromPoint(e.clientX, e.clientY);
+    var slot = el && el.closest ? el.closest(".slot") : null;
+    if (drag.overSlot) drag.overSlot.classList.remove("over");
+    tile.classList.remove("dragging");
+    tile.style.left = ""; tile.style.top = "";
+
+    if (slot && !slot.classList.contains("filled") && slot.dataset.answer === tile.dataset.value) {
+      slot.appendChild(tile);
+      slot.classList.add("filled");
+      slot.style.borderColor = accent(quizN);
+      slot.style.boxShadow = "0 0 14px " + accent(quizN) + "66";
+      tile.classList.add("placed");
+      ghost.remove();
+      solved++;
+      if (solved === QN) finishQuiz();
+    } else {
+      if (slot && !slot.classList.contains("filled")) {
+        mistakes++;
+        slot.classList.add("shake");
+        setTimeout(function () { slot.classList.remove("shake"); }, 400);
+      }
+      ghost.parentNode.replaceChild(tile, ghost); // înapoi în pool
+    }
+    drag = null;
+  });
+
+  window.addEventListener("pointercancel", function () {
+    if (!drag) return;
+    drag.tile.classList.remove("dragging");
+    drag.tile.style.left = ""; drag.tile.style.top = "";
+    drag.ghost.parentNode.replaceChild(drag.tile, drag.ghost);
+    drag = null;
+  });
+
+  play(1, false);
+
+  // PWA: service worker-ul descarcă totul (inclusiv videoclipurile) pentru
+  // funcționare offline după prima vizită
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  }
+</script>
+</body>
+</html>
