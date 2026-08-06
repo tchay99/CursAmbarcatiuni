@@ -7,5 +7,7 @@ opt!”), lista înmulțirilor se completează rând cu rând pe ecran, iar la f
 rămâne afișată integral, de repetat cu voce tare. Voce neuronală românească
 Piper *ro_RO-mihai-medium*, beat lo-fi discret pe fundal.
 
-Vizionare: deschide `tabla/index.html` (meniu cu capitolele, redare
-înlănțuită). Regenerare: vezi `tools/README.md` (`tools/generate-tabla.mjs`).
+Vizionare: deschide `tabla/index.html` — meniu cu capitolele, iar la finalul
+fiecărui capitol un quiz drag-and-drop (tragi rezultatele pe operațiile lor;
+merge și pe telefon, cu degetul — Pointer Events, nu API-ul clasic de drag).
+Regenerare: vezi `tools/README.md` (`tools/generate-tabla.mjs`).
