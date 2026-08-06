@@ -45,7 +45,7 @@ if (!existsSync(join(MODEL_DIR, "tokens.txt"))) {
 }
 
 const chapters = ONLY.length ? CHAPTERS.filter((c) => ONLY.includes(c.n)) : CHAPTERS;
-for (const d of ["slides", "audio", "segments", "frames", "music"]) mkdirSync(join(BUILD, d), { recursive: true });
+for (const d of ["slides", "audio", "frames", "music"]) mkdirSync(join(BUILD, d), { recursive: true });
 mkdirSync(OUT, { recursive: true });
 
 /*
@@ -139,7 +139,6 @@ for (const ch of chapters) {
       ch, scene, base, pngs,
       wav: join(BUILD, "audio", base + ".wav"),
       timings: join(BUILD, "audio", base + ".json"),
-      seg: join(BUILD, "segments", base + ".mp4"),
     });
   }
   console.log(`   capitolul ${ch.n}: ${chScenes.length} scene, ${count} cadre`);
@@ -148,8 +147,11 @@ await browser.close();
 
 /* ---------- 2. Vocea (TTS pe fraze, cu timpi exacți) ---------- */
 console.log("→ Generez vocea (Piper ro_RO-mihai-medium)...");
+// pauza de după fiecare scenă (tail) intră direct în WAV — astfel WAV-urile
+// concatenate dau exact timeline-ul video, la eșantion
 const manifest = scenes.map((s) => ({
   phrases: s.scene.phrases, out: s.wav, timings: s.timings,
+  tail: s.scene.tail ?? TAIL_SEC,
   ...(s.scene.lead ? { lead: s.scene.lead } : {}),
   ...(s.scene.gap ? { gap: s.scene.gap } : {}),
 }));
@@ -157,71 +159,68 @@ const manifestPath = join(BUILD, "tts_manifest.json");
 writeFileSync(manifestPath, JSON.stringify(manifest));
 execFileSync("python3", [join(__dirname, "tts_batch.py"), manifestPath, MODEL_DIR], { stdio: "inherit" });
 
-/* ---------- 3. Segmente video sincronizate cu vocea ---------- */
-console.log("→ Asamblez segmentele (ffmpeg)...");
-for (const s of scenes) {
-  const t = JSON.parse(readFileSync(s.timings, "utf8"));
-  const tail = s.scene.tail ?? TAIL_SEC;
-  const segDur = t.duration + tail;
-  const nFrames = Math.ceil(segDur * FPS) + 1;
+/* ---------- 3. Un singur timeline per capitol (fără concatenare de segmente)
+ * Concatenarea de segmente MP4 acumula derivă audio/video: fiecare segment
+ * avea video cuantizat la cadre (până la +83ms față de audio), iar filtrul
+ * de mixare compacta golurile — decalaj tot mai mare spre finalul
+ * capitolului. Acum: WAV-urile scenelor (cu tail inclus) se lipesc PCM la
+ * eșantion, cadrele se așază pe un singur timeline global și totul se
+ * encodează o singură dată — nu există granițe interne care să devieze. */
+console.log("→ Asamblez capitolele (un singur timeline, ffmpeg)...");
+for (const ch of chapters) {
+  const cs = scenes.filter((s) => s.ch.n === ch.n);
+  let total = 0;
+  for (const s of cs) {
+    s.t = JSON.parse(readFileSync(s.timings, "utf8"));
+    s.off = total;
+    total += s.t.duration;
+  }
 
-  const dir = join(BUILD, "frames", s.base);
+  // audio-ul capitolului: concatenare PCM fără pierderi a WAV-urilor scenelor
+  const listPath = join(BUILD, `t${ch.n}-wavs.txt`);
+  writeFileSync(listPath, cs.map((s) => `file '${s.wav}'`).join("\n"));
+  const chWav = join(BUILD, `t${ch.n}.wav`);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error",
+    "-f", "concat", "-safe", "0", "-i", listPath, "-c", "copy", chWav]);
+
+  // cadrele întregului capitol, pe timeline-ul global
+  const dir = join(BUILD, "frames", `t${ch.n}`);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
+  const nFrames = Math.round(total * FPS);
+  let si = 0;
   for (let f = 0; f < nFrames; f++) {
-    const time = f / FPS;
-    const stateKey = s.scene.pick(time, t.phrases, t.duration);
+    const T = f / FPS;
+    while (si < cs.length - 1 && T >= cs[si].off + cs[si].t.duration) si++;
+    const s = cs[si];
+    const t = T - s.off;
+    const stateKey = s.scene.pick(t, s.t.phrases, s.t.duration);
     // vizorul robotului pulsează doar cât se vorbește efectiv (~3Hz)
-    const speaking = t.phrases.some((p) => time >= p.start && time < (p.speechEnd ?? p.end));
+    const speaking = s.t.phrases.some((p) => t >= p.start && t < (p.speechEnd ?? p.end));
     const talk = speaking && f % 4 < 2 ? "b" : "a";
     const png = s.pngs[`${stateKey}_${talk}`] || s.pngs[`${stateKey}_a`];
-    const dst = join(dir, `f${String(f).padStart(4, "0")}.png`);
+    const dst = join(dir, `f${String(f).padStart(5, "0")}.png`);
     try { linkSync(png, dst); } catch (_) { copyFileSync(png, dst); }
   }
 
-  execFileSync("ffmpeg", [
-    "-y", "-loglevel", "error",
-    "-framerate", String(FPS), "-i", join(dir, "f%04d.png"),
-    "-i", s.wav,
-    "-t", String(segDur),
-    "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p",
-    "-c:a", "aac", "-b:a", "96k", "-ar", "22050", "-ac", "1",
-    s.seg,
-  ]);
-  rmSync(dir, { recursive: true, force: true });
-}
-
-/* ---------- 4. Concatenare per capitol + muzică de fundal ---------- */
-console.log("→ Concatenez capitolele și adaug muzica...");
-for (const ch of chapters) {
-  const cs = scenes.filter((s) => s.ch.n === ch.n);
-  const listPath = join(BUILD, `t${ch.n}.txt`);
-  writeFileSync(listPath, cs.map((s) => `file '${s.seg}'`).join("\n"));
-
-  const concatPath = join(BUILD, `t${ch.n}-concat.mp4`);
-  execFileSync("ffmpeg", [
-    "-y", "-loglevel", "error",
-    "-f", "concat", "-safe", "0", "-i", listPath,
-    "-c", "copy", concatPath,
-  ]);
-
-  const dur = parseFloat(execFileSync("ffprobe",
-    ["-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", concatPath]).toString());
-
   const musicPath = join(BUILD, "music", `t${ch.n}.wav`);
-  execFileSync("python3", [join(__dirname, "tabla_music.py"), musicPath, String(dur), String(ch.n)], { stdio: "inherit" });
+  execFileSync("python3", [join(__dirname, "tabla_music.py"), musicPath, String(total), String(ch.n)], { stdio: "inherit" });
 
   const out = join(OUT, `tabla-${String(ch.n).padStart(2, "0")}.mp4`);
   execFileSync("ffmpeg", [
     "-y", "-loglevel", "error",
-    "-i", concatPath, "-i", musicPath,
-    "-filter_complex", "[1:a]volume=0.11[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[aout]",
+    "-framerate", String(FPS), "-i", join(dir, "f%05d.png"),
+    "-i", chWav, "-i", musicPath,
+    "-filter_complex", "[2:a]volume=0.11[m];[1:a][m]amix=inputs=2:duration=first:normalize=0[aout]",
     "-map", "0:v", "-map", "[aout]",
-    "-c:v", "copy", "-c:a", "aac", "-b:a", "96k",
+    "-t", String(total),
+    "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p",
+    "-c:a", "aac", "-b:a", "96k", "-ar", "22050", "-ac", "1",
     "-movflags", "+faststart",
     out,
   ]);
-  console.log(`   tabla-${String(ch.n).padStart(2, "0")}.mp4 — ${Math.round(dur)}s, ${cs.length} scene`);
+  rmSync(dir, { recursive: true, force: true });
+  console.log(`   tabla-${String(ch.n).padStart(2, "0")}.mp4 — ${Math.round(total)}s, ${cs.length} scene`);
 }
 
 console.log("✔ Gata. Cântecelele sunt în videos/tabla/.");

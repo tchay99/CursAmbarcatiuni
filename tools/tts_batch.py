@@ -7,7 +7,8 @@ MANIFEST.json (per scenă):
   [{"phrases": ["fraza 1", "fraza 2", ...], "out": "scena.wav",
     "timings": "scena.json",
     "lead": 0.8,   # opțional: liniște înaintea primei fraze (implicit 0)
-    "gap": 0.55},  # opțional: pauza dintre fraze (implicit GAP_SEC)
+    "gap": 0.55,   # opțional: pauza dintre fraze (implicit GAP_SEC)
+    "tail": 1.0},  # opțional: liniște după ultima frază (implicit 0)
    ...]
 
 Pentru fiecare scenă: sintetizează frazele, le concatenează (cu o pauză scurtă
@@ -67,6 +68,9 @@ def main() -> None:
             chunks.append(samples)
             chunks.append(np.zeros(int(gap * sr), dtype=np.float32))
             t += dur + gap
+        tail = float(scene.get("tail", 0.0))
+        if tail > 0:
+            chunks.append(np.zeros(int(tail * (sr or 22050)), dtype=np.float32))
         full = np.concatenate(chunks) if chunks else np.zeros(1, dtype=np.float32)
         sf.write(scene["out"], full, sr or 22050)
         with open(scene["timings"], "w", encoding="utf-8") as f:
