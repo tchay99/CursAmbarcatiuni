@@ -166,8 +166,9 @@ function frameHTML(lesson, mod, slide, idx, total, state) {
   .top .ttl { font-size:19px; color:#e2e8f0; font-weight:bold; }
   .top .cnt { font-size:16px; opacity:.7; }
   .main { flex:1; display:flex; gap:14px; padding:0 20px 18px; }
-  .visual { width:952px; background:#f8fafc; border-radius:16px; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 30px rgba(0,0,0,.4); }
+  .visual { width:952px; background:linear-gradient(180deg,#e9f4fc,#cfe6f7); border-radius:16px;
+    overflow:hidden; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 30px rgba(0,0,0,.4); }
   .visual svg { width:100%; height:100%; }
   .narr { flex:1; display:flex; flex-direction:column; gap:10px; }
   .avatar { flex:1; background:linear-gradient(180deg,#1e3a5f,#0f2440); border-radius:16px;
