@@ -335,7 +335,7 @@ load();
 /* ============================ Serverul HTTP ============================ */
 
 // Căi statice permise (whitelist de prefixe în interiorul ROOT).
-const STATIC_PREFIXES = ["/index.html", "/assets/", "/videos/"];
+const STATIC_PREFIXES = ["/index.html", "/assets/", "/videos/", "/tabla/"];
 
 function resolveStatic(urlPath) {
   if (urlPath === "/") urlPath = "/index.html";
