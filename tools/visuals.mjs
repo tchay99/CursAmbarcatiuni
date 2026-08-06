@@ -500,11 +500,11 @@ export const SCENES = {
       <path d="M 30,-40 A 50,50 0 1 1 -48,-16" fill="none" stroke="#facc15" stroke-width="6" marker-end="url(#md97706)"/></g>` +
     badge(470, 100, "MARȘARIER (dai înapoi)", "#0f172a") +
     arrow(470, 130, 470, 180, "#ffffff", 6) +
-    // pupa împinsă spre babord
-    arrow(560, 420, 720, 420, "#dc2626", 9) + badge(790, 420, "pupa fuge", "#dc2626") +
-    T(790, 460, "spre BABORD", { s: 20, c: "#fff", b: true }) +
-    badge(250, 500, "efectul de evantai — folosește-l la acostare!", "#166534", "#fff", 19) +
-    T(210, 300, "elice cu rotație", { s: 18, c: "#fff" }) + T(210, 326, "pe dreapta", { s: 18, c: "#fff" })
+    // pupa împinsă spre babord (cu prova în sus, babordul e în STÂNGA imaginii)
+    arrow(380, 420, 220, 420, "#dc2626", 9) + badge(150, 420, "pupa fuge", "#dc2626") +
+    T(150, 460, "spre BABORD", { s: 20, c: "#fff", b: true }) +
+    badge(520, 500, "efectul de evantai — folosește-l la acostare!", "#166534", "#fff", 19) +
+    T(720, 300, "elice cu rotație", { s: 18, c: "#fff" }) + T(720, 326, "pe dreapta", { s: 18, c: "#fff" })
   ),
   "day05-s4": () => svgWrap(
     waterRect(0, 560) +
