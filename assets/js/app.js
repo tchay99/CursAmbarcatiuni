@@ -1,24 +1,25 @@
 /*
- * app.js — Shell-ul mini-LMS: navigare, progres, secțiuni.
+ * app.js — Shell-ul mini-LMS (v4).
  *
- * Structura (v3):
- *  - Secțiunea LECȚII (audiobook): toate cele 14 lecții video sunt liber
- *    accesibile și se pot reda în lanț (redare continuă), ca un audiobook.
- *    Ascultarea integrală a unei lecții o marchează ca „ascultată".
- *  - Secțiunea TESTE: testul zilei N se deblochează după promovarea testului
- *    N-1 și cere lecția N ascultată integral. Sub prag → lecția trebuie
- *    reascultată înainte de o nouă încercare.
- *  - EXAMENUL final se deblochează după promovarea tuturor celor 14 teste.
- *  - Progresul este salvat local (localStorage), pe acest dispozitiv/browser.
+ * Două module independente:
+ *  - 🎬 CURS VIDEO (10 zile): toate lecțiile sunt liber accesibile și se pot
+ *    reda în lanț (redare continuă), ca un audiobook. Ascultarea integrală
+ *    marchează lecția ca „ascultată" — fără nicio blocare.
+ *  - 📝 ANTRENAMENT EXAMEN: teste de 20 de întrebări extrase aleator din banca
+ *    oficială de antrenament ANR (568 de întrebări), cu istoric de scoruri,
+ *    plus simularea completă de examen (24 întrebări, cronometru).
+ *
+ * Progresul este salvat local (localStorage), pe acest dispozitiv/browser.
  */
 
-const STORE_KEY = "curs_ambarcatiuni_v1";
+const STORE_KEY = "curs_ambarcatiuni_v2";
+const OLD_STORE_KEY = "curs_ambarcatiuni_v1";
 
 const App = {
   state: null,
   player: null,
   exam: null,
-  view: { type: "home" }, // home | {type:'lesson', id} | {type:'test', id} | exam
+  view: { type: "home" }, // home | {type:'lesson', id} | practice | exam
 
   init() {
     this.state = this.load();
@@ -30,22 +31,35 @@ const App = {
   /* --------------------- Persistență --------------------- */
   defaultState() {
     const lessons = {};
-    window.COURSE.LESSONS.forEach((l) => {
-      lessons[l.id] = { watched: false, passed: false, bestScore: 0, attempts: 0 };
-    });
-    return { lessons, exam: { passed: false, bestPct: 0, attempts: 0 }, continuous: true };
+    window.COURSE.LESSONS.forEach((l) => { lessons[l.id] = { watched: false }; });
+    return {
+      lessons,
+      practice: { history: [], bestPct: 0 },
+      exam: { passed: false, bestPct: 0, attempts: 0 },
+      continuous: true,
+    };
   },
   load() {
     try {
-      const raw = localStorage.getItem(STORE_KEY);
-      if (!raw) return this.defaultState();
-      const parsed = JSON.parse(raw);
       const def = this.defaultState();
-      def.exam = Object.assign(def.exam, parsed.exam || {});
-      if (typeof parsed.continuous === "boolean") def.continuous = parsed.continuous;
-      Object.keys(def.lessons).forEach((id) => {
-        if (parsed.lessons && parsed.lessons[id]) def.lessons[id] = Object.assign(def.lessons[id], parsed.lessons[id]);
-      });
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.practice) def.practice = Object.assign(def.practice, parsed.practice);
+        if (parsed.exam) def.exam = Object.assign(def.exam, parsed.exam);
+        if (typeof parsed.continuous === "boolean") def.continuous = parsed.continuous;
+        Object.keys(def.lessons).forEach((id) => {
+          if (parsed.lessons && parsed.lessons[id]) def.lessons[id] = Object.assign(def.lessons[id], parsed.lessons[id]);
+        });
+        return def;
+      }
+      // Migrare din v1 (cursul pe 14 zile): păstrăm doar rezultatul examenului.
+      const oldRaw = localStorage.getItem(OLD_STORE_KEY);
+      if (oldRaw) {
+        const old = JSON.parse(oldRaw);
+        if (old.exam) def.exam = Object.assign(def.exam, old.exam);
+        if (typeof old.continuous === "boolean") def.continuous = old.continuous;
+      }
       return def;
     } catch (_) {
       return this.defaultState();
@@ -55,24 +69,16 @@ const App = {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(this.state)); } catch (_) {}
   },
 
-  /* --------------------- Logica de progresie --------------------- */
+  /* --------------------- Helperi --------------------- */
   lessonList() { return window.COURSE.LESSONS; },
   indexOf(id) { return this.lessonList().findIndex((l) => l.id === id); },
-
-  // Lecțiile (audiobook) sunt întotdeauna libere.
-  isTestUnlocked(id) {
-    const i = this.indexOf(id);
-    if (i <= 0) return true;
-    const prev = this.lessonList()[i - 1];
-    return this.state.lessons[prev.id].passed;
-  },
-  allTestsPassed() {
-    return this.lessonList().every((l) => this.state.lessons[l.id].passed);
+  watchedCount() {
+    return this.lessonList().filter((l) => this.state.lessons[l.id].watched).length;
   },
   progressPct() {
-    const passed = this.lessonList().filter((l) => this.state.lessons[l.id].passed).length;
-    return Math.round((passed / this.lessonList().length) * 100);
+    return Math.round((this.watchedCount() / this.lessonList().length) * 100);
   },
+  anrBank() { return window.ANR_BANK || []; },
 
   /* --------------------- DOM --------------------- */
   cacheEls() {
@@ -87,9 +93,8 @@ const App = {
       const id = e.detail.id;
       if (this.state.lessons[id]) { this.state.lessons[id].watched = true; this.save(); }
       this.renderSidebar();
+      this.updateGlobalProgress();
       if (this.view.type === "lesson" && this.view.id === id) {
-        const goTest = document.getElementById("goTestBtn");
-        if (goTest) goTest.disabled = false;
         const next = this.lessonList()[this.indexOf(id) + 1];
         if (this.state.continuous && next) {
           this.toast(`🎧 Urmează Ziua ${next.day}: ${next.title}`);
@@ -98,12 +103,10 @@ const App = {
           // rămâne butonul de Redă.
           setTimeout(() => { if (this.player) this.player.play(); }, 600);
         } else {
-          this.toast("✅ Lecție ascultată integral — testul zilei s-a deblocat.");
+          this.toast("✅ Lecție ascultată integral.");
         }
       }
     });
-    // Reascultarea unei lecții NU mai șterge statutul de „ascultată" —
-    // doar un test picat o face (regula de reascultare).
 
     this.$main.addEventListener("click", (e) => {
       const act = e.target.closest("[data-action]");
@@ -115,9 +118,9 @@ const App = {
       if (a === "next") this.goNext();
       if (a === "prev") this.goPrev();
       if (a === "home") this.navigate({ type: "home" });
-      if (a === "start-exam") this.navigate({ type: "exam" });
       if (a === "go-lesson") this.navigate({ type: "lesson", id: act.dataset.id });
-      if (a === "go-test") this.navigate({ type: "test", id: act.dataset.id });
+      if (a === "go-practice") this.navigate({ type: "practice" });
+      if (a === "start-exam") this.navigate({ type: "exam" });
     });
 
     document.getElementById("brandHome").addEventListener("click", (ev) => {
@@ -159,26 +162,26 @@ const App = {
     this.renderSidebar();
     if (this.view.type === "home") return this.renderHome();
     if (this.view.type === "lesson") return this.renderLesson(this.view.id);
-    if (this.view.type === "test") return this.renderTest(this.view.id);
+    if (this.view.type === "practice") return this.renderPractice();
     if (this.view.type === "exam") return this.renderExam();
   },
 
   updateGlobalProgress() {
     const pct = this.progressPct();
     if (this.$progressBar) this.$progressBar.style.width = pct + "%";
-    if (this.$progressText) this.$progressText.textContent = pct + "% finalizat";
+    if (this.$progressText) this.$progressText.textContent = pct + "% ascultat";
   },
 
   /* --------------------- Sidebar --------------------- */
   renderSidebar() {
     const modules = window.COURSE.MODULES;
 
-    // Secțiunea LECȚII (audiobook) — totul liber.
-    const lessonsHtml = `<div class="nav-section">🎧 Lecții — audiobook</div>` +
+    // Modulul CURS VIDEO — totul liber, ca un audiobook.
+    const lessonsHtml = `<div class="nav-section">🎬 Curs video — audiobook</div>` +
       modules.map((mod) => {
         const items = this.lessonList().filter((l) => l.module === mod.id).map((l) => {
           const st = this.state.lessons[l.id];
-          const icon = st.watched || st.passed ? "✅" : "▶️";
+          const icon = st.watched ? "✅" : "▶️";
           const active = this.view.type === "lesson" && this.view.id === l.id ? " nav-item--active" : "";
           return `<li>
             <button class="nav-item nav-item--open${active}" data-lesson="${l.id}">
@@ -192,99 +195,81 @@ const App = {
         </div>`;
       }).join("");
 
-    // Secțiunea TESTE — progresie clasică.
-    const testItems = this.lessonList().map((l) => {
-      const st = this.state.lessons[l.id];
-      const unlocked = this.isTestUnlocked(l.id);
-      let icon = "🔒", cls = "locked";
-      if (st.passed) { icon = "✅"; cls = "passed"; }
-      else if (unlocked) { icon = "📝"; cls = "open"; }
-      const active = this.view.type === "test" && this.view.id === l.id ? " nav-item--active" : "";
-      return `<li>
-        <button class="nav-item nav-item--${cls}${active}" data-test="${l.id}" ${unlocked ? "" : "disabled"}>
-          <span class="nav-item__icon">${icon}</span>
-          <span class="nav-item__label"><strong>Testul ${l.day}</strong><small>${l.title}</small></span>
-        </button></li>`;
-    }).join("");
-
-    const examUnlocked = this.allTestsPassed();
-    const examSt = this.state.exam;
+    // Modulul ANTRENAMENT EXAMEN.
+    const pr = this.state.practice;
+    const tests = pr.history.length;
+    const practiceActive = this.view.type === "practice" ? " nav-item--active" : "";
     const examActive = this.view.type === "exam" ? " nav-item--active" : "";
-    const examIcon = examSt.passed ? "🏆" : examUnlocked ? "📝" : "🔒";
-    const testsHtml = `<div class="nav-section">📝 Teste</div>
+    const examSt = this.state.exam;
+    const practiceHtml = `<div class="nav-section">📝 Antrenament examen</div>
       <div class="nav-module" style="--mod:#7c3aed">
-        <div class="nav-module__title">Verificări pe lecții</div>
-        <ul class="nav-list">${testItems}</ul>
-      </div>
-      <div class="nav-module nav-module--exam" style="--mod:#7c3aed">
-        <div class="nav-module__title">Examen final</div>
-        <ul class="nav-list"><li>
-          <button class="nav-item nav-item--${examSt.passed ? "passed" : examUnlocked ? "open" : "locked"}${examActive}" data-exam ${examUnlocked ? "" : "disabled"}>
-            <span class="nav-item__icon">${examIcon}</span>
-            <span class="nav-item__label"><strong>Simulare examen</strong><small>${examUnlocked ? "Deblocat" : "Promovează toate testele"}</small></span>
-          </button></li></ul></div>`;
+        <div class="nav-module__title">Banca oficială — ${this.anrBank().length} întrebări</div>
+        <ul class="nav-list">
+          <li><button class="nav-item nav-item--open${practiceActive}" data-practice>
+            <span class="nav-item__icon">🎯</span>
+            <span class="nav-item__label"><strong>Teste de antrenament</strong><small>${tests ? `${tests} teste · best ${pr.bestPct}%` : "20 de întrebări / test"}</small></span>
+          </button></li>
+          <li><button class="nav-item nav-item--${examSt.passed ? "passed" : "open"}${examActive}" data-exam>
+            <span class="nav-item__icon">${examSt.passed ? "🏆" : "⏱️"}</span>
+            <span class="nav-item__label"><strong>Simulare examen</strong><small>${examSt.passed ? `Promovat — best ${examSt.bestPct}%` : "24 întrebări · 30 min"}</small></span>
+          </button></li>
+        </ul>
+      </div>`;
 
-    this.$sidebar.innerHTML = lessonsHtml + testsHtml;
+    this.$sidebar.innerHTML = lessonsHtml + practiceHtml;
 
     this.$sidebar.querySelectorAll("[data-lesson]").forEach((btn) => {
       btn.addEventListener("click", () => this.navigate({ type: "lesson", id: btn.dataset.lesson }));
     });
-    this.$sidebar.querySelectorAll("[data-test]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (this.isTestUnlocked(btn.dataset.test)) this.navigate({ type: "test", id: btn.dataset.test });
-      });
-    });
+    const practiceBtn = this.$sidebar.querySelector("[data-practice]");
+    if (practiceBtn) practiceBtn.addEventListener("click", () => this.navigate({ type: "practice" }));
     const examBtn = this.$sidebar.querySelector("[data-exam]");
-    if (examBtn) examBtn.addEventListener("click", () => { if (examUnlocked) this.navigate({ type: "exam" }); });
+    if (examBtn) examBtn.addEventListener("click", () => this.navigate({ type: "exam" }));
   },
 
   /* --------------------- Home --------------------- */
   renderHome() {
-    const pct = this.progressPct();
-    const listened = this.lessonList().filter((l) => this.state.lessons[l.id].watched || this.state.lessons[l.id].passed).length;
-    const passedCount = this.lessonList().filter((l) => this.state.lessons[l.id].passed).length;
-    const nextListen = this.lessonList().find((l) => !this.state.lessons[l.id].watched && !this.state.lessons[l.id].passed);
-    const nextTest = this.lessonList().find((l) => !this.state.lessons[l.id].passed);
-    const examUnlocked = this.allTestsPassed();
+    const listened = this.watchedCount();
+    const total = this.lessonList().length;
+    const nextListen = this.lessonList().find((l) => !this.state.lessons[l.id].watched);
+    const pr = this.state.practice;
 
     this.$main.innerHTML = `
       <section class="home">
         <div class="home__hero">
           <h1>Curs: Conducător de ambarcațiune cu motor</h1>
-          <p class="home__sub">14 lecții audio-video cu Cpt. Paul Dicu · teste pe lecții · simulare de examen ANR.</p>
+          <p class="home__sub">Curs video de 10 zile cu Cpt. Paul Dicu · antrenament cu întrebările oficiale de examen.</p>
           <div class="home__stats">
-            <div class="stat"><span class="stat__num">${listened}/${this.lessonList().length}</span><span class="stat__lbl">lecții ascultate</span></div>
-            <div class="stat"><span class="stat__num">${passedCount}/${this.lessonList().length}</span><span class="stat__lbl">teste promovate</span></div>
-            <div class="stat"><span class="stat__num">${this.state.exam.passed ? "✔" : "—"}</span><span class="stat__lbl">examen final</span></div>
+            <div class="stat"><span class="stat__num">${listened}/${total}</span><span class="stat__lbl">lecții ascultate</span></div>
+            <div class="stat"><span class="stat__num">${pr.history.length}</span><span class="stat__lbl">teste de antrenament</span></div>
+            <div class="stat"><span class="stat__num">${pr.history.length ? pr.bestPct + "%" : "—"}</span><span class="stat__lbl">cel mai bun scor</span></div>
+            <div class="stat"><span class="stat__num">${this.state.exam.passed ? "✔" : "—"}</span><span class="stat__lbl">simulare examen</span></div>
           </div>
           <div class="home__cta">
             ${nextListen
-              ? `<button class="btn btn--primary btn--lg" data-action="go-lesson" data-id="${nextListen.id}">🎧 ${listened === 0 ? "Începe audiobook-ul" : "Continuă ascultarea"} — Ziua ${nextListen.day}</button>`
-              : ""}
-            ${nextTest
-              ? `<button class="btn ${nextListen ? "btn--ghost" : "btn--primary"} btn--lg" data-action="go-test" data-id="${nextTest.id}">📝 Continuă testele — Testul ${nextTest.day}</button>`
-              : `<button class="btn btn--primary btn--lg" data-action="start-exam">🏆 Dă simularea de examen</button>`}
+              ? `<button class="btn btn--primary btn--lg" data-action="go-lesson" data-id="${nextListen.id}">🎧 ${listened === 0 ? "Începe cursul" : "Continuă ascultarea"} — Ziua ${nextListen.day}</button>`
+              : `<button class="btn btn--ghost btn--lg" data-action="go-lesson" data-id="${this.lessonList()[0].id}">🎧 Reascultă cursul</button>`}
+            <button class="btn ${nextListen ? "btn--ghost" : "btn--primary"} btn--lg" data-action="go-practice">🎯 Test de antrenament (20 întrebări)</button>
           </div>
         </div>
 
         <div class="home__how">
           <h2>Cum funcționează</h2>
           <ol>
-            <li>🎧 <strong>Lecțiile</strong> se ascultă liber, ca un audiobook — cu redare continuă, în ordinea ta.</li>
-            <li>📝 <strong>Testul zilei</strong> se deblochează după ascultarea integrală a lecției respective (minim ${Math.round(window.QUIZ_PASS * 100)}%).</li>
-            <li>🔁 Sub prag? <strong>Reasculți lecția</strong> înainte de o nouă încercare.</li>
-            <li>🔒 Testele se succed: testul următor se deschide după promovarea celui curent.</li>
-            <li>🏆 După toate testele: <strong>simularea de examen</strong> cu întrebări reale ANR.</li>
+            <li>🎬 <strong>Cursul video</strong> (10 zile) se ascultă liber, în orice ordine — cu redare continuă, ca un audiobook.</li>
+            <li>🎯 <strong>Antrenamentul</strong>: teste de câte 20 de întrebări, extrase aleator din banca oficială de ${this.anrBank().length} întrebări.</li>
+            <li>📊 Scorurile se păstrează — urmărește-ți evoluția până treci constant de ${Math.round(window.COURSE.PRACTICE_CONFIG.pass * 100)}%.</li>
+            <li>⏱️ <strong>Simularea de examen</strong>: 24 de întrebări, 30 de minute, ca la examenul real.</li>
           </ol>
         </div>
 
         <div class="home__modules">
           ${window.COURSE.MODULES.map((m) => {
             const ls = this.lessonList().filter((l) => l.module === m.id);
-            const done = ls.filter((l) => this.state.lessons[l.id].passed).length;
+            const done = ls.filter((l) => this.state.lessons[l.id].watched).length;
             return `<div class="mod-card" style="--mod:${m.color}">
               <h3>${m.title}</h3>
-              <p>${done}/${ls.length} teste promovate</p>
+              <p>${done}/${ls.length} lecții ascultate</p>
               <ul>${ls.map((l) => `<li>Ziua ${l.day}: ${l.title}</li>`).join("")}</ul>
             </div>`;
           }).join("")}
@@ -296,7 +281,6 @@ const App = {
   renderLesson(id) {
     const lesson = this.lessonList().find((l) => l.id === id);
     if (!lesson) return this.navigate({ type: "home" });
-    const st = this.state.lessons[id];
     const mod = window.COURSE.MODULES.find((m) => m.id === lesson.module);
     const i = this.indexOf(id);
     const last = i === this.lessonList().length - 1;
@@ -304,7 +288,7 @@ const App = {
     this.$main.innerHTML = `
       <section class="lesson" style="--mod:${mod.color}">
         <div class="lesson__head">
-          <div class="lesson__crumbs">🎧 Audiobook · ${mod.title}</div>
+          <div class="lesson__crumbs">🎬 Curs video · ${mod.title}</div>
           <h1>Ziua ${lesson.day}: ${lesson.title}</h1>
           <p class="lesson__summary">${lesson.summary}</p>
         </div>
@@ -326,9 +310,8 @@ const App = {
 
         <div class="lesson__nav">
           <button class="btn btn--ghost" data-action="prev" ${i === 0 ? "disabled" : ""}>← Ziua anterioară</button>
-          <button class="btn btn--primary" id="goTestBtn" data-action="go-test" data-id="${id}" ${st.watched || st.passed ? "" : "disabled"}
-            title="${st.watched || st.passed ? "" : "Se deblochează după ascultarea integrală"}">📝 Testul zilei</button>
-          <button class="btn btn--ghost" data-action="next" ${last ? "disabled" : ""}>Ziua următoare →</button>
+          <button class="btn btn--ghost" data-action="go-practice">🎯 Antrenament examen</button>
+          <button class="btn btn--primary" data-action="next" ${last ? "disabled" : ""}>Ziua următoare →</button>
         </div>
       </section>`;
 
@@ -351,61 +334,66 @@ const App = {
     this.player.render();
   },
 
-  /* --------------------- Test --------------------- */
-  renderTest(id) {
-    const lesson = this.lessonList().find((l) => l.id === id);
-    if (!lesson || !this.isTestUnlocked(id)) return this.navigate({ type: "home" });
-    const st = this.state.lessons[id];
-    const mod = window.COURSE.MODULES.find((m) => m.id === lesson.module);
+  /* --------------------- Antrenament examen --------------------- */
+  renderPractice() {
+    const cfg = window.COURSE.PRACTICE_CONFIG;
+    const pr = this.state.practice;
+    const hist = pr.history.slice(-10).reverse();
 
     this.$main.innerHTML = `
-      <section class="lesson" style="--mod:${mod.color}">
+      <section class="lesson" style="--mod:#7c3aed">
         <div class="lesson__head">
-          <div class="lesson__crumbs">📝 Teste · ${mod.title}</div>
-          <h1>Testul ${lesson.day}: ${lesson.title}</h1>
-          <p class="lesson__summary">${st.passed
-            ? "✅ Test promovat" + (st.bestScore ? ` — cel mai bun scor: ${st.bestScore} răspunsuri corecte` : "") + "."
-            : st.watched
-              ? "Lecția e ascultată — succes!"
-              : "Testul se deblochează după ascultarea integrală a lecției."}</p>
+          <div class="lesson__crumbs">🎯 Antrenament examen</div>
+          <h1>Teste de antrenament</h1>
+          <p class="lesson__summary">${cfg.count} întrebări pe test, extrase aleator din banca oficială de
+            ${this.anrBank().length} întrebări · prag ${Math.round(cfg.pass * 100)}%.</p>
         </div>
-        <div id="quizRoot" class="quiz-root"></div>
-        <div class="lesson__nav">
-          <button class="btn btn--ghost" data-action="go-lesson" data-id="${id}">🎧 Lecția zilei</button>
-          <button class="btn btn--ghost" data-action="home">Acasă</button>
-          ${this.indexOf(id) < this.lessonList().length - 1
-            ? `<button class="btn btn--primary" id="nextTestBtn" data-action="go-test" data-id="${this.lessonList()[this.indexOf(id) + 1].id}" ${st.passed ? "" : "disabled"}>Testul următor →</button>`
-            : `<button class="btn btn--primary" data-action="start-exam" ${this.allTestsPassed() ? "" : "disabled"}>🏆 Examenul →</button>`}
+
+        <div id="practiceIntro">
+          ${pr.history.length ? `
+            <div class="practice-stats">
+              <div class="stat"><span class="stat__num">${pr.history.length}</span><span class="stat__lbl">teste făcute</span></div>
+              <div class="stat"><span class="stat__num">${pr.bestPct}%</span><span class="stat__lbl">cel mai bun scor</span></div>
+              <div class="stat"><span class="stat__num">${Math.round(pr.history.reduce((s, h) => s + h.pct, 0) / pr.history.length)}%</span><span class="stat__lbl">media</span></div>
+              <div class="stat"><span class="stat__num">${pr.history.filter((h) => h.passed).length}/${pr.history.length}</span><span class="stat__lbl">promovate</span></div>
+            </div>
+            <div class="practice-history">
+              <h3>Ultimele teste</h3>
+              <ul>${hist.map((h) => `<li class="${h.passed ? "ph--pass" : "ph--fail"}">
+                <span>${new Date(h.ts).toLocaleDateString("ro-RO")} ${new Date(h.ts).toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })}</span>
+                <span>${h.correct}/${h.total}</span>
+                <strong>${h.pct}%</strong>
+                <span>${h.passed ? "✅" : "❌"}</span>
+              </li>`).join("")}</ul>
+            </div>` : `
+            <p class="practice-empty">Încă n-ai făcut niciun test. Începe primul — vezi exact unde stai față de examenul real.</p>`}
+          <div class="home__cta">
+            <button class="btn btn--primary btn--lg" id="startPracticeBtn">🎯 Începe un test nou (${cfg.count} întrebări)</button>
+            <button class="btn btn--ghost" data-action="start-exam">⏱️ Simulare examen (24 · 30 min)</button>
+          </div>
         </div>
+        <div id="practiceRoot" class="quiz-root"></div>
       </section>`;
 
-    this.renderTestQuiz(lesson, st.watched || st.passed);
+    document.getElementById("startPracticeBtn").addEventListener("click", () => this.startPracticeTest());
   },
 
-  renderTestQuiz(lesson, unlocked) {
-    const root = document.getElementById("quizRoot");
-    renderQuiz(root, lesson, {
-      unlocked,
-      onPass: ({ correct }) => {
-        const st = this.state.lessons[lesson.id];
-        st.passed = true;
-        st.attempts++;
-        st.bestScore = Math.max(st.bestScore, correct);
-        this.save();
-        const nextBtn = document.getElementById("nextTestBtn");
-        if (nextBtn) nextBtn.disabled = false;
-        this.renderSidebar();
-        this.updateGlobalProgress();
-        this.toast("🎉 Test promovat! Testul următor s-a deblocat.");
-      },
-      onFail: () => {
-        const st = this.state.lessons[lesson.id];
-        st.attempts++;
-        st.watched = false; // impune reascultarea lecției
+  startPracticeTest() {
+    const cfg = window.COURSE.PRACTICE_CONFIG;
+    const intro = document.getElementById("practiceIntro");
+    if (intro) intro.style.display = "none";
+    renderPracticeTest(document.getElementById("practiceRoot"), {
+      bank: this.anrBank(),
+      count: cfg.count,
+      pass: cfg.pass,
+      onFinish: (res) => {
+        if (res.again) { this.navigate({ type: "practice" }); this.startPracticeTest(); return; }
+        this.state.practice.history.push({ ts: Date.now(), correct: res.correct, total: res.total, pct: res.pct, passed: res.passed });
+        if (this.state.practice.history.length > 200) this.state.practice.history.shift();
+        this.state.practice.bestPct = Math.max(this.state.practice.bestPct, res.pct);
         this.save();
         this.renderSidebar();
-        this.navigate({ type: "lesson", id: lesson.id });
-        this.toast("🔁 Sub prag — reascultă lecția, apoi reia testul.");
+        this.toast(res.passed ? `🎉 ${res.pct}% — peste pragul de examen!` : `📚 ${res.pct}% — mai exersează, îți iese.`);
       },
     });
   },
@@ -428,32 +416,32 @@ const App = {
     if (i > 0) this.navigate({ type: "lesson", id: this.lessonList()[i - 1].id });
   },
 
-  /* --------------------- Examen --------------------- */
+  /* --------------------- Simularea de examen --------------------- */
   renderExam() {
-    if (!this.allTestsPassed()) return this.navigate({ type: "home" });
     const cfg = window.COURSE.EXAM_CONFIG;
 
     this.$main.innerHTML = `
       <section class="exam-page">
         <div class="exam-page__head">
           <h1>Simulare examen — Conducător de ambarcațiune cu motor</h1>
-          <p>${cfg.count} întrebări din banca reală de antrenament · timp: ${cfg.minutes} minute · prag: ${Math.round(cfg.pass * 100)}%.</p>
+          <p>${cfg.count} întrebări din banca oficială, echilibrate pe categorii · timp: ${cfg.minutes} minute · prag: ${Math.round(cfg.pass * 100)}%.</p>
           ${this.state.exam.passed ? `<p class="exam-page__badge">🏆 Cel mai bun rezultat: ${this.state.exam.bestPct}% — PROMOVAT</p>` : ""}
         </div>
         <div class="exam-page__intro" id="examIntro">
-          <p>Examenul reproduce formatul grilă. Ai o singură variantă corectă la fiecare întrebare. Succes!</p>
+          <p>Simularea reproduce formatul grilă al examenului real: cronometru și o singură variantă corectă pe întrebare. Succes!</p>
           <button class="btn btn--primary btn--lg" id="beginExam">Începe simularea</button>
-          <button class="btn btn--ghost" data-action="home">Înapoi acasă</button>
+          <button class="btn btn--ghost" data-action="go-practice">🎯 Înapoi la antrenament</button>
+          <button class="btn btn--ghost" data-action="home">Acasă</button>
         </div>
         <div id="examRoot"></div>
       </section>`;
 
     document.getElementById("beginExam").addEventListener("click", () => {
       document.getElementById("examIntro").style.display = "none";
-      const seed = 1000 + this.state.exam.attempts * 37 + this.lessonList().length;
-      const anr = (window.ANR_BANK || []).map((q) => ({ m: q.cat, q: q.q, options: q.options, answer: q.answer }));
+      const seed = 1000 + this.state.exam.attempts * 37 + Date.now() % 997;
+      const anr = this.anrBank().map((q) => ({ m: q.cat, q: q.q, options: q.options, answer: q.answer }));
       this.exam = new Exam(document.getElementById("examRoot"), {
-        bank: anr.length ? anr : window.COURSE.EXAM_BANK,
+        bank: anr,
         config: cfg,
         seed,
         onFinish: (res) => {

@@ -259,3 +259,26 @@ body {
   font-size: 13.5px; color: var(--ink-soft); cursor: pointer; user-select: none;
 }
 .cont-toggle input { width: 17px; height: 17px; accent-color: var(--brand); }
+
+/* ---------- Antrenament examen (v4) ---------- */
+.practice-stats {
+  display: flex; gap: 26px; flex-wrap: wrap; margin: 6px 0 18px;
+  background: #fff; border: 1px solid var(--line, #e2e8f0); border-radius: 14px; padding: 16px 22px;
+}
+.practice-stats .stat__num { color: #7c3aed; }
+.practice-empty { margin: 10px 0 18px; color: var(--ink-soft, #475569); font-size: 15px; }
+.practice-history { background: #fff; border: 1px solid var(--line, #e2e8f0); border-radius: 14px; padding: 14px 20px; margin-bottom: 18px; }
+.practice-history h3 { margin: 0 0 10px; font-size: 15px; }
+.practice-history ul { list-style: none; margin: 0; padding: 0; }
+.practice-history li {
+  display: grid; grid-template-columns: 1fr auto auto auto; gap: 14px; align-items: center;
+  padding: 7px 10px; border-radius: 8px; font-size: 14px;
+}
+.practice-history li:nth-child(odd) { background: #f8fafc; }
+.practice-history li.ph--pass strong { color: #16a34a; }
+.practice-history li.ph--fail strong { color: #dc2626; }
+.quiz__cat {
+  display: inline-block; background: #ede9fe; color: #6d28d9; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .4px; border-radius: 6px; padding: 2px 8px;
+  margin-right: 8px; vertical-align: 2px;
+}

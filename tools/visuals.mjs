@@ -1006,6 +1006,314 @@ export const SCENES = {
     boatSide(160, 300, 200) + boatSide(800, 305, 170) +
     badge(470, 500, "Urmează simularea de examen — mult succes!", "#0f172a", "#fff", 22)
   ),
+
+  /* ---------------- Scene noi v4 (curs pe 10 zile) ---------------- */
+
+  /* Construcția parâmei: fir → sfilață → șuviță → lanțană → cordon → garlin */
+  "v4-parama": () => {
+    const steps = [
+      ["FIR", 1, "#94a3b8"], ["SFILAȚĂ", 2, "#64748b"], ["ȘUVIȚĂ", 4, "#a16207"],
+      ["LANȚANĂ", 7, "#92400e"], ["CORDON", 11, "#78350f"], ["GARLIN", 16, "#451a03"],
+    ];
+    const rope = (x, y, w, n, c) => {
+      const lines = Array.from({ length: Math.min(n, 8) }, (_, i) =>
+        `<path d="M ${x - w / 2},${y + (i - Math.min(n, 8) / 2) * 4} q ${w / 4},${6} ${w / 2},0 t ${w / 2},0" fill="none" stroke="${c}" stroke-width="${3 + n * 0.4}" opacity="${0.55 + 0.45 * (i % 2)}"/>`).join("");
+      return lines;
+    };
+    return svgWrap(
+      T(470, 46, "Construcția parâmei vegetale", { s: 27, b: true }) +
+      steps.map(([nm, n, c], i) => {
+        const y = 105 + i * 62;
+        return rope(320, y, 330, n, c) + badge(620, y, nm, i === 5 ? "#7c2d12" : "#334155", "#fff", 19) +
+          (i < 5 ? arrow(320, y + 18, 320, y + 40, "#0891b2", 4) : "");
+      }).join("") +
+      card(90, 480, 760, 60, 14, "#fef9c3", "#ca8a04") +
+      T(470, 517, "„Fiecare Seară Ștefan Leagă Câte-un Garlin”", { s: 24, b: true, c: "#92400e" })
+    );
+  },
+
+  /* Babale, tacheți, ținte + comenzile mola/fila/vira */
+  "v4-babale": () => svgWrap(
+    T(470, 44, "Punctele de legare și comenzile", { s: 26, b: true }) +
+    // tachet
+    card(60, 80, 250, 190) + capT(185, 110, "TACHET") +
+    `<g transform="translate(185,190)"><rect x="-16" y="-8" width="32" height="34" rx="6" fill="#475569"/>
+     <rect x="-72" y="-22" width="144" height="20" rx="10" fill="#334155"/>
+     <path d="M -60,-12 q 60,-42 120,0 q -60,34 -120,0" fill="none" stroke="#a16207" stroke-width="8"/></g>` +
+    // babale
+    card(345, 80, 250, 190) + capT(470, 110, "BABALE (2 «babe»)") +
+    [420, 520].map((x) => `<g transform="translate(${x},195)">
+      <rect x="-11" y="-26" width="22" height="42" fill="#334155"/>
+      <ellipse cx="0" cy="-30" rx="24" ry="12" fill="#475569" stroke="#1f2937" stroke-width="2"/>
+      <rect x="-30" y="16" width="60" height="12" rx="4" fill="#64748b"/></g>`).join("") +
+    // ținte
+    card(630, 80, 250, 190) + capT(755, 110, "ȚINTE (mici)") +
+    [725, 785].map((x) => `<g transform="translate(${x},200)">
+      <rect x="-6" y="-14" width="12" height="24" fill="#334155"/>
+      <ellipse cx="0" cy="-16" rx="13" ry="7" fill="#475569" stroke="#1f2937" stroke-width="2"/></g>`).join("") +
+    // comenzi
+    [["MOLA", "eliberezi complet", "#dc2626", 190], ["FILA", "dai drumul controlat", "#d97706", 470], ["VIRA", "tragi spre tine", "#16a34a", 750]]
+      .map(([cmd, expl, c, x]) => card(x - 130, 320, 260, 180, 14) + badge(x, 360, cmd, c, "#fff", 24) +
+        T(x, 408, expl, { s: 19 }) +
+        (cmd === "MOLA" ? `<path d="M ${x - 60},450 q 40,26 120,10" fill="none" stroke="#a16207" stroke-width="7" stroke-linecap="round"/>`
+          : cmd === "FILA" ? `<path d="M ${x - 70},445 h 90" stroke="#a16207" stroke-width="7" stroke-linecap="round"/>` + arrow(x + 30, 445, x + 78, 445, c, 5)
+            : `<path d="M ${x + 70},445 h -90" stroke="#a16207" stroke-width="7" stroke-linecap="round"/>` + arrow(x - 30, 445, x - 78, 445, c, 5))).join("")
+  ),
+
+  /* Nodul de gașă (bowline): iepurele, vizuina și copacul */
+  "v4-nod": () => svgWrap(
+    T(470, 44, "Nodul de gașă (bowline)", { s: 27, b: true }) +
+    card(50, 76, 540, 440, 16) +
+    // "copacul" — parâma lungă verticală
+    `<path d="M 320,110 L 320,300" stroke="#a16207" stroke-width="13" stroke-linecap="round"/>` +
+    // vizuina — bucla mică
+    `<circle cx="320" cy="330" r="46" fill="none" stroke="#a16207" stroke-width="13"/>` +
+    // iepurele — capătul liber care iese, ocolește, intră
+    `<path d="M 320,376 Q 320,470 210,460 Q 130,450 150,380" fill="none" stroke="#ca8a04" stroke-width="11" stroke-linecap="round"/>` +
+    arc(150, 380, 300, 300, 120, 250, "#0891b2", 5, "10 7") +
+    arc(345, 292, 372, 350, 420, 300, "#0891b2", 5, "10 7") +
+    T(320, 96, "„copacul” (parâma lungă)", { s: 18, c: "#334155" }) +
+    T(438, 336, "„vizuina”", { s: 18, c: "#334155", a: "start" }) +
+    T(120, 350, "„iepurele”", { s: 18, c: "#334155" }) +
+    T(320, 500, "iese din vizuină → ocolește copacul → intră înapoi", { s: 18, b: true, c: "#0f172a" }) +
+    // condițiile nodului marinăresc
+    card(620, 100, 280, 300, 14, "#f0fdf4", "#16a34a") +
+    T(760, 140, "Nod marinăresc:", { s: 21, b: true }) +
+    [["se face repede", 190], ["ține bine", 250], ["se desface repede", 310]]
+      .map(([t, y]) => check(660, y, 12) + T(684, y + 6, t, { s: 20, a: "start" })).join("") +
+    T(760, 370, "toate 3, simultan", { s: 18, c: "#166534", b: true }) +
+    card(620, 420, 280, 96, 14, "#fef9c3", "#ca8a04") +
+    T(760, 456, "Pe tachet ocupat:", { s: 19, b: true, c: "#92400e" }) +
+    T(760, 488, "parâma ta pe DEDESUBT", { s: 18, c: "#92400e" })
+  ),
+
+  /* Vinci / cabestan + blocatoare */
+  "v4-vinci": () => svgWrap(
+    T(470, 44, "Vinci, cabestan și blocatoare", { s: 26, b: true }) +
+    // vinci (ax orizontal)
+    card(60, 80, 380, 250) + capT(250, 112, "VINCI — ax ORIZONTAL") +
+    `<g transform="translate(250,220)">
+      <rect x="-90" y="26" width="180" height="26" rx="8" fill="#475569"/>
+      <ellipse cx="-52" cy="0" rx="26" ry="42" fill="#94a3b8" stroke="#334155" stroke-width="3"/>
+      <rect x="-52" y="-42" width="104" height="84" fill="#94a3b8" stroke="#334155" stroke-width="3"/>
+      <ellipse cx="52" cy="0" rx="26" ry="42" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+      ${[-20, 0, 20].map((o) => `<path d="M ${-46 + o},-40 q 10,40 0,80" fill="none" stroke="#a16207" stroke-width="7"/>`).join("")}
+    </g>` + arc(330, 150, 380, 210, 392, 158, "#16a34a", 5) + T(392, 140, "sens orar", { s: 17, c: "#166534" }) +
+    // cabestan (ax vertical)
+    card(500, 80, 380, 250) + capT(690, 112, "CABESTAN — ax VERTICAL") +
+    `<g transform="translate(690,215)">
+      <ellipse cx="0" cy="62" rx="80" ry="18" fill="#475569"/>
+      <path d="M -34,-58 Q -46,0 -30,52 L 30,52 Q 46,0 34,-58 Z" fill="#94a3b8" stroke="#334155" stroke-width="3"/>
+      <ellipse cx="0" cy="-58" rx="34" ry="12" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+      ${[-30, -6, 18].map((o) => `<ellipse cx="0" cy="${o + 20}" rx="${37 + Math.abs(o) * 0.1}" ry="7" fill="none" stroke="#a16207" stroke-width="6"/>`).join("")}
+      <rect x="-6" y="-96" width="80" height="10" rx="5" fill="#334155" transform="rotate(-18)"/>
+    </g>` +
+    // maneta cu două viteze + blocator
+    card(60, 370, 380, 160, 14, "#eff6ff", "#2563eb") +
+    T(250, 404, "Maneta: 2 viteze", { s: 21, b: true }) +
+    T(250, 442, "→ un sens: forță mare, viteză mică", { s: 18 }) +
+    T(250, 474, "← celălalt: viteză mare, forță mică", { s: 18 }) +
+    card(500, 370, 380, 160, 14, "#fef9c3", "#ca8a04") +
+    T(690, 404, "Blocatorul", { s: 21, b: true, c: "#92400e" }) +
+    T(690, 442, "ține parâma sub tensiune", { s: 18, c: "#92400e" }) +
+    T(690, 474, "fiecare blocator = parâma lui (etichetă)", { s: 17, c: "#92400e" })
+  ),
+
+  /* Siguranța la parâme */
+  "v4-sig": () => svgWrap(
+    T(470, 44, "Siguranța la lucrul cu parâme", { s: 26, b: true }) +
+    // mâna înfășurată — interzis
+    card(60, 80, 260, 210) + cross(285, 110, 13) +
+    `<g transform="translate(190,190)">
+      <path d="M -60,30 q 30,-70 120,-40" fill="none" stroke="#a16207" stroke-width="9"/>
+      <ellipse cx="0" cy="-4" rx="34" ry="26" fill="#fcd9b6" stroke="#92400e" stroke-width="3"/>
+      ${[-14, 0, 14].map((o) => `<ellipse cx="${o}" cy="-6" rx="30" ry="8" fill="none" stroke="#a16207" stroke-width="6"/>`).join("")}
+    </g>` + T(190, 265, "parâma pe mână: NICIODATĂ", { s: 17, b: true, c: "#b91c1c" }) +
+    // piciorul în buclă — interzis
+    card(340, 80, 260, 210) + cross(565, 110, 13) +
+    `<g transform="translate(470,190)">
+      <ellipse cx="0" cy="30" rx="80" ry="30" fill="none" stroke="#a16207" stroke-width="8"/>
+      ${person(0, 10, 1, "stand", "#dc2626")}
+    </g>` + T(470, 265, "piciorul în buclă: NICIODATĂ", { s: 17, b: true, c: "#b91c1c" }) +
+    // spire mușcate — nu degetele
+    card(620, 80, 260, 210) + cross(845, 110, 13) +
+    `<g transform="translate(750,185)">
+      <ellipse cx="0" cy="0" rx="40" ry="46" fill="#94a3b8" stroke="#334155" stroke-width="3"/>
+      <path d="M -34,-18 q 34,20 68,-4 M -36,4 q 30,26 72,-14" fill="none" stroke="#a16207" stroke-width="7"/>
+      ${warn(0, -60, 20)}
+    </g>` + T(750, 265, "spire mușcate: eliberezi tot", { s: 17, b: true, c: "#b91c1c" }) +
+    // colacul ordonat + citatul
+    card(60, 330, 380, 200, 14, "#f0fdf4", "#16a34a") + capT(250, 362, "AȘA DA:") +
+    `<g transform="translate(250,440)">${[46, 36, 26, 16].map((r) => `<circle r="${r}" fill="none" stroke="#a16207" stroke-width="8"/>`).join("")}</g>` +
+    T(250, 512, "parâma strânsă colac, puntea liberă", { s: 17, c: "#166534" }) +
+    card(500, 330, 380, 200, 14, "#0f172a", "#0f172a") +
+    T(690, 390, "„Există marinari bătrâni", { s: 21, c: "#e2e8f0", b: true }) +
+    T(690, 424, "și marinari îndrăzneți.", { s: 21, c: "#e2e8f0", b: true }) +
+    T(690, 472, "Tu alege să ajungi", { s: 19, c: "#fbbf24" }) +
+    T(690, 500, "cu cei bătrâni.”", { s: 19, c: "#fbbf24" })
+  ),
+
+  /* VHF: orizont, puteri, antenă */
+  "v4-vhf": () => svgWrap(
+    sky(320) + waterRect(320, 240) +
+    // curbura pământului + orizont
+    `<path d="M 40,320 Q 470,236 900,320" fill="none" stroke="#0f172a" stroke-width="4" stroke-dasharray="12 8"/>` +
+    boatSide(150, 320, 170) +
+    `<line x1="150" y1="250" x2="150" y2="180" stroke="#334155" stroke-width="6" stroke-linecap="round"/>` +
+    [1, 2, 3].map((i) => `<path d="M ${150 + i * 26},${208 - i * 6} a ${i * 30},${i * 30} 0 0 1 0,${i * 4 + 24}" fill="none" stroke="#2563eb" stroke-width="4" opacity="${1 - i * 0.22}"/>`).join("") +
+    boatSide(790, 316, 150) +
+    T(470, 210, "undele VHF merg în linie dreaptă", { s: 20, b: true, c: "#0f172a" }) +
+    T(470, 300, "→ raza practică ≈ orizontul (~10 Mm)", { s: 19, c: "#0f172a", b: true }) +
+    // cartele cu puteri
+    card(90, 380, 360, 150, 14) + radioIcon(160, 450, 1.1) +
+    T(300, 430, "Stație FIXĂ", { s: 21, b: true }) +
+    T(300, 464, "~25 W, din bateria bărcii", { s: 18 }) +
+    T(300, 496, "bate ~10 Mm (orizont)", { s: 18 }) +
+    card(500, 380, 360, 150, 14) + radioIcon(565, 452, 0.75) +
+    T(710, 430, "Stație PORTABILĂ", { s: 21, b: true }) +
+    T(710, 464, "3–5 W · 2–3 Mm", { s: 18 }) +
+    T(710, 496, "fără antenă NU emiți!", { s: 18, b: true, c: "#b91c1c" })
+  ),
+
+  /* Canalul 16 + cele trei tipuri de mesaje */
+  "v4-canal16": () => svgWrap(
+    `<rect x="320" y="60" width="300" height="120" rx="18" fill="#dc2626"/>` +
+    T(470, 112, "CANAL 16", { s: 40, c: "#fff", b: true }) +
+    T(470, 154, "veghe permanentă obligatorie", { s: 18, c: "#fee2e2" }) +
+    [["PRIMEJDIE (MAYDAY)", "viața în pericol: om la apă, incendiu", "#dc2626", 250],
+     ["URGENȚĂ", "situație gravă, fără pericol imediat de viață", "#d97706", 350],
+     ["SECURITATE", "avertizări: obiecte plutitoare, pericole", "#2563eb", 450]]
+      .map(([t, d, c, y]) => card(120, y - 34, 700, 78, 14) +
+        `<rect x="120" y="${y - 34}" width="14" height="78" rx="7" fill="${c}"/>` +
+        T(170, y - 2, t, { s: 21, b: true, c, a: "start" }) +
+        T(170, y + 30, d, { s: 18, a: "start" })).join("")
+  ),
+
+  /* Protocol radio: simplex + apel corect + over/out */
+  "v4-protocol": () => svgWrap(
+    T(470, 44, "Protocolul radio VHF", { s: 26, b: true }) +
+    // simplex
+    card(60, 80, 400, 190, 14) + capT(260, 112, "SIMPLEX: vorbește unul singur") +
+    radioIcon(150, 190, 0.9) + radioIcon(370, 190, 0.9) +
+    arrow(195, 170, 320, 170, "#16a34a", 5) +
+    line(320, 210, 195, 210, "#94a3b8", 4, "8 8") + cross(258, 210, 9) +
+    // apel corect
+    card(500, 80, 380, 190, 14, "#f0fdf4", "#16a34a") + capT(690, 112, "APELUL CORECT") +
+    T(690, 160, "„Teddy, Teddy, de Paul”", { s: 24, b: true, c: "#166534" }) +
+    T(690, 200, "numele chemat + «de» + numele tău", { s: 17 }) +
+    T(690, 236, "✗ „Paul pentru Teddy”", { s: 18, c: "#b91c1c" }) +
+    // fluxul canalului
+    card(60, 310, 820, 110, 14, "#eff6ff", "#2563eb") +
+    badge(180, 365, "legătura pe 16", "#dc2626", "#fff", 19) +
+    arrow(280, 365, 360, 365, "#0f172a", 4) +
+    badge(470, 365, "canal de lucru (ex. 10)", "#2563eb", "#fff", 19) +
+    arrow(590, 365, 660, 365, "#0f172a", 4) +
+    badge(760, 365, "înapoi pe 16", "#dc2626", "#fff", 19) +
+    // over / out
+    card(60, 450, 400, 88, 14) + T(140, 502, "OVER", { s: 26, b: true, c: "#16a34a" }) +
+    T(330, 502, "= aștept răspuns", { s: 19 }) +
+    card(500, 450, 380, 88, 14) + T(580, 502, "OUT", { s: 26, b: true, c: "#dc2626" }) +
+    T(740, 502, "= închid definitiv", { s: 19 })
+  ),
+
+  /* Butonul DISTRESS + obligații */
+  "v4-dsc": () => svgWrap(
+    // stația cu butonul roșu
+    card(60, 70, 320, 300, 16, "#1e293b", "#0f172a") +
+    `<rect x="100" y="100" width="240" height="110" rx="8" fill="#a7f3d0"/>` +
+    T(220, 145, "DSC — canal 70", { s: 20, b: true, c: "#065f46" }) +
+    T(220, 180, "poziție + identitate", { s: 17, c: "#065f46" }) +
+    `<circle cx="160" cy="280" r="34" fill="#dc2626" stroke="#7f1d1d" stroke-width="4"/>` +
+    T(160, 288, "16", { s: 24, c: "#fff", b: true }) +
+    `<rect x="230" y="242" width="120" height="76" rx="10" fill="#7f1d1d"/>
+     <rect x="238" y="250" width="104" height="60" rx="7" fill="#dc2626"/>` +
+    T(290, 288, "DISTRESS", { s: 16, c: "#fff", b: true }) +
+    T(220, 350, "sub capac — doar primejdie gravă", { s: 16, c: "#e2e8f0" }) +
+    // obligațiile la recepție
+    card(440, 70, 450, 300, 16) + capT(665, 104, "AI RECEPȚIONAT UN DISTRESS:") +
+    [["citești datele de pe ecran", 150], ["comuți pe 16 voce, răspunzi", 200],
+     ["transmiți: cine ești, unde, că vii", 250], ["prea departe de coastă? devii RELEU", 300]]
+      .map(([t, y]) => check(480, y, 11) + T(504, y + 6, t, { s: 19, a: "start" })).join("") +
+    T(665, 350, "închiderea stației = infracțiune", { s: 18, b: true, c: "#b91c1c" }) +
+    // raportarea la plecare
+    card(60, 410, 830, 120, 14, "#fef9c3", "#ca8a04") +
+    T(475, 452, "La plecarea din port (comercial/militar) anunți căpitănia:", { s: 20, b: true, c: "#92400e" }) +
+    T(475, 492, "cine e la bord · câte persoane · cine e skipperul · ce brevet · categoria bărcii", { s: 18, c: "#92400e" })
+  ),
+
+  /* AIS + NAVTEX */
+  "v4-ais": () => svgWrap(
+    sky(280) + waterRect(280, 280) +
+    boatSide(190, 290, 170) + boatSide(730, 280, 230, "#cbd5e1") +
+    [1, 2].map((i) => `<path d="M ${250 + i * 20},${212 - i * 8} a ${i * 26},${i * 26} 0 0 1 0,${i * 10 + 20}" fill="none" stroke="#2563eb" stroke-width="4" opacity="${1 - i * 0.3}"/>`).join("") +
+    [1, 2].map((i) => `<path d="M ${640 - i * 20},${190 - i * 8} a ${i * 26},${i * 26} 0 0 0 0,${i * 10 + 20}" fill="none" stroke="#16a34a" stroke-width="4" opacity="${1 - i * 0.3}"/>`).join("") +
+    badge(470, 120, "AIS: poziție + viteză + identitate, în ambele sensuri", "#0f172a", "#fff", 19) +
+    T(470, 250, "lumini: te vede de la 3 Mm · cu AIS: de la 6 Mm", { s: 20, b: true, c: "#0f172a" }) +
+    // NAVTEX
+    card(90, 380, 500, 150, 14) + capT(340, 412, "NAVTEX — telegramele de la mare") +
+    `<rect x="130" y="430" width="180" height="80" rx="8" fill="#1e293b"/>
+     <rect x="142" y="442" width="156" height="56" rx="4" fill="#a7f3d0"/>` +
+    T(450, 458, "meteo · avize de furtună", { s: 18, a: "middle" }) +
+    T(450, 490, "zone interzise · exerciții", { s: 18, a: "middle" }) +
+    card(630, 380, 260, 150, 14, "#eff6ff", "#2563eb") +
+    T(760, 425, "Marine Traffic", { s: 20, b: true, c: "#1e40af" }) +
+    T(760, 460, "aplicație gratuită:", { s: 17 }) +
+    T(760, 490, "vezi navele cu AIS", { s: 17 })
+  ),
+
+  /* Mila marină + nodul + cele două viteze */
+  "v4-mila": () => svgWrap(
+    // arcul de meridian
+    `<circle cx="240" cy="230" r="150" fill="#bae6fd" stroke="#0284c7" stroke-width="4"/>` +
+    `<path d="M 240,80 A 150,150 0 0 1 371,155" fill="none" stroke="#dc2626" stroke-width="7"/>` +
+    line(240, 230, 240, 80, "#475569", 3, "8 6") + line(240, 230, 371, 155, "#475569", 3, "8 6") +
+    T(240, 46, "1 minut de arc = 1 milă marină", { s: 21, b: true }) +
+    badge(310, 100, "1852 m", "#dc2626", "#fff", 21) +
+    T(240, 420, "360° × 60′ = un ocol de planetă", { s: 18, c: "#334155" }) +
+    T(240, 452, "mila terestră ≈ 1600 m — altă unitate!", { s: 17, c: "#b91c1c" }) +
+    // nodul
+    card(470, 70, 410, 130, 14, "#f0fdf4", "#16a34a") +
+    T(675, 112, "NODUL = 1 Mm / oră", { s: 24, b: true, c: "#166534" }) +
+    T(675, 152, "5 noduri = 5 mile marine într-o oră (~10 km/h)", { s: 18 }) +
+    // cele două viteze
+    card(470, 230, 410, 300, 14) + capT(675, 262, "CELE DOUĂ VITEZE (ex. Bosfor)") +
+    `<g transform="translate(560,320)">${boatTop(0, 0, 90, 0)}</g>` +
+    arrow(560, 380, 560, 430, "#0891b2", 5) + T(560, 456, "curent 2–3 Nd", { s: 16, c: "#0e7490" }) +
+    T(760, 310, "prin apă: 6 Nd", { s: 19, b: true }) +
+    T(760, 345, "cu curentul: 8 Nd", { s: 18, c: "#16a34a" }) +
+    T(760, 380, "contra: 3 Nd", { s: 18, c: "#b91c1c" }) +
+    T(760, 425, "GPS = viteza", { s: 17 }) + T(760, 452, "deasupra fundului", { s: 17 }) +
+    T(675, 505, "diferența dintre ele = curentul", { s: 19, b: true })
+  ),
+
+  /* Compasul magnetic */
+  "v4-compas": () => svgWrap(
+    T(470, 44, "Compasul: instrumentul rece", { s: 26, b: true }) +
+    // compas mare
+    `<g transform="translate(280,290)">
+      <circle r="170" fill="#1e293b" stroke="#0f172a" stroke-width="8"/>
+      <circle r="140" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+      ${["N", "E", "S", "V"].map((d, i) => T(Math.sin(i * Math.PI / 2) * 112, -Math.cos(i * Math.PI / 2) * 112 + 8, d, { s: 26, b: true, c: i === 0 ? "#dc2626" : "#0f172a" })).join("")}
+      ${[45, 135, 225, 315].map((a) => line(Math.sin(a * Math.PI / 180) * 100, -Math.cos(a * Math.PI / 180) * 100, Math.sin(a * Math.PI / 180) * 126, -Math.cos(a * Math.PI / 180) * 126, "#64748b", 3)).join("")}
+      <path d="M 0,-96 L 20,0 L 0,96 L -20,0 Z" fill="#dc2626"/>
+      <path d="M 0,96 L 20,0 L 0,-96 L -20,0 Z" fill="#e2e8f0" transform="rotate(180)" opacity="0.9"/>
+      <circle r="12" fill="#0f172a"/>
+      <line x1="0" y1="-140" x2="0" y2="-160" stroke="#dc2626" stroke-width="6"/>
+    </g>` +
+    T(280, 505, "linie de credință · pivot · lichid amortizor", { s: 18, c: "#334155" }) +
+    // de ce
+    card(520, 100, 370, 180, 14, "#f0fdf4", "#16a34a") +
+    T(705, 140, "Fără curent. Fără soft.", { s: 21, b: true, c: "#166534" }) +
+    T(705, 178, "Cerință legală la inspecția", { s: 18 }) +
+    T(705, 208, "tehnică — oricâte GPS-uri ai.", { s: 18 }) +
+    check(560, 250, 12) + T(584, 256, "funcționează întotdeauna", { s: 18, a: "start" }) +
+    card(520, 310, 370, 220, 14, "#fef2f2", "#dc2626") +
+    T(705, 350, "Electronica are toane:", { s: 20, b: true, c: "#b91c1c" }) +
+    T(705, 390, "chartplotter care te „mută”", { s: 18 }) +
+    T(705, 420, "în Peru, viteze de 100 Nd...", { s: 18 }) +
+    T(705, 468, "Planul B care nu se descarcă:", { s: 17, c: "#7f1d1d" }) +
+    T(705, 498, "compas + hartă + minte limpede", { s: 18, b: true, c: "#7f1d1d" })
+  ),
 };
 
 /* Ilustrație generică de rezervă (nu ar trebui să fie folosită). */

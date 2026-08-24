@@ -1,10 +1,9 @@
 /*
  * exam.js — Simularea examenului final.
  *
- * Se deblochează după promovarea tuturor celor 14 lecții.
- * Extrage aleator EXAM_CONFIG.count întrebări din EXAM_BANK, cu timp limită și
- * prag de promovare (EXAM_CONFIG.pass). Reproduce formatul grilă al examenului
- * teoretic.
+ * Extrage aleator EXAM_CONFIG.count întrebări din banca oficială ANR,
+ * echilibrat pe categorii, cu timp limită și prag de promovare
+ * (EXAM_CONFIG.pass). Reproduce formatul grilă al examenului teoretic.
  */
 
 function shuffle(arr, seedRandom) {

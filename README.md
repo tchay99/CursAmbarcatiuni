@@ -1,30 +1,29 @@
 # Curs Conducător de Ambarcațiune cu Motor — Mini-LMS
 
 Un mini-LMS (Learning Management System) în limba română pentru pregătirea
-examenului de **conducător de ambarcațiune cu motor pentru agrement**, construit
-pe baza planului de studiu de 14 zile organizat în 4 module.
+examenului de **conducător de ambarcațiune cu motor pentru agrement**:
+un curs video de 10 zile narat „cu tâlc" de Cpt. Paul Dicu + un modul de
+antrenament cu întrebările oficiale de examen.
 
 ## Ce include
 
-- **14 lecții video MP4** (în `videos/`), câte una pe zi, narate de
-  „Cpt. Paul Dicu" (voce neuronală Piper `ro_RO-mihai-medium`), organizate în
-  4 module:
-  1. Ambarcațiunea și motorul (zilele 1–4)
-  2. Manevre și ancorare (zilele 5–7)
-  3. Siguranță și prim ajutor (zilele 8–10)
-  4. Navigație și reguli de drum (zilele 11–14)
-- **Secțiunea 🎧 Lecții — mod audiobook**: toate lecțiile sunt libere și pot
-  fi ascultate în orice ordine; cu „Redare continuă" activată, lecțiile curg
-  automat una după alta, ca un audiobook.
-- **Secțiunea 📝 Teste — progresie separată**: testul zilei se deblochează
-  doar după ascultarea integrală a lecției respective, iar testul N doar
-  după promovarea testului N-1 (prag **75%**): întrebări din lecție +
-  2 întrebări reale din setul de antrenament ANR al categoriei corespunzătoare.
-- **Reluare la eșec** — dacă pici testul, trebuie să reasculți lecția
-  înainte de a reîncerca.
-- **Simulare de examen final** — 24 de întrebări grilă din banca reală de
-  antrenament ANR (7 categorii), cronometru 30 min, prag 75%; se deblochează
-  după promovarea tuturor celor 14 teste.
+- **🎬 Curs video de 10 zile** (în `videos/`), narat de „Cpt. Paul Dicu"
+  (voce neuronală Piper `ro_RO-mihai-medium`), în stil de povestitor — cu
+  anecdote, mnemotehnici și vorbe de marinar — organizat în 4 module:
+  1. Ambarcațiunea și motorul (zilele 1–2)
+  2. Marinărie și manevre (zilele 3–5)
+  3. Siguranță și comunicații (zilele 6–8)
+  4. Navigație și reguli de drum (zilele 9–10)
+
+  Lecțiile sunt **de sine stătătoare**: se ascultă liber, în orice ordine,
+  iar cu „Redare continuă" curg automat una după alta, ca un audiobook
+  (~10 minute pe zi, ~100 de minute în total).
+- **🎯 Antrenament examen** — modul separat: teste de câte **20 de întrebări**
+  extrase aleator din banca oficială de antrenament ANR (568 de întrebări,
+  7 categorii), cu opțiuni amestecate, prag 75% și **istoric de scoruri**
+  (număr de teste, medie, cel mai bun scor).
+- **⏱️ Simulare de examen** — 24 de întrebări echilibrate pe categorii,
+  cronometru 30 min, prag 75%.
 - **Autentificare și provizionare utilizatori** (opțional, pentru publicare):
   server Node **fără dependențe npm** cu link privat de înregistrare, aprobare
   din panou de admin și acces protejat la tot conținutul.
@@ -67,13 +66,13 @@ systemd, Caddy (HTTPS automat cu domeniu), provizionarea cursanților.
 
 ```
 index.html                 – aplicația (shell)
-assets/js/content.js       – cele 14 lecții + configurația examenului
+assets/js/content.js       – cele 10 lecții video + configurații antrenament/examen
 assets/js/questions-anr.js – banca de întrebări reale de antrenament ANR (568)
 assets/js/player.js        – player video (MP4/WebM; fallback diapozitive narate)
-assets/js/quiz.js          – verificarea de cunoștințe + regula de reluare
+assets/js/practice.js      – testele de antrenament (20 întrebări aleatoare)
 assets/js/exam.js          – simularea examenului final
-assets/js/app.js           – navigare (Lecții/Teste), audiobook, progres, deblocări
-videos/day01..14.mp4       – videourile lecțiilor (generate, comise în repo)
+assets/js/app.js           – navigare (Curs video / Antrenament), audiobook, progres
+videos/day01..10.mp4       – videourile lecțiilor (generate, comise în repo)
 server/server.js           – server cu autentificare (Node pur, zero dependențe)
 deploy/                    – systemd unit + Caddyfile
 tools/                     – generatorul de videouri (Playwright + Piper TTS + ffmpeg)
@@ -84,7 +83,7 @@ DEPLOY.md                  – ghid de publicare pe Oracle Cloud Free Tier
 
 - Conținutul lecțiilor și întrebările: `assets/js/content.js`
   (după modificare, regenerează videourile — vezi `tools/README.md`).
-- Pragul verificărilor: `QUIZ_PASS` în `assets/js/quiz.js`.
+- Testele de antrenament: `PRACTICE_CONFIG` în `assets/js/content.js`.
 - Configurația examenului: `EXAM_CONFIG` în `assets/js/content.js`.
 
 ## Disclaimer

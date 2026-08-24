@@ -72,46 +72,50 @@ function splitPhrases(text) {
 for (const d of ["slides", "audio", "segments", "frames"]) mkdirSync(join(BUILD, d), { recursive: true });
 mkdirSync(OUT, { recursive: true });
 
-/* ---------- Narator (căpitan) — SVG cu stări ---------- */
+/* ---------- Narator: Cpt. Paul Dicu — marinar ~50 de ani, chel, barbă scurtă
+ * căruntă, pielea arsă de soare. SVG cu stări (gură/clipit). ---------- */
 function narratorSVG({ mouthOpen, blink }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
   <defs><linearGradient id="jk" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#172554"/></linearGradient></defs>
   <!-- umeri / sacou bleumarin -->
   <path d="M 26,300 Q 30,214 78,196 L 162,196 Q 210,214 214,300 Z" fill="url(#jk)"/>
-  <path d="M 104,196 L 120,232 L 136,196 L 128,196 L 120,212 L 112,196 Z" fill="#f8fafc"/>
-  <path d="M 113,214 L 127,214 L 132,268 L 120,286 L 108,268 Z" fill="#b91c1c"/>
+  <!-- cămașă albă descheiată la gât -->
+  <path d="M 100,196 L 120,240 L 140,196 L 128,196 L 120,216 L 112,196 Z" fill="#f8fafc"/>
   <!-- epoleți -->
   <rect x="34" y="212" width="42" height="13" rx="6" fill="#facc15"/>
   <rect x="164" y="212" width="42" height="13" rx="6" fill="#facc15"/>
-  <!-- gât + cap -->
-  <rect x="103" y="164" width="34" height="38" rx="12" fill="#eebd96"/>
-  <ellipse cx="120" cy="122" rx="52" ry="58" fill="#f6cfa8"/>
+  <!-- gât + cap (piele arsă de soare) -->
+  <rect x="103" y="164" width="34" height="38" rx="12" fill="#b87646"/>
+  <ellipse cx="120" cy="120" rx="52" ry="58" fill="#c98a5e"/>
+  <!-- chelie: creștet neted cu reflex -->
+  <ellipse cx="104" cy="76" rx="20" ry="10" fill="#ffffff" opacity="0.18"/>
+  <!-- riduri de frunte -->
+  <path d="M 96,82 q 24,-7 48,0 M 100,93 q 20,-6 40,0" fill="none" stroke="#a06a42" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
   <!-- urechi -->
-  <ellipse cx="66" cy="128" rx="9" ry="13" fill="#eebd96"/><ellipse cx="174" cy="128" rx="9" ry="13" fill="#eebd96"/>
-  <!-- barbă căruntă -->
-  <path d="M 68,128 Q 64,196 120,202 Q 176,196 172,128 Q 168,168 120,172 Q 72,168 68,128 Z" fill="#cbd5e1"/>
-  <path d="M 96,158 Q 120,170 144,158 L 140,176 Q 120,186 100,176 Z" fill="#e2e8f0"/>
+  <ellipse cx="66" cy="126" rx="9" ry="13" fill="#b87646"/><ellipse cx="174" cy="126" rx="9" ry="13" fill="#b87646"/>
+  <!-- tâmple cu păr cărunt tuns scurt -->
+  <path d="M 69,102 Q 65,118 70,132 L 80,128 Q 75,116 80,104 Z" fill="#98a2ad"/>
+  <path d="M 171,102 Q 175,118 170,132 L 160,128 Q 165,116 160,104 Z" fill="#98a2ad"/>
+  <!-- barbă scurtă căruntă, plină, pe maxilar și bărbie -->
+  <path d="M 69,116 Q 72,186 120,193 Q 168,186 171,116 Q 167,162 120,170 Q 73,162 69,116 Z" fill="#98a2ad"/>
+  <path d="M 80,140 Q 86,180 120,186 Q 154,180 160,140 Q 152,168 120,173 Q 88,168 80,140 Z" fill="#b8c0c9" opacity="0.75"/>
+  <!-- mustață căruntă -->
+  <path d="M 98,146 Q 120,156 142,146 Q 140,158 120,161 Q 100,158 98,146 Z" fill="#98a2ad"/>
   <!-- gura -->
   ${mouthOpen
-    ? `<ellipse cx="120" cy="163" rx="13" ry="9" fill="#7c2d12"/><path d="M 109,160 Q 120,154 131,160" fill="none" stroke="#450a0a" stroke-width="2"/>`
-    : `<path d="M 106,162 Q 120,170 134,162" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>`}
+    ? `<ellipse cx="120" cy="168" rx="11" ry="7.5" fill="#5f2413"/><path d="M 111,165 Q 120,160 129,165" fill="none" stroke="#3f1508" stroke-width="2"/>`
+    : `<path d="M 109,167 Q 120,172 131,167" fill="none" stroke="#4a2410" stroke-width="4" stroke-linecap="round"/>`}
   <!-- nas -->
-  <path d="M 120,128 q -7,14 0,20 q 5,4 9,0" fill="none" stroke="#d9a173" stroke-width="4" stroke-linecap="round"/>
-  <!-- ochi -->
+  <path d="M 120,126 q -7,14 0,20 q 5,4 9,0" fill="none" stroke="#a06a42" stroke-width="4" stroke-linecap="round"/>
+  <!-- ochi + riduri de soare la colțuri -->
   ${blink
     ? `<path d="M 88,112 q 10,6 22,0 M 130,112 q 10,6 22,0" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>`
     : `<circle cx="99" cy="112" r="7" fill="#1e293b"/><circle cx="141" cy="112" r="7" fill="#1e293b"/>
        <circle cx="101" cy="110" r="2.4" fill="#fff"/><circle cx="143" cy="110" r="2.4" fill="#fff"/>`}
-  <!-- sprâncene cărunte -->
-  <path d="M 86,98 q 13,-8 27,-3 M 127,95 q 14,-5 27,3" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
-  <!-- chipiu de căpitan -->
-  <path d="M 62,92 Q 66,44 120,42 Q 174,44 178,92 L 178,80 Q 174,36 120,34 Q 66,36 62,80 Z" fill="#f8fafc"/>
-  <path d="M 62,86 Q 120,64 178,86 L 178,74 Q 120,52 62,74 Z" fill="#f8fafc"/>
-  <path d="M 60,88 Q 120,70 180,88 L 180,100 Q 120,84 60,100 Z" fill="#0f172a"/>
-  <ellipse cx="120" cy="60" rx="60" ry="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-  <circle cx="120" cy="92" r="9" fill="#facc15"/>
-  <path d="M 116,90 l 8,0 M 120,86 l 0,10" stroke="#92400e" stroke-width="2"/>
+  <path d="M 82,110 l -8,-3 M 82,116 l -8,2 M 158,110 l 8,-3 M 158,116 l 8,2" stroke="#a06a42" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <!-- sprâncene cărunte, stufoase -->
+  <path d="M 86,99 q 13,-8 27,-3 M 127,96 q 14,-5 27,3" fill="none" stroke="#8b949e" stroke-width="6" stroke-linecap="round"/>
 </svg>`;
 }
 
@@ -152,12 +156,22 @@ const PRONUNCIATIONS = [
   [/\bover\b/g, "ouver"],
   [/\bout\b/g, "aut"],
   [/\bdistress\b/gi, "distres"],
+  [/\bchartplotter\b/gi, "ceartploter"],
+  [/\bchartploter(ul)?\b/gi, "ceartploter$1"],
+  [/\bthis is\b/gi, "dis iz"],
+  [/\bradio check\b/gi, "redio cec"],
+  [/\bWine\b/g, "uain"],
+  [/\bMarine Traffic\b/g, "marin trafic"],
+  [/\bAIS(-ul)?\b/g, "a-i-es$1"],
+  [/\bDSC\b/g, "de-se-ce"],
+  [/\bbowline\b/gi, "baulain"],
+  [/\bskipper(ul|ului)?\b/gi, "schiper$1"],
 ];
 const ttsText = (s) => PRONUNCIATIONS.reduce((t, [re, rep]) => t.replace(re, rep), s);
 
 /* ---------- Șablonul cadrului video ---------- */
 function frameHTML(lesson, mod, slide, idx, total, state) {
-  const svg = sceneArt(`${lesson.id}-s${idx + 1}`);
+  const svg = sceneArt(slide.art || `${lesson.id}-s${idx + 1}`);
   return `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { width:1280px; height:720px; overflow:hidden; font-family:"DejaVu Sans",sans-serif;
@@ -194,7 +208,7 @@ function frameHTML(lesson, mod, slide, idx, total, state) {
     <div class="narr">
       <div class="avatar">${narratorSVG(state)}</div>
       <div class="plate"><div class="nm">Cpt. Paul Dicu</div><div class="rl">instructorul tău</div></div>
-      <div class="day">Ziua ${lesson.day} din 14</div>
+      <div class="day">Ziua ${lesson.day} din ${LESSONS.length}</div>
     </div>
   </div>
 </body></html>`;
