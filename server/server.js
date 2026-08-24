@@ -188,6 +188,13 @@ if (cli[0] === "--show-link") {
   console.log(`Link privat de înregistrare: /register?token=${cfg.registrationToken}`);
   process.exit(0);
 }
+if (cli[0] === "--rotate-link") {
+  const cfg = loadConfig();
+  cfg.registrationToken = crypto.randomBytes(16).toString("hex");
+  saveConfig(cfg);
+  console.log(`✔ Link regenerat. Noul link: /register?token=${cfg.registrationToken}`);
+  process.exit(0);
+}
 
 /* ============================ Pagini de autentificare ============================ */
 
@@ -298,7 +305,8 @@ function adminPage() {
   <h2>Link privat de înregistrare</h2>
   <div class="linkbox"><input id="reglink" readonly>
     <button class="b gray" onclick="navigator.clipboard.writeText(document.getElementById('reglink').value)">Copiază</button>
-    <button class="b no" onclick="rotate()" title="Invalidează linkul curent și generează altul">Regenerează</button></div>
+    <button class="b no" id="rotBtn" onclick="rotate(this)" title="Invalidează linkul curent și generează altul">Regenerează</button></div>
+  <p id="msg" style="margin-top:8px;font-size:13px;font-weight:600;display:none"></p>
 
   <h2>Utilizatori</h2>
   <table><thead><tr><th>Email</th><th>Stare</th><th>Creat</th><th>Acțiuni</th></tr></thead><tbody id="rows"></tbody></table>
@@ -316,17 +324,41 @@ async function load() {
     <td>\${u.role==='admin' ? '' : \`
       \${u.status!=='approved' ? \`<button class="b ok" onclick="act('approve','\${u.email}')">Aprobă</button>\` : ''}
       \${u.status!=='rejected' ? \`<button class="b no" onclick="act('reject','\${u.email}')">Respinge</button>\` : ''}
-      <button class="b gray" onclick="if(confirm('Ștergi contul \${u.email}?'))act('delete','\${u.email}')">Șterge</button>\`}</td></tr>\`).join('')
+      <button class="b gray" onclick="confirmThen(this,'Sigur? Șterge!',()=>act('delete','\${u.email}'))">Șterge</button>\`}</td></tr>\`).join('')
     || '<tr><td colspan="4" style="color:#64748b">Niciun utilizator încă.</td></tr>';
 }
+/* Confirmare în două click-uri, fără dialoguri native de browser (care pot fi
+ * blocate din setările paginii și atunci butonul pare mort). */
+function confirmThen(btn, label, fn) {
+  if (btn.dataset.armed) { delete btn.dataset.armed; fn(); return; }
+  btn.dataset.armed = '1';
+  const old = btn.textContent;
+  btn.textContent = label;
+  setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = old; } }, 3500);
+}
+function showMsg(text, ok) {
+  const m = document.getElementById('msg');
+  m.textContent = text; m.style.color = ok ? '#166534' : '#991b1b'; m.style.display = 'block';
+  setTimeout(() => { m.style.display = 'none'; }, 5000);
+}
+async function call(path, body) {
+  try {
+    const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body||{})});
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { showMsg('Eroare: ' + (d.error || r.status), false); return false; }
+    return true;
+  } catch (e) { showMsg('Eroare de rețea: ' + e.message, false); return false; }
+}
 async function act(action, email) {
-  await fetch('/api/admin/' + action, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
+  await call('/api/admin/' + action, {email});
   load();
 }
-async function rotate() {
-  if (!confirm('Linkul curent devine invalid. Continui?')) return;
-  await fetch('/api/admin/rotate-link', {method:'POST'});
-  load();
+function rotate(btn) {
+  confirmThen(btn, 'Sigur? Invalidează!', async () => {
+    if (await call('/api/admin/rotate-link')) showMsg('Link regenerat — cel vechi nu mai este valid.', true);
+    btn.textContent = 'Regenerează';
+    load();
+  });
 }
 load();
 </script></body></html>`;
@@ -439,7 +471,8 @@ const server = http.createServer(async (req, res) => {
     if (!filePath) { res.writeHead(404); return res.end("Not found"); }
     return serveFile(req, res, filePath);
   } catch (err) {
-    return sendJSON(res, 400, { error: "Cerere invalidă." });
+    console.error(`[eroare] ${req.method} ${p}:`, err);
+    return sendJSON(res, 500, { error: `Eroare de server: ${err.code || err.message}` });
   }
 });
 
