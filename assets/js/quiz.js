@@ -49,8 +49,8 @@ function renderQuiz(root, lesson, { unlocked, onPass, onFail }) {
       root.innerHTML = `
         <div class="quiz quiz--locked">
           <div class="lock-icon">🔒</div>
-          <h3>Verificare de cunoștințe blocată</h3>
-          <p>Vizionează integral lecția de mai sus pentru a debloca verificarea.</p>
+          <h3>Test blocat</h3>
+          <p>Ascultă integral lecția zilei (secțiunea 🎧 Lecții) pentru a debloca testul.</p>
         </div>`;
       return;
     }

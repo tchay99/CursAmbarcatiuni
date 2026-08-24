@@ -244,3 +244,18 @@ body {
   .topbar__progress { min-width: 140px; }
   .brand__text { display: none; }
 }
+
+/* ---------- Secțiuni sidebar (v3: audiobook + teste) ---------- */
+.nav-section {
+  font-size: 13px; font-weight: 800; letter-spacing: .4px; color: #0b1a3a;
+  background: linear-gradient(90deg, #e0ecf9, #eef2f7);
+  border-radius: 10px; padding: 8px 12px; margin: 14px 0 10px;
+}
+.nav-section:first-child { margin-top: 0; }
+
+/* ---------- Redare continuă (audiobook) ---------- */
+.cont-toggle {
+  display: flex; align-items: center; gap: 8px; margin-top: 10px;
+  font-size: 13.5px; color: var(--ink-soft); cursor: pointer; user-select: none;
+}
+.cont-toggle input { width: 17px; height: 17px; accent-color: var(--brand); }

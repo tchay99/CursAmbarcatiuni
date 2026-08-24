@@ -149,6 +149,9 @@ const PRONUNCIATIONS = [
   [/\bGPS\b/g, "ge-pe-es"],
   [/\bStaying Alive\b/g, "steing alaiv"],
   [/\bjet-ski\b/gi, "get schi"],
+  [/\bover\b/g, "ouver"],
+  [/\bout\b/g, "aut"],
+  [/\bdistress\b/gi, "distres"],
 ];
 const ttsText = (s) => PRONUNCIATIONS.reduce((t, [re, rep]) => t.replace(re, rep), s);
 
@@ -190,7 +193,7 @@ function frameHTML(lesson, mod, slide, idx, total, state) {
     <div class="visual">${svg}</div>
     <div class="narr">
       <div class="avatar">${narratorSVG(state)}</div>
-      <div class="plate"><div class="nm">Cpt. Mihai</div><div class="rl">instructorul tău</div></div>
+      <div class="plate"><div class="nm">Cpt. Paul Dicu</div><div class="rl">instructorul tău</div></div>
       <div class="day">Ziua ${lesson.day} din 14</div>
     </div>
   </div>

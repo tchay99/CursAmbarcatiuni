@@ -6,24 +6,25 @@ pe baza planului de studiu de 14 zile organizat în 4 module.
 
 ## Ce include
 
-- **14 lecții video MP4** (în `videos/`), câte una pe zi, cu narațiune în
-  limba română (voce neuronală Piper `ro_RO-mihai-medium`), organizate în
+- **14 lecții video MP4** (în `videos/`), câte una pe zi, narate de
+  „Cpt. Paul Dicu" (voce neuronală Piper `ro_RO-mihai-medium`), organizate în
   4 module:
   1. Ambarcațiunea și motorul (zilele 1–4)
   2. Manevre și ancorare (zilele 5–7)
   3. Siguranță și prim ajutor (zilele 8–10)
   4. Navigație și reguli de drum (zilele 11–14)
-- **Vizionare integrală obligatorie** — nu se poate sări peste porțiuni
-  nevizionate; abia la final se deblochează verificarea.
-- **Verificare de cunoștințe** la finalul fiecărei lecții (prag **75%**):
-  4 întrebări din lecție + 2 întrebări reale din setul de antrenament ANR
-  al categoriei corespunzătoare.
-- **Reluare la eșec** — dacă pici verificarea, trebuie să revizionezi lecția
-  înainte de a reîncerca; lecția următoare rămâne blocată.
-- **Deblocare progresivă** — ziua N se deschide doar după promovarea zilei N-1.
+- **Secțiunea 🎧 Lecții — mod audiobook**: toate lecțiile sunt libere și pot
+  fi ascultate în orice ordine; cu „Redare continuă" activată, lecțiile curg
+  automat una după alta, ca un audiobook.
+- **Secțiunea 📝 Teste — progresie separată**: testul zilei se deblochează
+  doar după ascultarea integrală a lecției respective, iar testul N doar
+  după promovarea testului N-1 (prag **75%**): întrebări din lecție +
+  2 întrebări reale din setul de antrenament ANR al categoriei corespunzătoare.
+- **Reluare la eșec** — dacă pici testul, trebuie să reasculți lecția
+  înainte de a reîncerca.
 - **Simulare de examen final** — 24 de întrebări grilă din banca reală de
   antrenament ANR (7 categorii), cronometru 30 min, prag 75%; se deblochează
-  după toate cele 14 lecții.
+  după promovarea tuturor celor 14 teste.
 - **Autentificare și provizionare utilizatori** (opțional, pentru publicare):
   server Node **fără dependențe npm** cu link privat de înregistrare, aprobare
   din panou de admin și acces protejat la tot conținutul.
@@ -71,7 +72,7 @@ assets/js/questions-anr.js – banca de întrebări reale de antrenament ANR (56
 assets/js/player.js        – player video (MP4/WebM; fallback diapozitive narate)
 assets/js/quiz.js          – verificarea de cunoștințe + regula de reluare
 assets/js/exam.js          – simularea examenului final
-assets/js/app.js           – navigare, progres, blocare/deblocare
+assets/js/app.js           – navigare (Lecții/Teste), audiobook, progres, deblocări
 videos/day01..14.mp4       – videourile lecțiilor (generate, comise în repo)
 server/server.js           – server cu autentificare (Node pur, zero dependențe)
 deploy/                    – systemd unit + Caddyfile
