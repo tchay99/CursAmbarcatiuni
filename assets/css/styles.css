@@ -282,3 +282,25 @@ body {
   text-transform: uppercase; letter-spacing: .4px; border-radius: 6px; padding: 2px 8px;
   margin-right: 8px; vertical-align: 2px;
 }
+
+/* ---------- Semne și semnalizare ---------- */
+.signs__tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.signs__tab {
+  border: 1px solid var(--line, #e2e8f0); background: #fff; border-radius: 999px;
+  padding: 7px 14px; font-size: 13px; cursor: pointer; color: var(--ink-soft, #475569);
+}
+.signs__tab--on { background: #ea580c; border-color: #ea580c; color: #fff; font-weight: 700; }
+.signs__note { font-size: 14px; color: var(--ink-soft, #475569); margin: 0 0 14px; }
+.signs__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px;
+}
+.sign-card {
+  margin: 0; background: #fff; border: 1px solid var(--line, #e2e8f0); border-radius: 14px;
+  padding: 12px; display: flex; flex-direction: column; gap: 8px;
+}
+.sign-card__img { display: flex; justify-content: center; }
+.sign-card .sign-svg { width: 120px; height: auto; }
+.sign-card figcaption { font-size: 13px; line-height: 1.35; display: flex; flex-direction: column; gap: 2px; }
+.sign-card figcaption strong { color: #ea580c; font-size: 12px; letter-spacing: .4px; }
+.quiz__q--sign .sign-q__img { display: flex; justify-content: flex-start; margin: 6px 0 10px; }
+.quiz__q--sign .sign-svg { width: 140px; height: auto; border-radius: 10px; }

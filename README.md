@@ -24,6 +24,10 @@ antrenament cu întrebările oficiale de examen.
   (număr de teste, medie, cel mai bun scor).
 - **⏱️ Simulare de examen** — 24 de întrebări echilibrate pe categorii,
   cronometru 30 min, prag 75%.
+- **🚩 Semne și semnalizare** — colecție vizuală completă (panourile RND de pe
+  Dunăre, balizajul IALA, luminile și semnele navelor pe categorii, cele 26 de
+  pavilioane ale Codului Internațional) + **teste de semne** cu imagini, în
+  stilul chestionarelor auto.
 - **Autentificare și provizionare utilizatori** (opțional, pentru publicare):
   server Node **fără dependențe npm** cu link privat de înregistrare, aprobare
   din panou de admin și acces protejat la tot conținutul.
@@ -70,6 +74,7 @@ assets/js/content.js       – cele 10 lecții video + configurații antrenament
 assets/js/questions-anr.js – banca de întrebări reale de antrenament ANR (568)
 assets/js/player.js        – player video (MP4/WebM; fallback diapozitive narate)
 assets/js/practice.js      – testele de antrenament (20 întrebări aleatoare)
+assets/js/signs.js         – colecția de semne (SVG) + testul de semne
 assets/js/exam.js          – simularea examenului final
 assets/js/app.js           – navigare (Curs video / Antrenament), audiobook, progres
 videos/day01..10.mp4       – videourile lecțiilor (generate, comise în repo)

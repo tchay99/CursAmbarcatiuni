@@ -35,6 +35,7 @@ const App = {
     return {
       lessons,
       practice: { history: [], bestPct: 0 },
+      signs: { history: [], bestPct: 0 },
       exam: { passed: false, bestPct: 0, attempts: 0 },
       continuous: true,
     };
@@ -46,6 +47,7 @@ const App = {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.practice) def.practice = Object.assign(def.practice, parsed.practice);
+        if (parsed.signs) def.signs = Object.assign(def.signs, parsed.signs);
         if (parsed.exam) def.exam = Object.assign(def.exam, parsed.exam);
         if (typeof parsed.continuous === "boolean") def.continuous = parsed.continuous;
         Object.keys(def.lessons).forEach((id) => {
@@ -120,6 +122,8 @@ const App = {
       if (a === "home") this.navigate({ type: "home" });
       if (a === "go-lesson") this.navigate({ type: "lesson", id: act.dataset.id });
       if (a === "go-practice") this.navigate({ type: "practice" });
+      if (a === "go-signs") this.navigate({ type: "signs" });
+      if (a === "go-signs-test") this.navigate({ type: "signs-test" });
       if (a === "start-exam") this.navigate({ type: "exam" });
     });
 
@@ -163,6 +167,8 @@ const App = {
     if (this.view.type === "home") return this.renderHome();
     if (this.view.type === "lesson") return this.renderLesson(this.view.id);
     if (this.view.type === "practice") return this.renderPractice();
+    if (this.view.type === "signs") return this.renderSigns();
+    if (this.view.type === "signs-test") return this.renderSignsTest();
     if (this.view.type === "exam") return this.renderExam();
   },
 
@@ -216,7 +222,27 @@ const App = {
         </ul>
       </div>`;
 
-    this.$sidebar.innerHTML = lessonsHtml + practiceHtml;
+    // Modulul SEMNE ȘI SEMNALIZARE.
+    const sg = this.state.signs;
+    const totalSigns = (window.SIGNS ? window.SIGNS.SETS.reduce((n, s) => n + s.items.length, 0) : 0);
+    const signsActive = this.view.type === "signs" ? " nav-item--active" : "";
+    const signsTestActive = this.view.type === "signs-test" ? " nav-item--active" : "";
+    const signsHtml = `<div class="nav-section">🚩 Semne și semnalizare</div>
+      <div class="nav-module" style="--mod:#ea580c">
+        <div class="nav-module__title">Panouri RND · balizaj · lumini · pavilioane</div>
+        <ul class="nav-list">
+          <li><button class="nav-item nav-item--open${signsActive}" data-signs>
+            <span class="nav-item__icon">🚩</span>
+            <span class="nav-item__label"><strong>Colecția de semne</strong><small>${totalSigns} semne, mărci și pavilioane</small></span>
+          </button></li>
+          <li><button class="nav-item nav-item--open${signsTestActive}" data-signs-test>
+            <span class="nav-item__icon">🪧</span>
+            <span class="nav-item__label"><strong>Test de semne</strong><small>${sg.history.length ? `${sg.history.length} teste · best ${sg.bestPct}%` : "ca la chestionarele auto"}</small></span>
+          </button></li>
+        </ul>
+      </div>`;
+
+    this.$sidebar.innerHTML = lessonsHtml + practiceHtml + signsHtml;
 
     this.$sidebar.querySelectorAll("[data-lesson]").forEach((btn) => {
       btn.addEventListener("click", () => this.navigate({ type: "lesson", id: btn.dataset.lesson }));
@@ -225,6 +251,10 @@ const App = {
     if (practiceBtn) practiceBtn.addEventListener("click", () => this.navigate({ type: "practice" }));
     const examBtn = this.$sidebar.querySelector("[data-exam]");
     if (examBtn) examBtn.addEventListener("click", () => this.navigate({ type: "exam" }));
+    const signsBtn = this.$sidebar.querySelector("[data-signs]");
+    if (signsBtn) signsBtn.addEventListener("click", () => this.navigate({ type: "signs" }));
+    const signsTestBtn = this.$sidebar.querySelector("[data-signs-test]");
+    if (signsTestBtn) signsTestBtn.addEventListener("click", () => this.navigate({ type: "signs-test" }));
   },
 
   /* --------------------- Home --------------------- */
@@ -394,6 +424,77 @@ const App = {
         this.save();
         this.renderSidebar();
         this.toast(res.passed ? `🎉 ${res.pct}% — peste pragul de examen!` : `📚 ${res.pct}% — mai exersează, îți iese.`);
+      },
+    });
+  },
+
+  /* --------------------- Semne și semnalizare --------------------- */
+  renderSigns() {
+    this.$main.innerHTML = `
+      <section class="lesson" style="--mod:#ea580c">
+        <div class="lesson__head">
+          <div class="lesson__crumbs">🚩 Semne și semnalizare</div>
+          <h1>Colecția de semne</h1>
+          <p class="lesson__summary">Panourile RND de pe Dunăre, balizajul IALA, luminile și semnele navelor pe categorii
+            și pavilioanele Codului Internațional — cu semnificația fiecăruia.</p>
+        </div>
+        <div id="signsRoot"></div>
+        <div class="lesson__nav">
+          <button class="btn btn--ghost" data-action="home">Acasă</button>
+          <button class="btn btn--primary" data-action="go-signs-test">🪧 Test de semne (20 întrebări)</button>
+        </div>
+      </section>`;
+    renderSignsCollection(document.getElementById("signsRoot"));
+  },
+
+  renderSignsTest() {
+    const sg = this.state.signs;
+    const hist = sg.history.slice(-10).reverse();
+    this.$main.innerHTML = `
+      <section class="lesson" style="--mod:#ea580c">
+        <div class="lesson__head">
+          <div class="lesson__crumbs">🚩 Semne și semnalizare</div>
+          <h1>Test de semne</h1>
+          <p class="lesson__summary">20 de întrebări cu imagini — panouri, geamanduri, lumini și pavilioane —
+            exact ca la chestionarele auto cu indicatoare.</p>
+        </div>
+        <div id="signsTestIntro">
+          ${sg.history.length ? `
+            <div class="practice-stats">
+              <div class="stat"><span class="stat__num">${sg.history.length}</span><span class="stat__lbl">teste făcute</span></div>
+              <div class="stat"><span class="stat__num">${sg.bestPct}%</span><span class="stat__lbl">cel mai bun scor</span></div>
+              <div class="stat"><span class="stat__num">${Math.round(sg.history.reduce((s, h) => s + h.pct, 0) / sg.history.length)}%</span><span class="stat__lbl">media</span></div>
+            </div>
+            <div class="practice-history"><h3>Ultimele teste</h3>
+              <ul>${hist.map((h) => `<li class="${h.passed ? "ph--pass" : "ph--fail"}">
+                <span>${new Date(h.ts).toLocaleDateString("ro-RO")}</span><span>${h.correct}/${h.total}</span>
+                <strong>${h.pct}%</strong><span>${h.passed ? "✅" : "❌"}</span></li>`).join("")}</ul>
+            </div>` : `
+            <p class="practice-empty">Răsfoiește întâi colecția, apoi verifică-te — semnele se învață exact ca indicatoarele rutiere: pe văzute.</p>`}
+          <div class="home__cta">
+            <button class="btn btn--primary btn--lg" id="startSignsBtn">🪧 Începe testul (20 de semne)</button>
+            <button class="btn btn--ghost" data-action="go-signs">🚩 Colecția de semne</button>
+          </div>
+        </div>
+        <div id="signsTestRoot" class="quiz-root"></div>
+      </section>`;
+    document.getElementById("startSignsBtn").addEventListener("click", () => this.startSignsTest());
+  },
+
+  startSignsTest() {
+    const intro = document.getElementById("signsTestIntro");
+    if (intro) intro.style.display = "none";
+    renderSignTest(document.getElementById("signsTestRoot"), {
+      count: 20,
+      pass: 0.75,
+      onFinish: (res) => {
+        if (res.again) { this.navigate({ type: "signs-test" }); this.startSignsTest(); return; }
+        this.state.signs.history.push({ ts: Date.now(), correct: res.correct, total: res.total, pct: res.pct, passed: res.passed });
+        if (this.state.signs.history.length > 200) this.state.signs.history.shift();
+        this.state.signs.bestPct = Math.max(this.state.signs.bestPct, res.pct);
+        this.save();
+        this.renderSidebar();
+        this.toast(res.passed ? `🎉 ${res.pct}% la semne!` : `📚 ${res.pct}% — mai răsfoiește colecția.`);
       },
     });
   },
