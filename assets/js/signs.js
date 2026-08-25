@@ -242,7 +242,7 @@
       { id: "rnd-res", title: "RND — Restricție", note: "Limitări: adâncime, înălțime, lățime, distanță de mal.", items: mk(RND_RES) },
       { id: "rnd-rec", title: "RND — Recomandare", note: "Trecerea recomandată (romburi galbene).", items: mk(RND_REC) },
       { id: "rnd-ind", title: "RND — Indicație / Permisiune", note: "Panouri albastre: ce AI voie / informații.", items: mk(RND_IND) },
-      { id: "iala", title: "Balizaj IALA (Regiunea A)", note: "În Regiunea B (Americile, Japonia), culorile laterale sunt inversate.", items: IALA },
+      { id: "iala", title: "Balizaj IALA (Regiunea A)", note: "În Regiunea B (Americile, Japonia), culorile laterale sunt inversate.", items: mk(IALA) },
       { id: "nave", title: "Luminile și semnele navelor", note: "Identificarea categoriilor de nave noaptea și ziua (COLREG).", items: mk(COLREG_NAVE) },
       { id: "pavilioane", title: "Pavilioanele Codului Internațional", note: "Semnificația fiecărui pavilion arborat singur.", items: mk(FLAGS) },
     ],
